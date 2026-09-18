@@ -185,9 +185,12 @@
     const mapEl = $('#collectMap');
     if (!mapEl || typeof L === 'undefined') return;
 
-    // Centre sur la région Saint-Malo / Dinard
+    const isMobile = window.innerWidth <= 768;
+    const initialCenter = isMobile ? [48.6493, -2.0150] : [48.644, -2.010];
+
+    // Centre sur Saint-Malo (mobile) ou région (desktop)
     map = L.map('collectMap', {
-      center: [48.644, -2.010],
+      center: initialCenter,
       zoom: 12,
       zoomControl: true,
       scrollWheelZoom: false
@@ -286,7 +289,11 @@
       }
     });
 
-    if (bounds.length > 1) {
+    const isMobile = window.innerWidth <= 768;
+    if (isMobile) {
+      // Sur mobile, centrer expressément sur Saint-Malo
+      map.setView([48.6493, -2.0150], 12);
+    } else if (bounds.length > 1) {
       map.fitBounds(bounds, { padding: [40, 40] });
     } else if (bounds.length === 1) {
       map.setView(bounds[0], 14);
