@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration – RECUP CULTURE</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/quill@2.0.2/dist/quill.snow.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <!-- ==================== LOGIN ==================== -->
+  <div id="loginScreen" role="main" aria-label="Connexion administration">
+    <div class="login-box">
+      <img src="assets/logo.png" alt="Logo RecupCulture" class="login-logo" onerror="this.style.display='none'">
+      <h1 class="login-title">Administration</h1>
+      <p class="login-subtitle">Accès réservé aux administrateurs</p>
+
+      <form class="login-form" id="loginForm" novalidate autocomplete="off">
+        <div class="login-error" id="loginError" role="alert" aria-live="assertive">
+          <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
+          <span id="loginErrorMsg">Identifiant ou mot de passe incorrect.</span>
+        </div>
+
+        <div class="login-field">
+          <label for="loginUsername">Identifiant</label>
+          <div class="input-wrap">
+            <i class="fas fa-user" aria-hidden="true"></i>
+            <input type="text" id="loginUsername" name="username"
+              required autocomplete="username"
+              placeholder="Votre identifiant">
+          </div>
+        </div>
+
+        <div class="login-field">
+          <label for="loginPassword">Mot de passe</label>
+          <div class="input-wrap">
+            <i class="fas fa-lock" aria-hidden="true"></i>
+            <input type="password" id="loginPassword" name="password"
+              required autocomplete="current-password"
+              placeholder="••••••••">
+          </div>
+        </div>
+
+        <button type="submit" class="btn-login" id="loginBtn">
+          <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
+          Se connecter
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== ADMIN PANEL ==================== -->
+  <div id="adminPanel" aria-label="Panneau d'administration">
+
+    <!-- Header -->
+    <header class="admin-header">
+      <div class="admin-header-left">
+        <img src="assets/logo.png" alt="Logo" class="admin-header-logo" onerror="this.style.display='none'">
+        <div>
+          <div class="admin-header-title">RECUP<span>CULTURE</span></div>
+        </div>
+        <span class="admin-header-badge">Admin</span>
+      </div>
+      <div class="admin-header-right">
+        <div class="admin-user">
+          <div class="admin-user-avatar" id="adminAvatar" aria-hidden="true">
+            <i class="fas fa-user"></i>
+          </div>
+          <span id="adminDisplayName">Administrateur</span>
+        </div>
+        <button class="btn-logout" id="logoutBtn" aria-label="Se déconnecter">
+          <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+          Déconnexion
+        </button>
+      </div>
+    </header>
+
+    <div class="admin-body">
+      <!-- Sidebar -->
+      <aside class="admin-sidebar" role="navigation" aria-label="Menu d'administration">
+        <nav class="sidebar-nav">
+          <div class="sidebar-label">Contenu</div>
+          <div class="sidebar-item active" data-section="news" role="button" tabindex="0" aria-current="page">
+            <i class="fas fa-newspaper" aria-hidden="true"></i>
+            Actualités
+          </div>
+          <div class="sidebar-item" data-section="map" role="button" tabindex="0">
+            <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+            Points de collecte
+          </div>
+
+          <div class="sidebar-label">Gestion</div>
+          <div class="sidebar-item" data-section="users" role="button" tabindex="0">
+            <i class="fas fa-users" aria-hidden="true"></i>
+            Utilisateurs
+          </div>
+          <div class="sidebar-item" data-section="io" role="button" tabindex="0">
+            <i class="fas fa-file-import" aria-hidden="true"></i>
+            Import / Export
+          </div>
+
+          <div class="sidebar-label">Site</div>
+          <div class="sidebar-item" role="button" tabindex="0" id="viewSiteBtn">
+            <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+            Voir le site
+          </div>
+        </nav>
+      </aside>
+
+      <!-- Main content -->
+      <main class="admin-main">
+
+        <!-- ========== ACTUALITÉS ========== -->
+        <section class="admin-section active" id="section-news" aria-labelledby="news-section-title">
+          <div class="admin-page-header">
+            <div>
+              <h2 class="admin-page-title" id="news-section-title">Actualités & Événements</h2>
+              <p class="admin-page-subtitle">Gérez les articles publiés sur le site public</p>
+            </div>
+            <button class="btn btn-primary-admin" id="btnAddNews" aria-label="Créer un nouvel article">
+              <i class="fas fa-plus" aria-hidden="true"></i> Nouvel article
+            </button>
+          </div>
+
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Articles publiés</span>
+              <span id="newsCount" style="font-size:0.85rem;color:var(--gray-500)">0 article(s)</span>
+            </div>
+            <table class="admin-table" aria-label="Liste des articles">
+              <thead>
+                <tr>
+                  <th>Titre</th>
+                  <th>Catégorie</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="newsTableBody">
+                <tr>
+                  <td colspan="4" class="table-empty">
+                    <i class="fas fa-newspaper" aria-hidden="true"></i>
+                    Aucun article. Cliquez sur "Nouvel article" pour commencer.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========== POINTS DE COLLECTE ========== -->
+        <section class="admin-section" id="section-map" aria-labelledby="map-section-title">
+          <div class="admin-page-header">
+            <div>
+              <h2 class="admin-page-title" id="map-section-title">Points de collecte</h2>
+              <p class="admin-page-subtitle">Gérez les points de dépôt affichés sur la carte publique</p>
+            </div>
+            <button class="btn btn-primary-admin" id="btnAddPoint" aria-label="Ajouter un point de collecte">
+              <i class="fas fa-plus" aria-hidden="true"></i> Ajouter un point
+            </button>
+          </div>
+
+          <div class="admin-card" style="margin-bottom:24px">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Carte de prévisualisation</span>
+            </div>
+            <div class="admin-map-hint" role="note">
+              <i class="fas fa-info-circle" aria-hidden="true"></i>
+              Cliquez sur la carte pour placer un nouveau point, ou utilisez le formulaire ci-dessous.
+            </div>
+            <div id="adminMap" aria-label="Carte des points de collecte – cliquez pour ajouter"></div>
+          </div>
+
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Points configurés</span>
+              <span id="pointsCount" style="font-size:0.85rem;color:var(--gray-500)">0 point(s)</span>
+            </div>
+            <table class="admin-table" aria-label="Liste des points de collecte">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Adresse</th>
+                  <th>Coordonnées</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="pointsTableBody">
+                <tr>
+                  <td colspan="4" class="table-empty">
+                    <i class="fas fa-map-marked-alt" aria-hidden="true"></i>
+                    Aucun point configuré.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========== UTILISATEURS ========== -->
+        <section class="admin-section" id="section-users" aria-labelledby="users-section-title">
+          <div class="admin-page-header">
+            <div>
+              <h2 class="admin-page-title" id="users-section-title">Gestion des utilisateurs</h2>
+              <p class="admin-page-subtitle">Contrôlez les accès au panneau d'administration</p>
+            </div>
+            <button class="btn btn-primary-admin" id="btnAddUser" aria-label="Ajouter un utilisateur">
+              <i class="fas fa-user-plus" aria-hidden="true"></i> Ajouter
+            </button>
+          </div>
+
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Comptes administrateurs</span>
+            </div>
+            <table class="admin-table" aria-label="Liste des utilisateurs">
+              <thead>
+                <tr>
+                  <th>Utilisateur</th>
+                  <th>Rôle</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ========== IMPORT / EXPORT ========== -->
+        <section class="admin-section" id="section-io" aria-labelledby="io-section-title">
+          <div class="admin-page-header">
+            <div>
+              <h2 class="admin-page-title" id="io-section-title">Import &amp; Export</h2>
+              <p class="admin-page-subtitle">Sauvegardez ou restaurez les données du site</p>
+            </div>
+          </div>
+
+          <div class="import-export-grid">
+            <div class="import-export-card">
+              <i class="fas fa-file-download" aria-hidden="true"></i>
+              <h3>Exporter les données</h3>
+              <p>Téléchargez un fichier JSON contenant tous les points de collecte et les actualités.</p>
+              <button class="btn btn-primary-admin" id="btnExportData">
+                <i class="fas fa-download" aria-hidden="true"></i> Télécharger config.json
+              </button>
+            </div>
+            <div class="import-export-card">
+              <i class="fas fa-file-upload" aria-hidden="true"></i>
+              <h3>Importer des données</h3>
+              <p>Chargez un fichier <code>config.json</code> précédemment exporté pour restaurer les données.</p>
+              <label class="file-input-label" for="importDataFile">
+                <i class="fas fa-folder-open" aria-hidden="true"></i> Choisir un fichier
+              </label>
+              <input type="file" id="importDataFile" accept=".json" aria-label="Importer config.json">
+            </div>
+            <div class="import-export-card">
+              <i class="fas fa-key" aria-hidden="true"></i>
+              <h3>Exporter les accès</h3>
+              <p>Téléchargez un fichier JSON avec les comptes administrateurs (mots de passe hashés).</p>
+              <button class="btn btn-primary-admin" id="btnExportCreds">
+                <i class="fas fa-download" aria-hidden="true"></i> Télécharger credentials.json
+              </button>
+            </div>
+            <div class="import-export-card">
+              <i class="fas fa-sync-alt" aria-hidden="true"></i>
+              <h3>Réinitialiser</h3>
+              <p>Effacer toutes les données du localStorage et revenir aux fichiers de configuration par défaut.</p>
+              <button class="btn btn-danger" id="btnReset">
+                <i class="fas fa-trash-alt" aria-hidden="true"></i> Réinitialiser
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL : Actualité ==================== -->
+  <div class="modal-overlay" id="modalNews" role="dialog" aria-modal="true" aria-labelledby="modalNewsTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalNewsTitle">Nouvel article</h3>
+        <button class="modal-close" id="modalNewsClose" aria-label="Fermer">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+      <form id="newsForm" novalidate>
+        <input type="hidden" id="newsId">
+        <div class="form-group-admin">
+          <label for="newsTitle">Titre *</label>
+          <input type="text" id="newsTitle" required placeholder="Ex : Ouverture boutique – Novembre 2025">
+        </div>
+        <div class="form-row">
+          <div class="form-group-admin">
+            <label for="newsCategory">Catégorie *</label>
+            <select id="newsCategory" required>
+              <option value="actualite">Actualité</option>
+              <option value="evenement">Événement</option>
+              <option value="boutique">Ouverture boutique</option>
+            </select>
+          </div>
+          <div class="form-group-admin">
+            <label for="newsDate">Date *</label>
+            <input type="date" id="newsDate" required>
+          </div>
+        </div>
+        <div class="form-group-admin">
+          <label>Contenu *</label>
+          <div id="newsEditor" aria-label="Éditeur de contenu"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary-admin" id="modalNewsCancelBtn">Annuler</button>
+          <button type="submit" class="btn btn-primary-admin">
+            <i class="fas fa-save" aria-hidden="true"></i> Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL : Point de collecte ==================== -->
+  <div class="modal-overlay" id="modalPoint" role="dialog" aria-modal="true" aria-labelledby="modalPointTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalPointTitle">Nouveau point de collecte</h3>
+        <button class="modal-close" id="modalPointClose" aria-label="Fermer">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+      <form id="pointForm" novalidate>
+        <input type="hidden" id="pointId">
+        <div class="form-group-admin">
+          <label for="pointName">Nom du lieu *</label>
+          <input type="text" id="pointName" required placeholder="Ex : Nous Anti Gaspi">
+        </div>
+        <div class="form-group-admin">
+          <label for="pointAddress">Adresse</label>
+          <input type="text" id="pointAddress" placeholder="Ex : 12 rue de la Paix, Dinard">
+        </div>
+        <div class="form-group-admin">
+          <label for="pointDesc">Description</label>
+          <textarea id="pointDesc" rows="2" placeholder="Informations complémentaires sur ce point de dépôt"></textarea>
+        </div>
+        <div class="form-group-admin">
+          <label for="pointHours">Horaires</label>
+          <input type="text" id="pointHours" placeholder="Ex : Lun-Sam 9h-19h">
+        </div>
+        <div class="form-group-admin">
+          <label>Coordonnées GPS * <small style="color:var(--gray-500);font-weight:400">(cliquez sur la carte ou saisissez manuellement)</small></label>
+          <div class="coords-group">
+            <input type="number" id="pointLat" step="any" placeholder="Latitude (ex : 48.6353)" required>
+            <input type="number" id="pointLng" step="any" placeholder="Longitude (ex : -2.0601)" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary-admin" id="modalPointCancelBtn">Annuler</button>
+          <button type="submit" class="btn btn-primary-admin">
+            <i class="fas fa-save" aria-hidden="true"></i> Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL : Utilisateur ==================== -->
+  <div class="modal-overlay" id="modalUser" role="dialog" aria-modal="true" aria-labelledby="modalUserTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalUserTitle">Ajouter un utilisateur</h3>
+        <button class="modal-close" id="modalUserClose" aria-label="Fermer">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+      <form id="userForm" novalidate>
+        <input type="hidden" id="userId">
+        <div class="form-group-admin">
+          <label for="userDisplayName">Nom affiché *</label>
+          <input type="text" id="userDisplayName" required placeholder="Ex : Marie Dupont">
+        </div>
+        <div class="form-group-admin">
+          <label for="userUsername">Identifiant de connexion *</label>
+          <input type="text" id="userUsername" required placeholder="Ex : marie" autocomplete="off">
+        </div>
+        <div class="form-group-admin">
+          <label for="userPassword" id="userPasswordLabel">Mot de passe *</label>
+          <input type="password" id="userPassword" placeholder="Minimum 8 caractères" autocomplete="new-password">
+          <small id="userPasswordHint" style="color:var(--gray-500);font-size:0.78rem;margin-top:4px;display:block">Laissez vide pour ne pas modifier le mot de passe.</small>
+        </div>
+        <div class="form-group-admin">
+          <label for="userRole">Rôle</label>
+          <select id="userRole">
+            <option value="superadmin">Superadmin (accès total)</option>
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary-admin" id="modalUserCancelBtn">Annuler</button>
+          <button type="submit" class="btn btn-primary-admin">
+            <i class="fas fa-save" aria-hidden="true"></i> Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==================== TOASTS ==================== -->
+  <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/quill@2.0.2/dist/quill.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

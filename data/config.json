@@ -1,0 +1,40 @@
+﻿{
+  "collectPoints": [
+    {
+      "id": 1,
+      "name": "Nous Anti Gaspi",
+      "address": "Dinard, 35800",
+      "description": "Point de dépôt partenaire – déposez vos livres, CD, DVD et jeux vidéo",
+      "hours": "Selon horaires du magasin",
+      "lat": 48.6353,
+      "lng": -2.0601
+    },
+    {
+      "id": 2,
+      "name": "Coop Bio de l'Espérance",
+      "address": "Saint-Malo, 35400",
+      "description": "Point de dépôt partenaire – déposez vos livres, CD, DVD et jeux vidéo",
+      "hours": "Selon horaires du magasin",
+      "lat": 48.6493,
+      "lng": -2.0260
+    },
+    {
+      "id": 3,
+      "name": "Déchèterie de Saint-Malo",
+      "address": "Saint-Malo, 35400",
+      "description": "Point de dépôt en déchèterie – évitez l'incinération, donnez une seconde vie !",
+      "hours": "Selon horaires de la déchèterie",
+      "lat": 48.6540,
+      "lng": -1.9800
+    }
+  ],
+  "news": [
+    {
+      "id": 1,
+      "title": "Ouverture boutique – Octobre 2025",
+      "category": "boutique",
+      "date": "2025-10-11",
+      "content": "<p>La boutique <strong>Halle aux Artistes</strong> vous accueille le <strong>2ème week-end d'octobre</strong> (11 & 12 octobre 2025) à Châteauneuf-d'Ille-et-Vilaine.</p><p>Venez chiner des livres, CD, DVD et jeux vidéo à prix solidaire !</p>"
+    }
+  ]
+}

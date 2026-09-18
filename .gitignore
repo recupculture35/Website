@@ -1,0 +1,13 @@
+# Dépendances et logs
+node_modules/
+*.log
+npm-debug.log*
+
+# Système et IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Fichiers temporaires ou locaux
+*.tmp
