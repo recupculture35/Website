@@ -358,36 +358,47 @@
     });
   }
 
-  function switchSection(name) {
+  function switchSection(name, targetTab) {
     currentSection = name;
     $$('.sidebar-item').forEach(i => i.classList.remove('active'));
     $$('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
     $$('.admin-section').forEach(s => s.classList.remove('active'));
+
+    // Support si jamais 'esat' ou 'equipe' est demandé directement
+    if (name === 'esat' || name === 'equipe') {
+      targetTab = targetTab || name;
+      name = 'content';
+    }
 
     const item = $(`.sidebar-item[data-section="${name}"]`);
     if (item) { item.classList.add('active'); item.setAttribute('aria-current','page'); }
     const mobBtn = $(`.mobile-nav-btn[data-section="${name}"]`);
     if (mobBtn) { mobBtn.classList.add('active'); }
 
-    if (name === 'esat' || name === 'equipe') {
-      const sec = $('#section-content');
-      if (sec) sec.classList.add('active');
-      $$('.cms-tab').forEach(t => t.classList.remove('active'));
-      $$('.cms-pane').forEach(p => p.classList.remove('active'));
-      const tab = $(`.cms-tab[data-tab="${name}"]`);
-      const pane = $(`#pane-${name}`);
-      if (tab) tab.classList.add('active');
-      if (pane) pane.classList.add('active');
-      populateContentForm();
-      pane?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      return;
-    }
-
     const sec = $(`#section-${name}`);
     if (sec) sec.classList.add('active');
 
     if (name === 'map') initAdminMap();
-    if (name === 'content') populateContentForm();
+    if (name === 'content') {
+      populateContentForm();
+      if (targetTab) {
+        switchCmsTab(targetTab);
+      }
+    }
+  }
+
+  function switchCmsTab(tabName) {
+    $$('.cms-tab').forEach(t => t.classList.remove('active'));
+    $$('.cms-pane').forEach(p => p.classList.remove('active'));
+    const tab = $(`.cms-tab[data-tab="${tabName}"]`);
+    const pane = $(`#pane-${tabName}`);
+    if (tab) {
+      tab.classList.add('active');
+      tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+    if (pane) {
+      pane.classList.add('active');
+    }
   }
 
   // ─── QUILL WYSIWYG ──────────────────────────────────
@@ -879,19 +890,7 @@
     $$('.cms-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         const target = tab.dataset.tab;
-        $$('.cms-tab').forEach(t => t.classList.remove('active'));
-        $$('.cms-pane').forEach(p => p.classList.remove('active'));
-        tab.classList.add('active');
-        const pane = $(`#pane-${target}`);
-        if (pane) pane.classList.add('active');
-
-        // Sync sidebar / mobile nav active highlight
-        $$('.sidebar-item').forEach(i => i.classList.remove('active'));
-        $$('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
-        const sideItem = $(`.sidebar-item[data-section="${target}"]`) || $(`.sidebar-item[data-section="content"]`);
-        if (sideItem) sideItem.classList.add('active');
-        const mobItem = $(`.mobile-nav-btn[data-section="${target}"]`) || $(`.mobile-nav-btn[data-section="content"]`);
-        if (mobItem) mobItem.classList.add('active');
+        switchCmsTab(target);
       });
     });
 

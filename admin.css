@@ -597,34 +597,52 @@ input[type="file"] { display: none; }
 .cms-nav-tabs {
   display: flex;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
   overflow-x: auto;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--gray-700);
-}
-.cms-tab {
-  padding: 8px 16px;
+  padding: 6px;
   background: var(--dark-2);
   border: 1px solid var(--gray-700);
-  border-radius: 20px;
-  color: var(--gray-300);
+  border-radius: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray-600) transparent;
+}
+.cms-nav-tabs::-webkit-scrollbar {
+  height: 5px;
+}
+.cms-nav-tabs::-webkit-scrollbar-thumb {
+  background: var(--gray-600);
+  border-radius: 4px;
+}
+.cms-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  color: var(--gray-400);
   font-size: 0.88rem;
   font-weight: 500;
   white-space: nowrap;
-  transition: var(--transition);
+  transition: all 0.2s ease;
   cursor: pointer;
+  flex-shrink: 0;
+}
+.cms-tab i {
+  font-size: 0.95rem;
 }
 .cms-tab:hover {
-  border-color: var(--green-500);
   color: var(--white);
-  background: rgba(76, 175, 80, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 .cms-tab.active {
-  background: var(--green-700);
+  background: linear-gradient(135deg, var(--green-600), var(--green-700));
   border-color: var(--green-500);
   color: var(--white);
   font-weight: 600;
-  box-shadow: 0 2px 10px rgba(76, 175, 80, 0.25);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.35);
 }
 .cms-pane {
   display: none;
