@@ -12,9 +12,10 @@ const crypto = require('crypto');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Emplacements des données (support des volumes Railway via DATA_DIR si configuré)
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
-const UPLOADS_DIR = process.env.UPLOADS_DIR || path.join(__dirname, 'uploads');
+// Emplacements des données (support des volumes Railway via RAILWAY_VOLUME_MOUNT_PATH ou DATA_DIR)
+const VOLUME_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH || process.env.DATA_DIR;
+const DATA_DIR = VOLUME_DIR || path.join(__dirname, 'data');
+const UPLOADS_DIR = process.env.UPLOADS_DIR || path.join(DATA_DIR, 'uploads');
 const CONFIG_FILE = path.join(DATA_DIR, 'config.json');
 const CREDS_FILE = path.join(DATA_DIR, 'credentials.json');
 
@@ -94,8 +95,14 @@ function writeJson(filePath, data) {
     fs.renameSync(tmp, filePath);
     return true;
   } catch (err) {
-    console.error(`Erreur écriture ${filePath}:`, err.message);
-    return false;
+    console.warn(`[WARN] renameSync a échoué pour ${filePath} (${err.message}), tentative d'écriture directe...`);
+    try {
+      fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+      return true;
+    } catch (err2) {
+      console.error(`[ERROR] Erreur écriture directe ${filePath}:`, err2.message);
+      return false;
+    }
   }
 }
 
@@ -107,7 +114,7 @@ function initDataFiles() {
     let needsWriteConfig = false;
 
     if (!currentConfig || typeof currentConfig !== 'object') {
-      currentConfig = Object.assign({}, bundledConfig, { siteContent: {}, collectPoints: [], news: [] });
+      currentConfig = JSON.parse(JSON.stringify(bundledConfig));
       needsWriteConfig = true;
     }
 
@@ -151,6 +158,21 @@ function initDataFiles() {
         fs.copyFileSync(BUNDLED_CREDS, CREDS_FILE);
         console.log(`[INIT] credentials.json initialisé depuis le fichier par défaut.`);
       }
+    }
+
+    // Copier d'éventuelles photos pré-existantes dans le dossier uploads persistant
+    const bundledUploads = path.join(__dirname, 'uploads');
+    if (fs.existsSync(bundledUploads) && path.resolve(bundledUploads) !== path.resolve(UPLOADS_DIR)) {
+      try {
+        const files = fs.readdirSync(bundledUploads);
+        for (const f of files) {
+          const src = path.join(bundledUploads, f);
+          const dst = path.join(UPLOADS_DIR, f);
+          if (!fs.existsSync(dst) && fs.statSync(src).isFile()) {
+            fs.copyFileSync(src, dst);
+          }
+        }
+      } catch (_) {}
     }
   } catch (err) {
     console.error(`[INIT] Erreur lors de l'initialisation des fichiers:`, err.message);
@@ -227,8 +249,9 @@ app.use(cors());
 app.use(express.json({ limit: '30mb' }));
 app.use(express.urlencoded({ extended: true, limit: '30mb' }));
 
-// Servir le dossier uploads pour les images publiques
+// Servir le dossier uploads pour les images publiques (volume persistant en priorité, puis uploads bundled)
 app.use('/uploads', express.static(UPLOADS_DIR));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ─── API PUBLIQUE : Données du site ──────────────────
 app.get('/api/health', (req, res) => {
@@ -241,7 +264,7 @@ app.get('/api/data', (req, res) => {
   let needsSave = false;
 
   if (!config || typeof config !== 'object') {
-    config = { siteContent: {}, collectPoints: [], news: [] };
+    config = JSON.parse(JSON.stringify(bundled));
     needsSave = true;
   }
 

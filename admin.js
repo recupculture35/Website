@@ -241,27 +241,36 @@
     saveData();
 
     // Utilisateurs
+    let usersLoaded = false;
     const token = getAuthToken();
     if (token) {
       try {
         const rUsers = await fetch('/api/users', { headers: getAuthHeaders() });
         if (rUsers.ok) {
           const jsonUsers = await rUsers.json();
-          if (jsonUsers && Array.isArray(jsonUsers.users)) {
+          if (jsonUsers && Array.isArray(jsonUsers.users) && jsonUsers.users.length > 0) {
             credentials.users = jsonUsers.users;
             saveCredentials();
+            usersLoaded = true;
           }
         }
       } catch (_) {}
     }
 
-    const cr = localStorage.getItem(LS_CREDS);
-    if (cr) {
-      try {
-        const parsed = JSON.parse(cr);
-        if (parsed && Array.isArray(parsed.users)) credentials = parsed;
-      } catch(_) {}
-    } else {
+    if (!usersLoaded) {
+      const cr = localStorage.getItem(LS_CREDS);
+      if (cr) {
+        try {
+          const parsed = JSON.parse(cr);
+          if (parsed && Array.isArray(parsed.users) && parsed.users.length > 0) {
+            credentials = parsed;
+            usersLoaded = true;
+          }
+        } catch(_) {}
+      }
+    }
+
+    if (!usersLoaded) {
       try {
         const r = await fetch('data/credentials.json');
         if (r.ok) {
@@ -576,9 +585,14 @@
               if (json && json.url) {
                 return resolve(json.url);
               }
+            } else {
+              const errJson = await res.json().catch(() => ({}));
+              console.warn('API Upload refusé:', errJson.error || res.status);
+              toast(errJson.error || 'Erreur lors de l\'enregistrement de la photo sur le serveur.', true);
             }
           } catch (err) {
-            console.warn('API Upload inaccessible, fallback dataUrl:', err);
+            console.warn('API Upload inaccessible:', err);
+            toast('Impossible de joindre le serveur pour enregistrer la photo.', true);
           }
         }
         resolve(dataUrl);
@@ -865,7 +879,9 @@
             member.photo = url;
             previewBox.innerHTML = `<img src="${escapeHtml(url)}" alt="${escapeHtml(member.name || 'Membre')}">`;
             btnRemove.style.display = 'inline-flex';
-            toast('Photo du membre ajoutée.');
+            syncTeamMembersFromDom();
+            await saveContentForm(false);
+            toast('Photo du membre ajoutée et enregistrée.');
           } catch (err) {
             toast('Échec de l\'envoi de la photo.', true);
           } finally {
@@ -877,11 +893,13 @@
       }
 
       if (btnRemove) {
-        btnRemove.addEventListener('click', () => {
+        btnRemove.addEventListener('click', async () => {
           member.photo = '';
           previewBox.innerHTML = '<i class="fas fa-user"></i>';
           btnRemove.style.display = 'none';
-          toast('Photo retirée.');
+          syncTeamMembersFromDom();
+          await saveContentForm(false);
+          toast('Photo retirée et enregistrée.');
         });
       }
 
@@ -1184,7 +1202,8 @@
           if ($('#contentBoutiquePhoto')) $('#contentBoutiquePhoto').value = url;
           updatePhotoPreviewBox($('#boutiquePhotoPreview'), url);
           if (btnRemoveBoutique) btnRemoveBoutique.style.display = 'inline-flex';
-          toast('Photo de la boutique ajoutée.');
+          await saveContentForm(false);
+          toast('Photo de la boutique ajoutée et enregistrée.');
         } catch (err) {
           toast('Échec de l\'envoi de la photo.', true);
         } finally {
@@ -1195,11 +1214,12 @@
       });
     }
     if (btnRemoveBoutique) {
-      btnRemoveBoutique.addEventListener('click', () => {
+      btnRemoveBoutique.addEventListener('click', async () => {
         if ($('#contentBoutiquePhoto')) $('#contentBoutiquePhoto').value = '';
         updatePhotoPreviewBox($('#boutiquePhotoPreview'), '');
         btnRemoveBoutique.style.display = 'none';
-        toast('Photo de la boutique retirée.');
+        await saveContentForm(false);
+        toast('Photo de la boutique retirée et enregistrée.');
       });
     }
 
@@ -1219,7 +1239,8 @@
           if ($('#contentEsatPhoto')) $('#contentEsatPhoto').value = url;
           updatePhotoPreviewBox($('#esatPhotoPreview'), url);
           if (btnRemoveEsat) btnRemoveEsat.style.display = 'inline-flex';
-          toast('Photo de l\'ESAT ajoutée.');
+          await saveContentForm(false);
+          toast('Photo de l\'ESAT ajoutée et enregistrée.');
         } catch (err) {
           toast('Échec de l\'envoi de la photo.', true);
         } finally {
@@ -1230,11 +1251,12 @@
       });
     }
     if (btnRemoveEsat) {
-      btnRemoveEsat.addEventListener('click', () => {
+      btnRemoveEsat.addEventListener('click', async () => {
         if ($('#contentEsatPhoto')) $('#contentEsatPhoto').value = '';
         updatePhotoPreviewBox($('#esatPhotoPreview'), '');
         btnRemoveEsat.style.display = 'none';
-        toast('Photo de l\'ESAT retirée.');
+        await saveContentForm(false);
+        toast('Photo de l\'ESAT retirée et enregistrée.');
       });
     }
 
