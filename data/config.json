@@ -80,6 +80,14 @@
           "icon": "fa-recycle",
           "color": "#38bdf8",
           "active": true
+        },
+        {
+          "percent": 20,
+          "title": "Dons Humanitaires",
+          "desc": "Soutien aux associations partenaires et écoles",
+          "icon": "fa-globe-africa",
+          "color": "#f59e0b",
+          "active": true
         }
       ]
     },
