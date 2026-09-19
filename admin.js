@@ -124,6 +124,8 @@
         tag: "Contact",
         title: "Vous avez une question ?",
         description: "Nous sommes disponibles pour tout renseignement sur nos points de collecte, notre boutique ou notre association.",
+        email: "info@recupculture.fr",
+        supportEmail: "support@recupculture.fr",
         instagram: "@RECUPCULTURE sur Instagram",
         facebook: "@RECUPCULTURE sur Facebook",
         website: "recupculture.org"
@@ -818,6 +820,8 @@
     if ($('#contentContactTag')) $('#contentContactTag').value = ct.tag || def.contact.tag;
     if ($('#contentContactTitle')) $('#contentContactTitle').value = ct.title || def.contact.title;
     if ($('#contentContactDesc')) $('#contentContactDesc').value = ct.description || def.contact.description;
+    if ($('#contentContactEmail')) $('#contentContactEmail').value = ct.email || def.contact.email;
+    if ($('#contentContactSupportEmail')) $('#contentContactSupportEmail').value = ct.supportEmail || def.contact.supportEmail;
     if ($('#contentContactInstagram')) $('#contentContactInstagram').value = ct.instagram || def.contact.instagram;
     if ($('#contentContactFacebook')) $('#contentContactFacebook').value = ct.facebook || def.contact.facebook;
     if ($('#contentContactWebsite')) $('#contentContactWebsite').value = ct.website || def.contact.website;
@@ -902,6 +906,8 @@
         tag: $('#contentContactTag').value.trim(),
         title: $('#contentContactTitle').value.trim(),
         description: $('#contentContactDesc').value.trim(),
+        email: $('#contentContactEmail') ? $('#contentContactEmail').value.trim() : 'info@recupculture.fr',
+        supportEmail: $('#contentContactSupportEmail') ? $('#contentContactSupportEmail').value.trim() : 'support@recupculture.fr',
         instagram: $('#contentContactInstagram').value.trim(),
         facebook: $('#contentContactFacebook').value.trim(),
         website: $('#contentContactWebsite').value.trim()

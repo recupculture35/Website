@@ -86,6 +86,8 @@
         tag: "Contact",
         title: "Vous avez une question ?",
         description: "Nous sommes disponibles pour tout renseignement sur nos points de collecte, notre boutique ou notre association.",
+        email: "info@recupculture.fr",
+        supportEmail: "support@recupculture.fr",
         instagram: "@RECUPCULTURE sur Instagram",
         facebook: "@RECUPCULTURE sur Facebook",
         website: "recupculture.org"
@@ -719,6 +721,14 @@
       if (c.contact.tag && $('#contactTag')) $('#contactTag').textContent = c.contact.tag;
       if (c.contact.title && $('#contact-title')) $('#contact-title').textContent = c.contact.title;
       if (c.contact.description && $('#contactDesc')) $('#contactDesc').textContent = c.contact.description;
+      if (c.contact.email) {
+        if ($('#contactEmailText')) $('#contactEmailText').textContent = c.contact.email;
+        if ($('#link-email')) $('#link-email').href = `mailto:${c.contact.email}`;
+      }
+      if (c.contact.supportEmail) {
+        if ($('#contactSupportEmailText')) $('#contactSupportEmailText').textContent = `${c.contact.supportEmail} (Support)`;
+        if ($('#link-support-email')) $('#link-support-email').href = `mailto:${c.contact.supportEmail}`;
+      }
       if (c.contact.instagram && $('#contactInstaText')) $('#contactInstaText').textContent = c.contact.instagram;
       if (c.contact.facebook && $('#contactFbText')) $('#contactFbText').textContent = c.contact.facebook;
       if (c.contact.website && $('#contactWebText')) $('#contactWebText').textContent = c.contact.website;
