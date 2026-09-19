@@ -282,7 +282,7 @@ p {
   justify-content: center;
   gap: 12px;
   background: var(--brand-gradient);
-  color: var(--text-white);
+  color: #ffffff;
   font-family: var(--font-heading);
   font-weight: 600;
   font-size: 1.05rem;
@@ -414,7 +414,7 @@ p {
 
 .nav-links .nav-cta {
   background: var(--brand-gradient);
-  color: var(--text-white) !important;
+  color: #ffffff !important;
   font-weight: 600;
   padding: 10px 22px;
   border-radius: var(--radius-pill);
@@ -1508,7 +1508,7 @@ p {
   inset-inline: 0;
   padding: 12px 18px;
   background: linear-gradient(to top, rgba(10, 18, 30, 0.92) 0%, transparent 100%);
-  color: var(--text-white);
+  color: #ffffff;
   font-size: 0.88rem;
   display: flex;
   align-items: center;
@@ -1826,7 +1826,7 @@ p {
   justify-content: center;
   margin: 0 auto 22px;
   font-size: 2.2rem;
-  color: var(--text-white);
+  color: #ffffff;
   box-shadow: 0 8px 26px rgba(119, 184, 65, 0.35);
   overflow: hidden;
   position: relative;
@@ -1889,7 +1889,7 @@ p {
   inset-inline: 0;
   padding: 16px 24px;
   background: linear-gradient(to top, rgba(10, 18, 30, 0.92) 0%, rgba(10, 18, 30, 0.4) 65%, transparent 100%);
-  color: var(--text-white);
+  color: #ffffff;
   font-size: 0.95rem;
   display: flex;
   align-items: center;
@@ -2419,6 +2419,84 @@ p {
 [data-theme="light"] .form-group select option {
   background: #ffffff;
   color: #0f172a;
+}
+
+/* Carte visuelle Boutique (La Halle aux Artistes) en mode clair */
+[data-theme="light"] .boutique-card-visual {
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 45%, #e0f2fe 100%);
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08), 0 0 35px rgba(119, 184, 65, 0.15);
+}
+
+[data-theme="light"] .boutique-card-visual::before {
+  background: radial-gradient(circle, rgba(119, 184, 65, 0.2) 0%, transparent 70%);
+}
+
+[data-theme="light"] .boutique-card-visual::after {
+  background: radial-gradient(circle, rgba(30, 136, 229, 0.2) 0%, transparent 70%);
+}
+
+[data-theme="light"] .boutique-card-visual i {
+  color: #4e8c1e;
+  filter: drop-shadow(0 6px 16px rgba(119, 184, 65, 0.35));
+}
+
+[data-theme="light"] .boutique-card-visual p {
+  color: #0f172a;
+}
+
+[data-theme="light"] .boutique-card-visual span {
+  color: #475569;
+}
+
+/* Carte visuelle Partenariat ESAT (fallback) en mode clair */
+[data-theme="light"] .esat-photo-fallback {
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 45%, #f0fdf4 100%);
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  box-shadow: inset 0 0 20px rgba(15, 23, 42, 0.02), 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="light"] .esat-fallback-icon {
+  background: var(--brand-gradient);
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(119, 184, 65, 0.35);
+}
+
+[data-theme="light"] .esat-photo-fallback h4 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .esat-photo-fallback p {
+  color: #475569;
+}
+
+[data-theme="light"] .esat-fallback-tag {
+  background: rgba(119, 184, 65, 0.12);
+  border: 1px solid rgba(119, 184, 65, 0.4);
+  color: #4e8c1e;
+  font-weight: 600;
+}
+
+/* Bannière d'appel ESAT en mode clair */
+[data-theme="light"] .esat-join-banner {
+  background: linear-gradient(135deg, rgba(240, 253, 244, 0.95) 0%, rgba(224, 242, 254, 0.95) 100%);
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+}
+
+[data-theme="light"] .esat-join-icon {
+  background: var(--brand-gradient);
+  color: #ffffff;
+}
+
+[data-theme="light"] .esat-join-content h4 {
+  color: #0f172a;
+}
+
+[data-theme="light"] .esat-join-content p {
+  color: #334155;
 }
 
 /* Footer soigné en mode clair */
