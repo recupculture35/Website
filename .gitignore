@@ -11,3 +11,5 @@ Thumbs.db
 
 # Fichiers temporaires ou locaux
 *.tmp
+/*.png
+/*.pdf

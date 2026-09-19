@@ -7,9 +7,10 @@
   'use strict';
 
   // ─── Constantes ──────────────────────────────────────
-  const LS_DATA  = 'recupculture_data';
-  const LS_CREDS = 'recupculture_credentials';
+  const LS_DATA    = 'recupculture_data';
+  const LS_CREDS   = 'recupculture_credentials';
   const LS_SESSION = 'recupculture_session';
+  const LS_TOKEN   = 'recupculture_token';
 
   // ─── Utilitaires DOM ─────────────────────────────────
   const $ = (s, c = document) => c.querySelector(s);
@@ -19,7 +20,17 @@
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
 
-  // ─── SHA-256 (Web Crypto API) ────────────────────────
+  // ─── Token Auth (Serveur Node.js / Railway) ───────────
+  function getAuthToken() { return sessionStorage.getItem(LS_TOKEN); }
+  function setAuthToken(token) { sessionStorage.setItem(LS_TOKEN, token); }
+  function clearAuthToken() { sessionStorage.removeItem(LS_TOKEN); }
+
+  function getAuthHeaders() {
+    const t = getAuthToken();
+    return t ? { 'Authorization': `Bearer ${t}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+  }
+
+  // ─── SHA-256 (Web Crypto API - fallback local) ─────────
   async function sha256(str) {
     const buf  = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
     return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
@@ -37,6 +48,83 @@
 
   // ─── DONNÉES PAR DÉFAUT (Fonctionnement garanti y compris sous file://) ───
   const DEFAULT_DATA = {
+    siteContent: {
+      hero: {
+        badge: "Association solidaire d'économie circulaire & ESAT",
+        subtitle: "Ensemble recyclons avec les ESAT &nbsp;·&nbsp; <strong>Livres · DVD · CD · Jeux vidéo</strong>",
+        stats: [
+          { num: "+15 000", label: "Articles sauvés" },
+          { num: "100%", label: "Inclusion sociale & ESAT" },
+          { num: "3 Dépôts", label: "Saint-Malo & Environs" }
+        ]
+      },
+      mission: {
+        tag: "Notre Mission",
+        title: "Recycler, valoriser, partager la culture",
+        description: "RECUP CULTURE récupère sous forme de dons des livres, DVD, CD et jeux vidéo voués à l'incinération pour leur donner une seconde vie, en partenariat avec les ESAT.",
+        steps: [
+          { title: "1. Collecter", desc: "Nous recueillons vos livres, DVD, CD et jeux vidéo dans nos points de dépôt partenaires autour de Saint-Malo et Dinard." },
+          { title: "2. Trier", desc: "En partenariat avec l'ESAT de Châteauneuf, les articles sont triés, sélectionnés et conditionnés — une activité valorisante et inclusive." },
+          { title: "3. Donner une vie", desc: "Revente solidaire, recyclage papier ou don humanitaire — chaque objet trouve sa meilleure destination." }
+        ]
+      },
+      collecte: {
+        tag: "Nous collectons",
+        title: "Qu'est-ce que vous pouvez donner ?",
+        description: "Tous vos biens culturels en bon état, voués à prendre la poussière ou à finir à la benne.",
+        items: [
+          { title: "Livres", desc: "Romans, bandes dessinées, documentaires, livres jeunesse… Toutes catégories, en bon état." },
+          { title: "CD", desc: "Albums, compilations, musiques du monde — offrez une deuxième écoute à vos disques." },
+          { title: "DVD & Blu-ray", desc: "Films, séries, documentaires — partagez vos soirées cinéma avec d'autres familles." },
+          { title: "Jeux vidéo", desc: "Toutes consoles et générations — vos aventures virtuelles attendent de nouveaux joueurs." }
+        ]
+      },
+      impact: {
+        tag: "Notre Impact",
+        title: "Ce que deviennent vos dons",
+        description: "Pour chaque lot de 10 000 livres collectés, voici leur destination :",
+        items: [
+          { percent: 50, title: "Revente", desc: "Boutique solidaire & en ligne — accès à la culture à prix abordable" },
+          { percent: 30, title: "Recyclage", desc: "Transformation en papier recyclé — zéro déchet pour la planète" },
+          { percent: 20, title: "Humanitaire", desc: "Dons à des causes humanitaires — la culture au-delà des frontières" }
+        ]
+      },
+      boutique: {
+        tag: "Notre Boutique",
+        title: "La Halle aux Artistes",
+        lead: "Venez chiner et repartir avec vos nouvelles trouvailles culturelles à prix solidaire !",
+        address: "3 place du Martray\nChâteauneuf-d'Ille-et-Vilaine",
+        hours: "2ème week-end de chaque mois",
+        prices: "Livres dès 0,50€ · DVD dès 1€ · CD dès 0,50€"
+      },
+      esat: {
+        tag: "Partenariat ESAT",
+        title: "Une économie circulaire et inclusive",
+        description: "Nous croyons que l'écologie et l'inclusion sociale peuvent avancer ensemble.",
+        items: [
+          { title: "Activité valorisante", desc: "Le tri des articles collectés est réalisé par les travailleurs de l'ESAT de Châteauneuf — une activité concrète et valorisante pour des personnes en situation de handicap." },
+          { title: "Économie circulaire", desc: "En associant l'inclusion sociale et le réemploi culturel, RECUP CULTURE crée un modèle innovant où l'écologie et le social avancent ensemble." },
+          { title: "Impact territorial", desc: "Ancrée dans le bassin de Saint-Malo, notre association soutient l'économie locale et crée des liens entre différents acteurs du territoire." }
+        ]
+      },
+      equipe: {
+        tag: "L'Équipe",
+        title: "Les fondateurs",
+        description: "Deux passionnés engagés pour une culture accessible et un monde plus solidaire.",
+        members: [
+          { name: "Fabien Lemoine", role: "Co-fondateur", bio: "15 ans d'expérience dans le domaine du patrimoine culturel. Passionné par la préservation et le partage de la culture sous toutes ses formes." },
+          { name: "François-Xavier Mahoïc", role: "Co-fondateur", bio: "Plus de 15 ans d'expérience dans l'accompagnement des ESAT et du handicap psychique. Convaincu que l'inclusion sociale est un levier de transformation." }
+        ]
+      },
+      contact: {
+        tag: "Contact",
+        title: "Vous avez une question ?",
+        description: "Nous sommes disponibles pour tout renseignement sur nos points de collecte, notre boutique ou notre association.",
+        instagram: "@RECUPCULTURE sur Instagram",
+        facebook: "@RECUPCULTURE sur Facebook",
+        website: "recupculture.org"
+      }
+    },
     collectPoints: [
       { id: 1, name: "Nous Anti Gaspi", address: "Dinard, 35800", description: "Point de dépôt partenaire – déposez vos livres, CD, DVD et jeux vidéo", hours: "Selon horaires du magasin", lat: 48.6353, lng: -2.0601 },
       { id: 2, name: "Coop Bio de l'Espérance", address: "Saint-Malo, 35400", description: "Point de dépôt partenaire – déposez vos livres, CD, DVD et jeux vidéo", hours: "Selon horaires du magasin", lat: 48.6493, lng: -2.0260 },
@@ -63,23 +151,56 @@
   let credentials = JSON.parse(JSON.stringify(DEFAULT_CREDS));
 
   async function loadData() {
-    // Data
-    const d = localStorage.getItem(LS_DATA);
-    if (d) {
-      try {
-        const parsed = JSON.parse(d);
-        if (parsed && Array.isArray(parsed.collectPoints)) appData = parsed;
-      } catch(_) {}
-    } else {
-      try {
-        const r = await fetch('data/config.json');
-        if (r.ok) {
-          const json = await r.json();
-          if (json && Array.isArray(json.collectPoints)) appData = json;
+    // 1. Tenter l'API backend (/api/data)
+    try {
+      const res = await fetch('/api/data', { cache: 'no-cache' });
+      if (res.ok) {
+        const json = await res.json();
+        if (json && (Array.isArray(json.collectPoints) || json.siteContent)) {
+          appData = Object.assign({}, DEFAULT_DATA, json);
+          saveData();
         }
-      } catch(_) {}
+      }
+    } catch (_) {}
+
+    // 2. Si non connecté à l'API, vérifier le localStorage
+    if (!appData.collectPoints || !appData.collectPoints.length) {
+      const d = localStorage.getItem(LS_DATA);
+      if (d) {
+        try {
+          const parsed = JSON.parse(d);
+          if (parsed && (Array.isArray(parsed.collectPoints) || parsed.siteContent)) {
+            appData = Object.assign({}, DEFAULT_DATA, parsed);
+          }
+        } catch(_) {}
+      } else {
+        try {
+          const r = await fetch('data/config.json');
+          if (r.ok) {
+            const json = await r.json();
+            if (json && (Array.isArray(json.collectPoints) || json.siteContent)) {
+              appData = Object.assign({}, DEFAULT_DATA, json);
+            }
+          }
+        } catch(_) {}
+      }
     }
-    // Credentials
+
+    // Utilisateurs
+    const token = getAuthToken();
+    if (token) {
+      try {
+        const rUsers = await fetch('/api/users', { headers: getAuthHeaders() });
+        if (rUsers.ok) {
+          const jsonUsers = await rUsers.json();
+          if (jsonUsers && Array.isArray(jsonUsers.users)) {
+            credentials.users = jsonUsers.users;
+            saveCredentials();
+          }
+        }
+      } catch (_) {}
+    }
+
     const cr = localStorage.getItem(LS_CREDS);
     if (cr) {
       try {
@@ -117,14 +238,41 @@
     currentUser = user;
   }
   function clearSession() {
+    const token = getAuthToken();
+    if (token) {
+      try { fetch('/api/auth/logout', { method: 'POST', headers: getAuthHeaders() }); } catch (_) {}
+    }
+    clearAuthToken();
     sessionStorage.removeItem(LS_SESSION);
     currentUser = null;
   }
 
   // ─── AUTH ─────────────────────────────────────────────
   async function tryLogin(username, password) {
+    // 1. Tenter l'API backend (/api/auth/login)
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.token && json.user) {
+          setAuthToken(json.token);
+          return json.user;
+        }
+      }
+    } catch (_) {
+      // Backend non accessible -> fallback local
+    }
+
+    // 2. Fallback local avec Web Crypto SHA-256
     const hash = await sha256(password);
-    const user = credentials.users.find(u => u.username === username && u.passwordHash === hash);
+    const user = credentials.users.find(u => 
+      u.username.toLowerCase() === username.toLowerCase() && 
+      (u.passwordHash === hash || u.passwordHash === password)
+    );
     return user || null;
   }
 
@@ -148,7 +296,7 @@
     // Check existing session
     const session = getSession();
     if (session) {
-      const user = credentials.users.find(u => u.username === session.username);
+      const user = credentials.users.find(u => u.username === session.username) || session;
       if (user) { currentUser = user; showAdminPanel(user); initAdmin(); return; }
     }
 
@@ -214,6 +362,7 @@
     if (sec) sec.classList.add('active');
 
     if (name === 'map') initAdminMap();
+    if (name === 'content') populateContentForm();
   }
 
   // ─── QUILL WYSIWYG ──────────────────────────────────
@@ -301,13 +450,244 @@
 
   function closeNewsModal() { $('#modalNews').classList.remove('open'); }
 
+  // ─── CONTENUS DU SITE (CMS) ─────────────────────────
+  function populateContentForm() {
+    const c = appData.siteContent || {};
+
+    // Hero
+    const hero = c.hero || {};
+    if ($('#contentHeroBadge')) $('#contentHeroBadge').value = hero.badge || '';
+    if ($('#contentHeroSubtitle')) $('#contentHeroSubtitle').value = hero.subtitle || '';
+    const stats = hero.stats || [];
+    if ($('#contentHeroStatNum1')) $('#contentHeroStatNum1').value = stats[0]?.num || '';
+    if ($('#contentHeroStatLabel1')) $('#contentHeroStatLabel1').value = stats[0]?.label || '';
+    if ($('#contentHeroStatNum2')) $('#contentHeroStatNum2').value = stats[1]?.num || '';
+    if ($('#contentHeroStatLabel2')) $('#contentHeroStatLabel2').value = stats[1]?.label || '';
+    if ($('#contentHeroStatNum3')) $('#contentHeroStatNum3').value = stats[2]?.num || '';
+    if ($('#contentHeroStatLabel3')) $('#contentHeroStatLabel3').value = stats[2]?.label || '';
+
+    // Mission
+    const mission = c.mission || {};
+    if ($('#contentMissionTag')) $('#contentMissionTag').value = mission.tag || '';
+    if ($('#contentMissionTitle')) $('#contentMissionTitle').value = mission.title || '';
+    if ($('#contentMissionDesc')) $('#contentMissionDesc').value = mission.description || '';
+    const steps = mission.steps || [];
+    if ($('#contentMissionStep1Title')) $('#contentMissionStep1Title').value = steps[0]?.title || '';
+    if ($('#contentMissionStep1Desc')) $('#contentMissionStep1Desc').value = steps[0]?.desc || '';
+    if ($('#contentMissionStep2Title')) $('#contentMissionStep2Title').value = steps[1]?.title || '';
+    if ($('#contentMissionStep2Desc')) $('#contentMissionStep2Desc').value = steps[1]?.desc || '';
+    if ($('#contentMissionStep3Title')) $('#contentMissionStep3Title').value = steps[2]?.title || '';
+    if ($('#contentMissionStep3Desc')) $('#contentMissionStep3Desc').value = steps[2]?.desc || '';
+
+    // Collecte
+    const col = c.collecte || {};
+    if ($('#contentCollecteTag')) $('#contentCollecteTag').value = col.tag || '';
+    if ($('#contentCollecteTitle')) $('#contentCollecteTitle').value = col.title || '';
+    if ($('#contentCollecteDesc')) $('#contentCollecteDesc').value = col.description || '';
+    const cItems = col.items || [];
+    if ($('#contentCollecteItem1Title')) $('#contentCollecteItem1Title').value = cItems[0]?.title || '';
+    if ($('#contentCollecteItem1Desc')) $('#contentCollecteItem1Desc').value = cItems[0]?.desc || '';
+    if ($('#contentCollecteItem2Title')) $('#contentCollecteItem2Title').value = cItems[1]?.title || '';
+    if ($('#contentCollecteItem2Desc')) $('#contentCollecteItem2Desc').value = cItems[1]?.desc || '';
+    if ($('#contentCollecteItem3Title')) $('#contentCollecteItem3Title').value = cItems[2]?.title || '';
+    if ($('#contentCollecteItem3Desc')) $('#contentCollecteItem3Desc').value = cItems[2]?.desc || '';
+    if ($('#contentCollecteItem4Title')) $('#contentCollecteItem4Title').value = cItems[3]?.title || '';
+    if ($('#contentCollecteItem4Desc')) $('#contentCollecteItem4Desc').value = cItems[3]?.desc || '';
+
+    // Impact
+    const impact = c.impact || {};
+    if ($('#contentImpactTag')) $('#contentImpactTag').value = impact.tag || '';
+    if ($('#contentImpactTitle')) $('#contentImpactTitle').value = impact.title || '';
+    if ($('#contentImpactDesc')) $('#contentImpactDesc').value = impact.description || '';
+    const impItems = impact.items || [];
+    if ($('#contentImpactPercent1')) $('#contentImpactPercent1').value = impItems[0]?.percent ?? 50;
+    if ($('#contentImpactTitle1')) $('#contentImpactTitle1').value = impItems[0]?.title || '';
+    if ($('#contentImpactDesc1')) $('#contentImpactDesc1').value = impItems[0]?.desc || '';
+    if ($('#contentImpactPercent2')) $('#contentImpactPercent2').value = impItems[1]?.percent ?? 30;
+    if ($('#contentImpactTitle2')) $('#contentImpactTitle2').value = impItems[1]?.title || '';
+    if ($('#contentImpactDesc2')) $('#contentImpactDesc2').value = impItems[1]?.desc || '';
+    if ($('#contentImpactPercent3')) $('#contentImpactPercent3').value = impItems[2]?.percent ?? 20;
+    if ($('#contentImpactTitle3')) $('#contentImpactTitle3').value = impItems[2]?.title || '';
+    if ($('#contentImpactDesc3')) $('#contentImpactDesc3').value = impItems[2]?.desc || '';
+
+    // Boutique
+    const b = c.boutique || {};
+    if ($('#contentBoutiqueTag')) $('#contentBoutiqueTag').value = b.tag || '';
+    if ($('#contentBoutiqueTitle')) $('#contentBoutiqueTitle').value = b.title || '';
+    if ($('#contentBoutiqueLead')) $('#contentBoutiqueLead').value = b.lead || '';
+    if ($('#contentBoutiqueAddress')) $('#contentBoutiqueAddress').value = b.address || '';
+    if ($('#contentBoutiqueHours')) $('#contentBoutiqueHours').value = b.hours || '';
+    if ($('#contentBoutiquePrices')) $('#contentBoutiquePrices').value = b.prices || '';
+
+    // ESAT
+    const esat = c.esat || {};
+    if ($('#contentEsatTag')) $('#contentEsatTag').value = esat.tag || '';
+    if ($('#contentEsatTitle')) $('#contentEsatTitle').value = esat.title || '';
+    if ($('#contentEsatDesc')) $('#contentEsatDesc').value = esat.description || '';
+    const esatItems = esat.items || [];
+    if ($('#contentEsatItem1Title')) $('#contentEsatItem1Title').value = esatItems[0]?.title || '';
+    if ($('#contentEsatItem1Desc')) $('#contentEsatItem1Desc').value = esatItems[0]?.desc || '';
+    if ($('#contentEsatItem2Title')) $('#contentEsatItem2Title').value = esatItems[1]?.title || '';
+    if ($('#contentEsatItem2Desc')) $('#contentEsatItem2Desc').value = esatItems[1]?.desc || '';
+    if ($('#contentEsatItem3Title')) $('#contentEsatItem3Title').value = esatItems[2]?.title || '';
+    if ($('#contentEsatItem3Desc')) $('#contentEsatItem3Desc').value = esatItems[2]?.desc || '';
+
+    // Équipe
+    const eq = c.equipe || {};
+    if ($('#contentEquipeTag')) $('#contentEquipeTag').value = eq.tag || '';
+    if ($('#contentEquipeTitle')) $('#contentEquipeTitle').value = eq.title || '';
+    if ($('#contentEquipeDesc')) $('#contentEquipeDesc').value = eq.description || '';
+    const members = eq.members || [];
+    if ($('#contentEquipeMember1Name')) $('#contentEquipeMember1Name').value = members[0]?.name || '';
+    if ($('#contentEquipeMember1Role')) $('#contentEquipeMember1Role').value = members[0]?.role || '';
+    if ($('#contentEquipeMember1Bio')) $('#contentEquipeMember1Bio').value = members[0]?.bio || '';
+    if ($('#contentEquipeMember2Name')) $('#contentEquipeMember2Name').value = members[1]?.name || '';
+    if ($('#contentEquipeMember2Role')) $('#contentEquipeMember2Role').value = members[1]?.role || '';
+    if ($('#contentEquipeMember2Bio')) $('#contentEquipeMember2Bio').value = members[1]?.bio || '';
+
+    // Contact
+    const ct = c.contact || {};
+    if ($('#contentContactTag')) $('#contentContactTag').value = ct.tag || '';
+    if ($('#contentContactTitle')) $('#contentContactTitle').value = ct.title || '';
+    if ($('#contentContactDesc')) $('#contentContactDesc').value = ct.description || '';
+    if ($('#contentContactInstagram')) $('#contentContactInstagram').value = ct.instagram || '';
+    if ($('#contentContactFacebook')) $('#contentContactFacebook').value = ct.facebook || '';
+    if ($('#contentContactWebsite')) $('#contentContactWebsite').value = ct.website || '';
+  }
+
+  async function saveContentForm() {
+    const newSiteContent = {
+      hero: {
+        badge: $('#contentHeroBadge').value.trim(),
+        subtitle: $('#contentHeroSubtitle').value.trim(),
+        stats: [
+          { num: $('#contentHeroStatNum1').value.trim(), label: $('#contentHeroStatLabel1').value.trim() },
+          { num: $('#contentHeroStatNum2').value.trim(), label: $('#contentHeroStatLabel2').value.trim() },
+          { num: $('#contentHeroStatNum3').value.trim(), label: $('#contentHeroStatLabel3').value.trim() }
+        ]
+      },
+      mission: {
+        tag: $('#contentMissionTag').value.trim(),
+        title: $('#contentMissionTitle').value.trim(),
+        description: $('#contentMissionDesc').value.trim(),
+        steps: [
+          { title: $('#contentMissionStep1Title').value.trim(), desc: $('#contentMissionStep1Desc').value.trim() },
+          { title: $('#contentMissionStep2Title').value.trim(), desc: $('#contentMissionStep2Desc').value.trim() },
+          { title: $('#contentMissionStep3Title').value.trim(), desc: $('#contentMissionStep3Desc').value.trim() }
+        ]
+      },
+      collecte: {
+        tag: $('#contentCollecteTag').value.trim(),
+        title: $('#contentCollecteTitle').value.trim(),
+        description: $('#contentCollecteDesc').value.trim(),
+        items: [
+          { title: $('#contentCollecteItem1Title').value.trim(), desc: $('#contentCollecteItem1Desc').value.trim() },
+          { title: $('#contentCollecteItem2Title').value.trim(), desc: $('#contentCollecteItem2Desc').value.trim() },
+          { title: $('#contentCollecteItem3Title').value.trim(), desc: $('#contentCollecteItem3Desc').value.trim() },
+          { title: $('#contentCollecteItem4Title').value.trim(), desc: $('#contentCollecteItem4Desc').value.trim() }
+        ]
+      },
+      impact: {
+        tag: $('#contentImpactTag').value.trim(),
+        title: $('#contentImpactTitle').value.trim(),
+        description: $('#contentImpactDesc').value.trim(),
+        items: [
+          { percent: parseInt($('#contentImpactPercent1').value) || 50, title: $('#contentImpactTitle1').value.trim(), desc: $('#contentImpactDesc1').value.trim() },
+          { percent: parseInt($('#contentImpactPercent2').value) || 30, title: $('#contentImpactTitle2').value.trim(), desc: $('#contentImpactDesc2').value.trim() },
+          { percent: parseInt($('#contentImpactPercent3').value) || 20, title: $('#contentImpactTitle3').value.trim(), desc: $('#contentImpactDesc3').value.trim() }
+        ]
+      },
+      boutique: {
+        tag: $('#contentBoutiqueTag').value.trim(),
+        title: $('#contentBoutiqueTitle').value.trim(),
+        lead: $('#contentBoutiqueLead').value.trim(),
+        address: $('#contentBoutiqueAddress').value.trim(),
+        hours: $('#contentBoutiqueHours').value.trim(),
+        prices: $('#contentBoutiquePrices').value.trim()
+      },
+      esat: {
+        tag: $('#contentEsatTag').value.trim(),
+        title: $('#contentEsatTitle').value.trim(),
+        description: $('#contentEsatDesc').value.trim(),
+        items: [
+          { title: $('#contentEsatItem1Title').value.trim(), desc: $('#contentEsatItem1Desc').value.trim() },
+          { title: $('#contentEsatItem2Title').value.trim(), desc: $('#contentEsatItem2Desc').value.trim() },
+          { title: $('#contentEsatItem3Title').value.trim(), desc: $('#contentEsatItem3Desc').value.trim() }
+        ]
+      },
+      equipe: {
+        tag: $('#contentEquipeTag').value.trim(),
+        title: $('#contentEquipeTitle').value.trim(),
+        description: $('#contentEquipeDesc').value.trim(),
+        members: [
+          { name: $('#contentEquipeMember1Name').value.trim(), role: $('#contentEquipeMember1Role').value.trim(), bio: $('#contentEquipeMember1Bio').value.trim() },
+          { name: $('#contentEquipeMember2Name').value.trim(), role: $('#contentEquipeMember2Role').value.trim(), bio: $('#contentEquipeMember2Bio').value.trim() }
+        ]
+      },
+      contact: {
+        tag: $('#contentContactTag').value.trim(),
+        title: $('#contentContactTitle').value.trim(),
+        description: $('#contentContactDesc').value.trim(),
+        instagram: $('#contentContactInstagram').value.trim(),
+        facebook: $('#contentContactFacebook').value.trim(),
+        website: $('#contentContactWebsite').value.trim()
+      }
+    };
+
+    const token = getAuthToken();
+    if (token) {
+      try {
+        const res = await fetch('/api/content', {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ siteContent: newSiteContent })
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.siteContent) appData.siteContent = json.siteContent;
+        }
+      } catch (err) {
+        console.warn('Sauvegarde serveur échouée:', err);
+      }
+    }
+
+    appData.siteContent = newSiteContent;
+    saveData();
+    toast('Contenus du site enregistrés avec succès !');
+  }
+
+  function initContentSection() {
+    // Tabs
+    $$('.cms-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.tab;
+        $$('.cms-tab').forEach(t => t.classList.remove('active'));
+        $$('.cms-pane').forEach(p => p.classList.remove('active'));
+        tab.classList.add('active');
+        const pane = $(`#pane-${target}`);
+        if (pane) pane.classList.add('active');
+      });
+    });
+
+    // Form submits
+    $('#contentForm').addEventListener('submit', e => {
+      e.preventDefault();
+      saveContentForm();
+    });
+
+    const btnTop = $('#btnSaveContentTop');
+    if (btnTop) btnTop.addEventListener('click', () => saveContentForm());
+
+    populateContentForm();
+  }
+
   function initNewsSection() {
     $('#btnAddNews').addEventListener('click', () => openNewsModal());
     $('#modalNewsClose').addEventListener('click', closeNewsModal);
     $('#modalNewsCancelBtn').addEventListener('click', closeNewsModal);
     $('#modalNews').addEventListener('click', e => { if(e.target===$('#modalNews')) closeNewsModal(); });
 
-    $('#newsForm').addEventListener('submit', e => {
+    $('#newsForm').addEventListener('submit', async e => {
       e.preventDefault();
       const title = $('#newsTitle').value.trim();
       const cat   = $('#newsCategory').value;
@@ -317,13 +697,30 @@
       if (!title || !date) { toast('Veuillez remplir les champs obligatoires.', true); return; }
 
       const id = parseInt($('#newsId').value) || null;
-      if (id) {
-        const idx = (appData.news||[]).findIndex(n => n.id===id);
-        if (idx > -1) { appData.news[idx] = { id, title, category:cat, date, content }; }
-      } else {
-        if (!appData.news) appData.news = [];
-        const newId = Date.now();
-        appData.news.push({ id:newId, title, category:cat, date, content });
+      const token = getAuthToken();
+      if (token) {
+        try {
+          const res = await fetch('/api/news', {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ id, title, category: cat, date, content })
+          });
+          if (res.ok) {
+            const json = await res.json();
+            if (json.news) appData.news = json.news;
+          }
+        } catch (_) {}
+      }
+
+      if (!token) {
+        if (id) {
+          const idx = (appData.news||[]).findIndex(n => n.id===id);
+          if (idx > -1) { appData.news[idx] = { id, title, category:cat, date, content }; }
+        } else {
+          if (!appData.news) appData.news = [];
+          const newId = Date.now();
+          appData.news.unshift({ id:newId, title, category:cat, date, content });
+        }
       }
 
       saveData();
@@ -468,7 +865,7 @@
       });
     });
 
-    $('#pointForm').addEventListener('submit', e => {
+    $('#pointForm').addEventListener('submit', async e => {
       e.preventDefault();
       const name    = $('#pointName').value.trim();
       const address = $('#pointAddress').value.trim();
@@ -481,14 +878,30 @@
       if (isNaN(lat) || isNaN(lng)) { toast('Coordonnées GPS invalides.', true); return; }
 
       const id = parseInt($('#pointId').value) || null;
-      const pt = { id: id||Date.now(), name, address, description:desc, hours, lat, lng };
+      const token = getAuthToken();
+      if (token) {
+        try {
+          const res = await fetch('/api/points', {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ id, name, address, description: desc, hours, lat, lng })
+          });
+          if (res.ok) {
+            const json = await res.json();
+            if (json.collectPoints) appData.collectPoints = json.collectPoints;
+          }
+        } catch (_) {}
+      }
 
-      if (id) {
-        const idx = (appData.collectPoints||[]).findIndex(p => p.id===id);
-        if (idx > -1) appData.collectPoints[idx] = pt;
-      } else {
-        if (!appData.collectPoints) appData.collectPoints = [];
-        appData.collectPoints.push(pt);
+      if (!token) {
+        const pt = { id: id||Date.now(), name, address, description:desc, hours, lat, lng };
+        if (id) {
+          const idx = (appData.collectPoints||[]).findIndex(p => p.id===id);
+          if (idx > -1) appData.collectPoints[idx] = pt;
+        } else {
+          if (!appData.collectPoints) appData.collectPoints = [];
+          appData.collectPoints.push(pt);
+        }
       }
 
       saveData();
@@ -530,22 +943,22 @@
     `).join('');
   }
 
-  function openUserModal(user = null) {
-    const modal = $('#modalUser');
-    const title = $('#modalUserTitle');
-    const pwdHint = $('#userPasswordHint');
+  function openUserModal(u = null) {
+    const modal    = $('#modalUser');
+    const title    = $('#modalUserTitle');
+    const pwdHint  = $('#userPasswordHint');
     const pwdLabel = $('#userPasswordLabel');
 
-    if (user) {
+    if (u) {
       title.textContent = 'Modifier l\'utilisateur';
-      $('#userId').value = user.id;
-      $('#userDisplayName').value = user.displayName || '';
-      $('#userUsername').value = user.username || '';
+      $('#userId').value = u.id;
+      $('#userDisplayName').value = u.displayName || u.username;
+      $('#userUsername').value = u.username;
       $('#userPassword').value = '';
       $('#userPassword').required = false;
-      $('#userRole').value = user.role || 'superadmin';
+      $('#userRole').value = u.role || 'admin';
       pwdHint.style.display = 'block';
-      pwdLabel.textContent = 'Nouveau mot de passe';
+      pwdLabel.textContent = 'Nouveau mot de passe (optionnel)';
     } else {
       title.textContent = 'Ajouter un utilisateur';
       $('#userId').value = '';
@@ -587,18 +1000,34 @@
       submitBtn.disabled = true;
       submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement…';
 
-      const hash = password ? await sha256(password) : null;
+      const token = getAuthToken();
+      if (token) {
+        try {
+          const res = await fetch('/api/users', {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ id, username, displayName, password, role })
+          });
+          if (res.ok) {
+            const json = await res.json();
+            if (json.users) credentials.users = json.users;
+          }
+        } catch (_) {}
+      }
 
-      if (id) {
-        const idx = credentials.users.findIndex(u => u.id===id);
-        if (idx > -1) {
-          credentials.users[idx].displayName = displayName;
-          credentials.users[idx].username    = username;
-          credentials.users[idx].role        = role;
-          if (hash) credentials.users[idx].passwordHash = hash;
+      if (!token) {
+        const hash = password ? await sha256(password) : null;
+        if (id) {
+          const idx = credentials.users.findIndex(u => u.id===id);
+          if (idx > -1) {
+            credentials.users[idx].displayName = displayName;
+            credentials.users[idx].username    = username;
+            credentials.users[idx].role        = role;
+            if (hash) credentials.users[idx].passwordHash = hash;
+          }
+        } else {
+          credentials.users.push({ id: Date.now(), username, displayName, passwordHash: hash, role });
         }
-      } else {
-        credentials.users.push({ id: Date.now(), username, displayName, passwordHash: hash, role });
       }
 
       saveCredentials();
@@ -664,9 +1093,21 @@
       const item = (appData.news||[]).find(n => n.id===id);
       if (item) openNewsModal(item);
     },
-    deleteNews(id) {
+    async deleteNews(id) {
       if (!confirm('Supprimer cet article ?')) return;
-      appData.news = (appData.news||[]).filter(n => n.id!==id);
+      const token = getAuthToken();
+      if (token) {
+        try {
+          const res = await fetch(`/api/news/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+          if (res.ok) {
+            const json = await res.json();
+            if (json.news) appData.news = json.news;
+          }
+        } catch (_) {}
+      }
+      if (!token) {
+        appData.news = (appData.news||[]).filter(n => n.id!==id);
+      }
       saveData();
       renderNewsTable();
       toast('Article supprimé.');
@@ -678,9 +1119,21 @@
         setTimeout(() => { initAdminMap(); openPointModal(pt); }, 300);
       }
     },
-    deletePoint(id) {
+    async deletePoint(id) {
       if (!confirm('Supprimer ce point de collecte ?')) return;
-      appData.collectPoints = (appData.collectPoints||[]).filter(p => p.id!==id);
+      const token = getAuthToken();
+      if (token) {
+        try {
+          const res = await fetch(`/api/points/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+          if (res.ok) {
+            const json = await res.json();
+            if (json.collectPoints) appData.collectPoints = json.collectPoints;
+          }
+        } catch (_) {}
+      }
+      if (!token) {
+        appData.collectPoints = (appData.collectPoints||[]).filter(p => p.id!==id);
+      }
       saveData();
       renderAdminMapPoints();
       toast('Point supprimé.');
@@ -689,10 +1142,25 @@
       const u = (credentials.users||[]).find(u => u.id===id);
       if (u) openUserModal(u);
     },
-    deleteUser(id) {
+    async deleteUser(id) {
       if (credentials.users.length <= 1) { toast('Impossible de supprimer le dernier administrateur.', true); return; }
       if (!confirm('Supprimer cet utilisateur ?')) return;
-      credentials.users = credentials.users.filter(u => u.id!==id);
+
+      const token = getAuthToken();
+      if (token) {
+        try {
+          const res = await fetch(`/api/users/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+          if (res.ok) {
+            const json = await res.json();
+            if (json.users) credentials.users = json.users;
+          }
+        } catch (_) {}
+      }
+
+      if (!token) {
+        credentials.users = credentials.users.filter(u => u.id!==id);
+      }
+
       saveCredentials();
       renderUsersTable();
       toast('Utilisateur supprimé.');
@@ -707,6 +1175,7 @@
     adminInitialized = true;
 
     initSidebar();
+    initContentSection();
     initNewsSection();
     initMapSection();
     initUsersSection();

@@ -16,6 +16,15 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="style.css">
+  <script>
+    (function() {
+      try {
+        const saved = localStorage.getItem('recupculture_theme');
+        const theme = saved ? saved : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.setAttribute('data-theme', theme);
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
 
@@ -25,9 +34,6 @@
       <a href="#" class="nav-logo" aria-label="RECUP CULTURE Accueil">
         <img src="assets/logo.png" alt="RECUP CULTURE" class="nav-logo-img">
       </a>
-      <button class="nav-toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
       <ul class="nav-links" id="navLinks" role="navigation" aria-label="Menu principal">
         <li><a href="#mission">Mission</a></li>
         <li><a href="#collecte">Collecte</a></li>
@@ -38,6 +44,18 @@
         <li><a href="#equipe">Équipe</a></li>
         <li><a href="#contact" class="nav-cta">Nous contacter</a></li>
       </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-checked="true" aria-label="Basculer le mode clair / sombre" title="Passer au mode clair">
+          <span class="theme-toggle-track">
+            <i class="fas fa-sun theme-icon-sun" aria-hidden="true"></i>
+            <i class="fas fa-moon theme-icon-moon" aria-hidden="true"></i>
+            <span class="theme-toggle-thumb"></span>
+          </span>
+        </button>
+        <button class="nav-toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </div>
   </nav>
 
@@ -47,7 +65,7 @@
     <div class="hero-content">
       <div class="hero-badge">
         <span class="badge-pulse"></span>
-        <span>Association solidaire d'économie circulaire &amp; ESAT</span>
+        <span id="heroBadgeText">Association solidaire d'économie circulaire &amp; ESAT</span>
       </div>
 
       <div class="hero-logo-wrapper">
@@ -55,10 +73,10 @@
         <img src="assets/logo.png" alt="RECUP CULTURE - Donnez une seconde vie à la culture" class="hero-logo">
       </div>
 
-      <h1 class="hero-title">
+      <h1 class="hero-title" id="heroTitle">
         Donnez une <span class="highlight-green">seconde vie</span> à la <span class="highlight-blue">culture</span>
       </h1>
-      <p class="hero-subtitle">
+      <p class="hero-subtitle" id="heroSubtitle">
         Ensemble recyclons avec les ESAT &nbsp;·&nbsp; <strong>Livres · DVD · CD · Jeux vidéo</strong>
       </p>
 
@@ -73,26 +91,26 @@
         </a>
       </div>
 
-      <div class="hero-stats">
+      <div class="hero-stats" id="heroStats">
         <div class="hero-stat-card">
           <div class="hero-stat-icon green"><i class="fas fa-book-open"></i></div>
           <div class="hero-stat-body">
-            <span class="hero-stat-num">+15 000</span>
-            <span class="hero-stat-label">Articles sauvés</span>
+            <span class="hero-stat-num" id="heroStatNum1">+15 000</span>
+            <span class="hero-stat-label" id="heroStatLabel1">Articles sauvés</span>
           </div>
         </div>
         <div class="hero-stat-card">
           <div class="hero-stat-icon blue"><i class="fas fa-hands-helping"></i></div>
           <div class="hero-stat-body">
-            <span class="hero-stat-num">100%</span>
-            <span class="hero-stat-label">Inclusion sociale &amp; ESAT</span>
+            <span class="hero-stat-num" id="heroStatNum2">100%</span>
+            <span class="hero-stat-label" id="heroStatLabel2">Inclusion sociale &amp; ESAT</span>
           </div>
         </div>
         <div class="hero-stat-card">
           <div class="hero-stat-icon green"><i class="fas fa-map-marked-alt"></i></div>
           <div class="hero-stat-body">
-            <span class="hero-stat-num">3 Dépôts</span>
-            <span class="hero-stat-label">Saint-Malo &amp; Environs</span>
+            <span class="hero-stat-num" id="heroStatNum3">3 Dépôts</span>
+            <span class="hero-stat-label" id="heroStatLabel3">Saint-Malo &amp; Environs</span>
           </div>
         </div>
       </div>
@@ -106,11 +124,11 @@
   <section id="mission" class="section" aria-labelledby="mission-title">
     <div class="container">
       <div class="section-header reveal">
-        <span class="section-tag">Notre Mission</span>
+        <span class="section-tag" id="missionTag">Notre Mission</span>
         <h2 id="mission-title">Recycler, valoriser, partager la culture</h2>
-        <p>RECUP CULTURE récupère sous forme de dons des livres, DVD, CD et jeux vidéo voués à l'incinération pour leur donner une seconde vie, en partenariat avec les ESAT.</p>
+        <p id="missionDesc">RECUP CULTURE récupère sous forme de dons des livres, DVD, CD et jeux vidéo voués à l'incinération pour leur donner une seconde vie, en partenariat avec les ESAT.</p>
       </div>
-      <div class="mission-steps">
+      <div class="mission-steps" id="missionSteps">
         <div class="mission-step reveal" style="--delay: 0s">
           <div class="step-icon" style="--color: #2e7d32" aria-hidden="true">
             <i class="fas fa-box-open"></i>
@@ -140,11 +158,11 @@
   <section id="collecte" class="section section-alt" aria-labelledby="collecte-title">
     <div class="container">
       <div class="section-header reveal">
-        <span class="section-tag">Nous collectons</span>
+        <span class="section-tag" id="collecteTag">Nous collectons</span>
         <h2 id="collecte-title">Qu'est-ce que vous pouvez donner ?</h2>
-        <p>Tous vos biens culturels en bon état, voués à prendre la poussière ou à finir à la benne.</p>
+        <p id="collecteDesc">Tous vos biens culturels en bon état, voués à prendre la poussière ou à finir à la benne.</p>
       </div>
-      <div class="collect-grid">
+      <div class="collect-grid" id="collectGrid">
         <div class="collect-card reveal" style="--delay: 0s">
           <div class="collect-icon" aria-hidden="true"><i class="fas fa-book"></i></div>
           <h3>Livres</h3>
@@ -173,21 +191,21 @@
   <section id="impact" class="section section-dark" aria-labelledby="impact-title">
     <div class="container">
       <div class="section-header reveal">
-        <span class="section-tag light">Notre Impact</span>
+        <span class="section-tag light" id="impactTag">Notre Impact</span>
         <h2 id="impact-title" class="light">Ce que deviennent vos dons</h2>
-        <p class="light">Pour chaque lot de 10 000 livres collectés, voici leur destination :</p>
+        <p class="light" id="impactDesc">Pour chaque lot de 10 000 livres collectés, voici leur destination :</p>
       </div>
-      <div class="impact-grid">
+      <div class="impact-grid" id="impactGrid">
         <div class="impact-card reveal" style="--delay: 0s">
           <div class="impact-ring" role="img" aria-label="50% revente">
             <svg viewBox="0 0 120 120" aria-hidden="true">
-              <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="12"/>
+              <circle cx="60" cy="60" r="50" fill="none" class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="12"/>
               <circle cx="60" cy="60" r="50" fill="none" stroke="#4caf50" stroke-width="12"
                 stroke-dasharray="314" stroke-dashoffset="314" class="ring-progress" data-offset="157"/>
             </svg>
             <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:2px">
               <span class="impact-percent" data-target="50" aria-label="50 pourcent">0</span>
-              <span style="font-family:var(--font-heading);font-size:1.2rem;font-weight:700;color:white">%</span>
+              <span class="impact-unit">%</span>
             </div>
           </div>
           <div class="impact-info">
@@ -199,13 +217,13 @@
         <div class="impact-card reveal" style="--delay: 0.15s">
           <div class="impact-ring" role="img" aria-label="30% recyclage">
             <svg viewBox="0 0 120 120" aria-hidden="true">
-              <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="12"/>
+              <circle cx="60" cy="60" r="50" fill="none" class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="12"/>
               <circle cx="60" cy="60" r="50" fill="none" stroke="#2196f3" stroke-width="12"
                 stroke-dasharray="314" stroke-dashoffset="314" class="ring-progress" data-offset="220"/>
             </svg>
             <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:2px">
               <span class="impact-percent" data-target="30" aria-label="30 pourcent">0</span>
-              <span style="font-family:var(--font-heading);font-size:1.2rem;font-weight:700;color:white">%</span>
+              <span class="impact-unit">%</span>
             </div>
           </div>
           <div class="impact-info">
@@ -217,13 +235,13 @@
         <div class="impact-card reveal" style="--delay: 0.3s">
           <div class="impact-ring" role="img" aria-label="20% humanitaire">
             <svg viewBox="0 0 120 120" aria-hidden="true">
-              <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="12"/>
+              <circle cx="60" cy="60" r="50" fill="none" class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="12"/>
               <circle cx="60" cy="60" r="50" fill="none" stroke="#ff9800" stroke-width="12"
                 stroke-dasharray="314" stroke-dashoffset="314" class="ring-progress" data-offset="251"/>
             </svg>
             <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:2px">
               <span class="impact-percent" data-target="20" aria-label="20 pourcent">0</span>
-              <span style="font-family:var(--font-heading);font-size:1.2rem;font-weight:700;color:white">%</span>
+              <span class="impact-unit">%</span>
             </div>
           </div>
           <div class="impact-info">
@@ -258,29 +276,29 @@
     <div class="container">
       <div class="boutique-layout">
         <div class="boutique-content reveal">
-          <span class="section-tag">Notre Boutique</span>
+          <span class="section-tag" id="boutiqueTag">Notre Boutique</span>
           <h2 id="boutique-title">La Halle aux Artistes</h2>
-          <p class="boutique-lead">Venez chiner et repartir avec vos nouvelles trouvailles culturelles à prix solidaire !</p>
+          <p class="boutique-lead" id="boutiqueLead">Venez chiner et repartir avec vos nouvelles trouvailles culturelles à prix solidaire !</p>
           <div class="boutique-info">
             <div class="boutique-info-item">
               <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
               <div>
                 <strong>Adresse</strong>
-                <span>3 place du Martray<br>Châteauneuf-d'Ille-et-Vilaine</span>
+                <span id="boutiqueAddress">3 place du Martray<br>Châteauneuf-d'Ille-et-Vilaine</span>
               </div>
             </div>
             <div class="boutique-info-item">
               <i class="fas fa-calendar-alt" aria-hidden="true"></i>
               <div>
                 <strong>Ouverture</strong>
-                <span>2ème week-end de chaque mois</span>
+                <span id="boutiqueHours">2ème week-end de chaque mois</span>
               </div>
             </div>
             <div class="boutique-info-item">
               <i class="fas fa-tag" aria-hidden="true"></i>
               <div>
                 <strong>Prix solidaires</strong>
-                <span>Livres dès 0,50€ &nbsp;·&nbsp; DVD dès 1€ &nbsp;·&nbsp; CD dès 0,50€</span>
+                <span id="boutiquePrices">Livres dès 0,50€ &nbsp;·&nbsp; DVD dès 1€ &nbsp;·&nbsp; CD dès 0,50€</span>
               </div>
             </div>
           </div>
@@ -300,11 +318,11 @@
   <section id="esat" class="section" aria-labelledby="esat-title">
     <div class="container">
       <div class="section-header reveal">
-        <span class="section-tag">Partenariat ESAT</span>
+        <span class="section-tag" id="esatTag">Partenariat ESAT</span>
         <h2 id="esat-title">Une économie circulaire et inclusive</h2>
-        <p>Nous croyons que l'écologie et l'inclusion sociale peuvent avancer ensemble.</p>
+        <p id="esatDesc">Nous croyons que l'écologie et l'inclusion sociale peuvent avancer ensemble.</p>
       </div>
-      <div class="esat-grid">
+      <div class="esat-grid" id="esatGrid">
         <div class="esat-card reveal" style="--delay: 0s">
           <div class="esat-icon" aria-hidden="true"><i class="fas fa-hands-helping"></i></div>
           <h3>Activité valorisante</h3>
@@ -345,11 +363,11 @@
   <section id="equipe" class="section" aria-labelledby="equipe-title">
     <div class="container">
       <div class="section-header reveal">
-        <span class="section-tag">L'Équipe</span>
+        <span class="section-tag" id="equipeTag">L'Équipe</span>
         <h2 id="equipe-title">Les fondateurs</h2>
-        <p>Deux passionnés engagés pour une culture accessible et un monde plus solidaire.</p>
+        <p id="equipeDesc">Deux passionnés engagés pour une culture accessible et un monde plus solidaire.</p>
       </div>
-      <div class="team-grid">
+      <div class="team-grid" id="equipeGrid">
         <div class="team-card reveal" style="--delay: 0s">
           <div class="team-avatar" aria-hidden="true"><i class="fas fa-user"></i></div>
           <h3>Fabien Lemoine</h3>
@@ -371,21 +389,21 @@
     <div class="container">
       <div class="contact-layout">
         <div class="contact-info reveal">
-          <span class="section-tag light">Contact</span>
+          <span class="section-tag light" id="contactTag">Contact</span>
           <h2 id="contact-title" class="light">Vous avez une question ?</h2>
-          <p>Nous sommes disponibles pour tout renseignement sur nos points de collecte, notre boutique ou notre association.</p>
+          <p id="contactDesc">Nous sommes disponibles pour tout renseignement sur nos points de collecte, notre boutique ou notre association.</p>
           <div class="contact-social">
             <a href="https://www.instagram.com/recupculture" target="_blank" rel="noopener noreferrer" class="social-link" id="link-instagram">
               <i class="fab fa-instagram" aria-hidden="true"></i>
-              <span>@RECUPCULTURE sur Instagram</span>
+              <span id="contactInstaText">@RECUPCULTURE sur Instagram</span>
             </a>
             <a href="https://www.facebook.com/recupculture" target="_blank" rel="noopener noreferrer" class="social-link" id="link-facebook">
               <i class="fab fa-facebook-f" aria-hidden="true"></i>
-              <span>@RECUPCULTURE sur Facebook</span>
+              <span id="contactFbText">@RECUPCULTURE sur Facebook</span>
             </a>
             <a href="https://recupculture.org" target="_blank" rel="noopener noreferrer" class="social-link" id="link-website">
               <i class="fas fa-globe" aria-hidden="true"></i>
-              <span>recupculture.org</span>
+              <span id="contactWebText">recupculture.org</span>
             </a>
           </div>
         </div>

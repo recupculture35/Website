@@ -10,6 +10,83 @@
   const $$ = (sel, ctx = document) => [...ctx.querySelectorAll(sel)];
 
   const DEFAULT_DATA = {
+    siteContent: {
+      hero: {
+        badge: "Association solidaire d'économie circulaire & ESAT",
+        subtitle: "Ensemble recyclons avec les ESAT &nbsp;·&nbsp; <strong>Livres · DVD · CD · Jeux vidéo</strong>",
+        stats: [
+          { num: "+15 000", label: "Articles sauvés" },
+          { num: "100%", label: "Inclusion sociale & ESAT" },
+          { num: "3 Dépôts", label: "Saint-Malo & Environs" }
+        ]
+      },
+      mission: {
+        tag: "Notre Mission",
+        title: "Recycler, valoriser, partager la culture",
+        description: "RECUP CULTURE récupère sous forme de dons des livres, DVD, CD et jeux vidéo voués à l'incinération pour leur donner une seconde vie, en partenariat avec les ESAT.",
+        steps: [
+          { title: "1. Collecter", desc: "Nous recueillons vos livres, DVD, CD et jeux vidéo dans nos points de dépôt partenaires autour de Saint-Malo et Dinard." },
+          { title: "2. Trier", desc: "En partenariat avec l'ESAT de Châteauneuf, les articles sont triés, sélectionnés et conditionnés — une activité valorisante et inclusive." },
+          { title: "3. Donner une vie", desc: "Revente solidaire, recyclage papier ou don humanitaire — chaque objet trouve sa meilleure destination." }
+        ]
+      },
+      collecte: {
+        tag: "Nous collectons",
+        title: "Qu'est-ce que vous pouvez donner ?",
+        description: "Tous vos biens culturels en bon état, voués à prendre la poussière ou à finir à la benne.",
+        items: [
+          { title: "Livres", desc: "Romans, bandes dessinées, documentaires, livres jeunesse… Toutes catégories, en bon état." },
+          { title: "CD", desc: "Albums, compilations, musiques du monde — offrez une deuxième écoute à vos disques." },
+          { title: "DVD & Blu-ray", desc: "Films, séries, documentaires — partagez vos soirées cinéma avec d'autres familles." },
+          { title: "Jeux vidéo", desc: "Toutes consoles et générations — vos aventures virtuelles attendent de nouveaux joueurs." }
+        ]
+      },
+      impact: {
+        tag: "Notre Impact",
+        title: "Ce que deviennent vos dons",
+        description: "Pour chaque lot de 10 000 livres collectés, voici leur destination :",
+        items: [
+          { percent: 50, title: "Revente", desc: "Boutique solidaire & en ligne — accès à la culture à prix abordable" },
+          { percent: 30, title: "Recyclage", desc: "Transformation en papier recyclé — zéro déchet pour la planète" },
+          { percent: 20, title: "Humanitaire", desc: "Dons à des causes humanitaires — la culture au-delà des frontières" }
+        ]
+      },
+      boutique: {
+        tag: "Notre Boutique",
+        title: "La Halle aux Artistes",
+        lead: "Venez chiner et repartir avec vos nouvelles trouvailles culturelles à prix solidaire !",
+        address: "3 place du Martray\nChâteauneuf-d'Ille-et-Vilaine",
+        hours: "2ème week-end de chaque mois",
+        prices: "Livres dès 0,50€ · DVD dès 1€ · CD dès 0,50€"
+      },
+      esat: {
+        tag: "Partenariat ESAT",
+        title: "Une économie circulaire et inclusive",
+        description: "Nous croyons que l'écologie et l'inclusion sociale peuvent avancer ensemble.",
+        items: [
+          { title: "Activité valorisante", desc: "Le tri des articles collectés est réalisé par les travailleurs de l'ESAT de Châteauneuf — une activité concrète et valorisante pour des personnes en situation de handicap." },
+          { title: "Économie circulaire", desc: "En associant l'inclusion sociale et le réemploi culturel, RECUP CULTURE crée un modèle innovant où l'écologie et le social avancent ensemble." },
+          { title: "Impact territorial", desc: "Ancrée dans le bassin de Saint-Malo, notre association soutient l'économie locale et crée des liens entre différents acteurs du territoire." }
+        ]
+      },
+      equipe: {
+        tag: "L'Équipe",
+        title: "Les fondateurs",
+        description: "Deux passionnés engagés pour une culture accessible et un monde plus solidaire.",
+        members: [
+          { name: "Fabien Lemoine", role: "Co-fondateur", bio: "15 ans d'expérience dans le domaine du patrimoine culturel. Passionné par la préservation et le partage de la culture sous toutes ses formes." },
+          { name: "François-Xavier Mahoïc", role: "Co-fondateur", bio: "Plus de 15 ans d'expérience dans l'accompagnement des ESAT et du handicap psychique. Convaincu que l'inclusion sociale est un levier de transformation." }
+        ]
+      },
+      contact: {
+        tag: "Contact",
+        title: "Vous avez une question ?",
+        description: "Nous sommes disponibles pour tout renseignement sur nos points de collecte, notre boutique ou notre association.",
+        instagram: "@RECUPCULTURE sur Instagram",
+        facebook: "@RECUPCULTURE sur Facebook",
+        website: "recupculture.org"
+      }
+    },
     collectPoints: [
       {
         id: 1,
@@ -53,23 +130,41 @@
   let appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
 
   async function loadData() {
-    // 1. Essayer localStorage
+    // 1. Essayer l'API backend (/api/data) en premier si servi par le serveur Node.js / Railway
+    try {
+      const res = await fetch('/api/data', { cache: 'no-cache' });
+      if (res.ok) {
+        const json = await res.json();
+        if (json && (Array.isArray(json.collectPoints) || json.siteContent)) {
+          appData = Object.assign({}, DEFAULT_DATA, json);
+          try { localStorage.setItem('recupculture_data', JSON.stringify(appData)); } catch (_) {}
+          return;
+        }
+      }
+    } catch (_) {
+      // Pas de backend actif (ouverture file:// ou statique direct)
+    }
+
+    // 2. Essayer localStorage (cache navigateur / admin local)
     const stored = localStorage.getItem('recupculture_data');
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
-        if (parsed && Array.isArray(parsed.collectPoints)) {
-          appData = parsed;
+        if (parsed && (Array.isArray(parsed.collectPoints) || parsed.siteContent)) {
+          appData = Object.assign({}, DEFAULT_DATA, parsed);
           return;
         }
       } catch (e) { /* ignore */ }
     }
-    // 2. Fallback : fichier config.json
+
+    // 3. Fallback : fichier statique data/config.json
     try {
       const res = await fetch('data/config.json');
       if (res.ok) {
         const json = await res.json();
-        if (json && Array.isArray(json.collectPoints)) appData = json;
+        if (json && (Array.isArray(json.collectPoints) || json.siteContent)) {
+          appData = Object.assign({}, DEFAULT_DATA, json);
+        }
       }
     } catch (e) {
       // Sous file://, fetch est bloqué par sécurité browser : DEFAULT_DATA est déjà actif
@@ -407,12 +502,197 @@
       .replace(/'/g, '&#039;');
   }
 
+  // ─── Rendu dynamique des contenus de rubriques (CMS) ─
+  function renderSiteContent() {
+    const c = appData.siteContent;
+    if (!c) return;
+
+    // Hero
+    if (c.hero) {
+      if (c.hero.badge && $('#heroBadgeText')) $('#heroBadgeText').textContent = c.hero.badge;
+      if (c.hero.subtitle && $('#heroSubtitle')) $('#heroSubtitle').innerHTML = c.hero.subtitle;
+      if (Array.isArray(c.hero.stats)) {
+        c.hero.stats.forEach((st, i) => {
+          const numEl = $(`#heroStatNum${i + 1}`);
+          const lblEl = $(`#heroStatLabel${i + 1}`);
+          if (numEl && st.num) numEl.textContent = st.num;
+          if (lblEl && st.label) lblEl.textContent = st.label;
+        });
+      }
+    }
+
+    // Mission
+    if (c.mission) {
+      if (c.mission.tag && $('#missionTag')) $('#missionTag').textContent = c.mission.tag;
+      if (c.mission.title && $('#mission-title')) $('#mission-title').textContent = c.mission.title;
+      if (c.mission.description && $('#missionDesc')) $('#missionDesc').textContent = c.mission.description;
+      if (Array.isArray(c.mission.steps) && c.mission.steps.length) {
+        const icons = ['fa-box-open', 'fa-sort-amount-down', 'fa-heart'];
+        const colors = ['#2e7d32', '#1565c0', '#c0392b'];
+        const stepsContainer = $('#missionSteps');
+        if (stepsContainer) {
+          stepsContainer.innerHTML = c.mission.steps.map((st, i) => `
+            <div class="mission-step reveal active" style="--delay: ${i * 0.15}s">
+              <div class="step-icon" style="--color: ${colors[i % colors.length]}" aria-hidden="true">
+                <i class="fas ${icons[i % icons.length]}"></i>
+              </div>
+              <h3>${escapeHtml(st.title)}</h3>
+              <p>${escapeHtml(st.desc)}</p>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    // Collecte
+    if (c.collecte) {
+      if (c.collecte.tag && $('#collecteTag')) $('#collecteTag').textContent = c.collecte.tag;
+      if (c.collecte.title && $('#collecte-title')) $('#collecte-title').textContent = c.collecte.title;
+      if (c.collecte.description && $('#collecteDesc')) $('#collecteDesc').textContent = c.collecte.description;
+      if (Array.isArray(c.collecte.items) && c.collecte.items.length) {
+        const icons = ['fa-book', 'fa-compact-disc', 'fa-film', 'fa-gamepad'];
+        const grid = $('#collectGrid');
+        if (grid) {
+          grid.innerHTML = c.collecte.items.map((it, i) => `
+            <div class="collect-card reveal active" style="--delay: ${i * 0.1}s">
+              <div class="collect-icon" aria-hidden="true"><i class="fas ${icons[i % icons.length]}"></i></div>
+              <h3>${escapeHtml(it.title)}</h3>
+              <p>${escapeHtml(it.desc)}</p>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    // Impact
+    if (c.impact) {
+      if (c.impact.tag && $('#impactTag')) $('#impactTag').textContent = c.impact.tag;
+      if (c.impact.title && $('#impact-title')) $('#impact-title').textContent = c.impact.title;
+      if (c.impact.description && $('#impactDesc')) $('#impactDesc').textContent = c.impact.description;
+    }
+
+    // Boutique
+    if (c.boutique) {
+      if (c.boutique.tag && $('#boutiqueTag')) $('#boutiqueTag').textContent = c.boutique.tag;
+      if (c.boutique.title && $('#boutique-title')) $('#boutique-title').textContent = c.boutique.title;
+      if (c.boutique.lead && $('#boutiqueLead')) $('#boutiqueLead').textContent = c.boutique.lead;
+      if (c.boutique.address && $('#boutiqueAddress')) $('#boutiqueAddress').innerHTML = escapeHtml(c.boutique.address).replace(/\n/g, '<br>');
+      if (c.boutique.hours && $('#boutiqueHours')) $('#boutiqueHours').textContent = c.boutique.hours;
+      if (c.boutique.prices && $('#boutiquePrices')) $('#boutiquePrices').textContent = c.boutique.prices;
+    }
+
+    // ESAT
+    if (c.esat) {
+      if (c.esat.tag && $('#esatTag')) $('#esatTag').textContent = c.esat.tag;
+      if (c.esat.title && $('#esat-title')) $('#esat-title').textContent = c.esat.title;
+      if (c.esat.description && $('#esatDesc')) $('#esatDesc').textContent = c.esat.description;
+      if (Array.isArray(c.esat.items) && c.esat.items.length) {
+        const icons = ['fa-hands-helping', 'fa-leaf', 'fa-balance-scale'];
+        const grid = $('#esatGrid');
+        if (grid) {
+          grid.innerHTML = c.esat.items.map((it, i) => `
+            <div class="esat-card reveal active" style="--delay: ${i * 0.15}s">
+              <div class="esat-icon" aria-hidden="true"><i class="fas ${icons[i % icons.length]}"></i></div>
+              <h3>${escapeHtml(it.title)}</h3>
+              <p>${escapeHtml(it.desc)}</p>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    // Équipe
+    if (c.equipe) {
+      if (c.equipe.tag && $('#equipeTag')) $('#equipeTag').textContent = c.equipe.tag;
+      if (c.equipe.title && $('#equipe-title')) $('#equipe-title').textContent = c.equipe.title;
+      if (c.equipe.description && $('#equipeDesc')) $('#equipeDesc').textContent = c.equipe.description;
+      if (Array.isArray(c.equipe.members) && c.equipe.members.length) {
+        const grid = $('#equipeGrid');
+        if (grid) {
+          grid.innerHTML = c.equipe.members.map((m, i) => `
+            <div class="team-card reveal active" style="--delay: ${i * 0.2}s">
+              <div class="team-avatar" aria-hidden="true"><i class="fas fa-user"></i></div>
+              <h3>${escapeHtml(m.name)}</h3>
+              <span class="team-role">${escapeHtml(m.role)}</span>
+              <p>${escapeHtml(m.bio)}</p>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
+    // Contact
+    if (c.contact) {
+      if (c.contact.tag && $('#contactTag')) $('#contactTag').textContent = c.contact.tag;
+      if (c.contact.title && $('#contact-title')) $('#contact-title').textContent = c.contact.title;
+      if (c.contact.description && $('#contactDesc')) $('#contactDesc').textContent = c.contact.description;
+      if (c.contact.instagram && $('#contactInstaText')) $('#contactInstaText').textContent = c.contact.instagram;
+      if (c.contact.facebook && $('#contactFbText')) $('#contactFbText').textContent = c.contact.facebook;
+      if (c.contact.website && $('#contactWebText')) $('#contactWebText').textContent = c.contact.website;
+    }
+  }
+
+  // ─── Gestion du Thème (Clair / Sombre) ───────────────
+  function initTheme() {
+    const toggleBtn = $('#themeToggle');
+    const root = document.documentElement;
+
+    function getPreferredTheme() {
+      try {
+        const saved = localStorage.getItem('recupculture_theme');
+        if (saved === 'light' || saved === 'dark') return saved;
+      } catch (_) {}
+      return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    }
+
+    function applyTheme(theme, save = true) {
+      root.setAttribute('data-theme', theme);
+      if (save) {
+        try {
+          localStorage.setItem('recupculture_theme', theme);
+        } catch (_) {}
+      }
+      if (toggleBtn) {
+        const isDark = theme === 'dark';
+        toggleBtn.setAttribute('aria-checked', isDark ? 'true' : 'false');
+        const titleText = isDark ? 'Passer au mode clair' : 'Passer au mode sombre';
+        toggleBtn.setAttribute('title', titleText);
+        toggleBtn.setAttribute('aria-label', titleText);
+      }
+    }
+
+    // Synchroniser l'état initial
+    const initialTheme = root.getAttribute('data-theme') || getPreferredTheme();
+    applyTheme(initialTheme, false);
+
+    // Événement clic sur le switcher
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', () => {
+        const current = root.getAttribute('data-theme') || 'dark';
+        const next = current === 'dark' ? 'light' : 'dark';
+        applyTheme(next, true);
+      });
+    }
+
+    // Écouter le changement de préférence système si aucun choix manuel n'a été mémorisé
+    if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', e => {
+        try {
+          if (!localStorage.getItem('recupculture_theme')) {
+            applyTheme(e.matches ? 'light' : 'dark', false);
+          }
+        } catch (_) {}
+      });
+    }
+  }
+
   // ─── Écoute des mises à jour admin ─────────────────
   function listenForDataUpdates() {
     window.addEventListener('storage', e => {
       if (e.key === 'recupculture_data') {
         try {
           appData = JSON.parse(e.newValue);
+          renderSiteContent();
           renderNews();
           renderMapPoints();
         } catch (_) {}
@@ -422,7 +702,9 @@
 
   // ─── Initialisation ────────────────────────────────
   async function init() {
+    initTheme();
     await loadData();
+    renderSiteContent();
     initNavbar();
     initReveal();
     initImpactCounters();
