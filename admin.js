@@ -21,9 +21,17 @@
   }
 
   // ─── Token Auth (Serveur Node.js / Railway) ───────────
-  function getAuthToken() { return sessionStorage.getItem(LS_TOKEN); }
-  function setAuthToken(token) { sessionStorage.setItem(LS_TOKEN, token); }
-  function clearAuthToken() { sessionStorage.removeItem(LS_TOKEN); }
+  function getAuthToken() { return localStorage.getItem(LS_TOKEN) || sessionStorage.getItem(LS_TOKEN); }
+  function setAuthToken(token) {
+    if (token) {
+      localStorage.setItem(LS_TOKEN, token);
+      sessionStorage.setItem(LS_TOKEN, token);
+    }
+  }
+  function clearAuthToken() {
+    localStorage.removeItem(LS_TOKEN);
+    sessionStorage.removeItem(LS_TOKEN);
+  }
 
   function getAuthHeaders() {
     const t = getAuthToken();
@@ -128,7 +136,7 @@
         supportEmail: "support@recupculture.fr",
         instagram: "@RECUPCULTURE sur Instagram",
         facebook: "@RECUPCULTURE sur Facebook",
-        website: "recupculture.org"
+        website: "recupculture.fr"
       }
     },
     collectPoints: [
@@ -275,12 +283,14 @@
   let currentUser = null;
 
   function getSession() {
-    const s = sessionStorage.getItem(LS_SESSION);
+    const s = localStorage.getItem(LS_SESSION) || sessionStorage.getItem(LS_SESSION);
     if (!s) return null;
     try { return JSON.parse(s); } catch(_) { return null; }
   }
   function setSession(user) {
-    sessionStorage.setItem(LS_SESSION, JSON.stringify({ username: user.username, displayName: user.displayName, role: user.role }));
+    const data = JSON.stringify({ username: user.username, displayName: user.displayName, role: user.role });
+    localStorage.setItem(LS_SESSION, data);
+    sessionStorage.setItem(LS_SESSION, data);
     currentUser = user;
   }
   function clearSession() {
@@ -289,6 +299,7 @@
       try { fetch('/api/auth/logout', { method: 'POST', headers: getAuthHeaders() }); } catch (_) {}
     }
     clearAuthToken();
+    localStorage.removeItem(LS_SESSION);
     sessionStorage.removeItem(LS_SESSION);
     currentUser = null;
   }
@@ -606,6 +617,21 @@
     }
   }
 
+  function syncImpactItemsFromDom() {
+    currentImpactItems = currentImpactItems.map((it, idx) => {
+      const pVal = $(`#impactPercent_${idx}`)?.value;
+      const p = parseFloat(pVal);
+      return {
+        ...it,
+        percent: !isNaN(p) ? p : (it.percent || 0),
+        title: $(`#impactTitle_${idx}`) ? $(`#impactTitle_${idx}`).value.trim() : (it.title || ''),
+        desc: $(`#impactDesc_${idx}`) ? $(`#impactDesc_${idx}`).value.trim() : (it.desc || ''),
+        icon: $(`#impactIcon_${idx}`) ? $(`#impactIcon_${idx}`).value : (it.icon || 'fa-chart-pie'),
+        active: $(`#impactActive_${idx}`) ? $(`#impactActive_${idx}`).checked : (it.active !== false)
+      };
+    });
+  }
+
   function renderImpactItemsAdmin() {
     const list = $('#impactItemsList');
     if (!list) return;
@@ -717,20 +743,25 @@
         });
       }
       if (activeCheckbox) {
-        activeCheckbox.addEventListener('change', e => {
+        activeCheckbox.addEventListener('change', async e => {
           item.active = e.target.checked;
           const statusText = activeCheckbox.parentElement.querySelector('span');
           if (statusText) statusText.textContent = item.active ? 'Active' : 'Désactivée';
           card.classList.toggle('inactive', !item.active);
           updateImpactTotalBadge();
+          syncImpactItemsFromDom();
+          await saveContentForm(false);
+          toast(item.active ? 'Part activée et enregistrée !' : 'Part désactivée et enregistrée !');
         });
       }
       if (btnDelete) {
-        btnDelete.addEventListener('click', () => {
+        btnDelete.addEventListener('click', async () => {
           if (confirm(`Supprimer la part "${item.title || `#${index + 1}`}" ?`)) {
+            syncImpactItemsFromDom();
             currentImpactItems.splice(index, 1);
             renderImpactItemsAdmin();
-            toast('Part supprimée.');
+            await saveContentForm(false);
+            toast('Part supprimée et enregistrée !');
           }
         });
       }
@@ -1011,14 +1042,18 @@
         tag: $('#contentImpactTag').value.trim(),
         title: $('#contentImpactTitle').value.trim(),
         description: $('#contentImpactDesc').value.trim(),
-        items: currentImpactItems.map((it, idx) => ({
-          percent: parseFloat($(`#impactPercent_${idx}`)?.value) || it.percent || 0,
-          title: $(`#impactTitle_${idx}`) ? $(`#impactTitle_${idx}`).value.trim() : (it.title || ''),
-          desc: $(`#impactDesc_${idx}`) ? $(`#impactDesc_${idx}`).value.trim() : (it.desc || ''),
-          icon: $(`#impactIcon_${idx}`) ? $(`#impactIcon_${idx}`).value : (it.icon || 'fa-chart-pie'),
-          color: it.color || '#8ce44c',
-          active: $(`#impactActive_${idx}`) ? $(`#impactActive_${idx}`).checked : (it.active !== false)
-        }))
+        items: currentImpactItems.map((it, idx) => {
+          const pVal = $(`#impactPercent_${idx}`)?.value;
+          const p = parseFloat(pVal);
+          return {
+            percent: !isNaN(p) ? p : (it.percent || 0),
+            title: $(`#impactTitle_${idx}`) ? $(`#impactTitle_${idx}`).value.trim() : (it.title || ''),
+            desc: $(`#impactDesc_${idx}`) ? $(`#impactDesc_${idx}`).value.trim() : (it.desc || ''),
+            icon: $(`#impactIcon_${idx}`) ? $(`#impactIcon_${idx}`).value : (it.icon || 'fa-chart-pie'),
+            color: it.color || '#8ce44c',
+            active: $(`#impactActive_${idx}`) ? $(`#impactActive_${idx}`).checked : (it.active !== false)
+          };
+        })
       },
       boutique: {
         tag: $('#contentBoutiqueTag').value.trim(),
@@ -1084,7 +1119,9 @@
 
     appData.siteContent = newSiteContent;
     saveData();
-    toast('Contenus du site enregistrés avec succès !');
+    if (showToast) {
+      toast('Contenus du site enregistrés avec succès !');
+    }
   }
 
   function initContentSection() {
@@ -1178,7 +1215,8 @@
     // Bouton ajouter part impact
     const btnAddImpact = $('#btnAddImpactItem');
     if (btnAddImpact) {
-      btnAddImpact.addEventListener('click', () => {
+      btnAddImpact.addEventListener('click', async () => {
+        syncImpactItemsFromDom();
         const PRESET_COLORS = ['#8ce44c', '#38bdf8', '#f59e0b', '#a855f7', '#ec4899', '#14b8a6'];
         const nextColor = PRESET_COLORS[currentImpactItems.length % PRESET_COLORS.length];
         currentImpactItems.push({
@@ -1193,7 +1231,14 @@
         const newIndex = currentImpactItems.length - 1;
         const titleField = $(`#impactTitle_${newIndex}`);
         if (titleField) titleField.focus();
+        await saveContentForm(false);
+        toast('Nouvelle part ajoutée et enregistrée.');
       });
+    }
+
+    const btnSaveImpact = $('#btnSaveImpactTab');
+    if (btnSaveImpact) {
+      btnSaveImpact.addEventListener('click', () => saveContentForm());
     }
 
     // Bouton ajouter membre équipe

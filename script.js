@@ -90,7 +90,7 @@
         supportEmail: "support@recupculture.fr",
         instagram: "@RECUPCULTURE sur Instagram",
         facebook: "@RECUPCULTURE sur Facebook",
-        website: "recupculture.org"
+        website: "recupculture.fr"
       }
     },
     collectPoints: [
@@ -783,7 +783,15 @@
       }
       if (c.contact.instagram && $('#contactInstaText')) $('#contactInstaText').textContent = c.contact.instagram;
       if (c.contact.facebook && $('#contactFbText')) $('#contactFbText').textContent = c.contact.facebook;
-      if (c.contact.website && $('#contactWebText')) $('#contactWebText').textContent = c.contact.website;
+      if (c.contact.website) {
+        if ($('#contactWebText')) $('#contactWebText').textContent = c.contact.website;
+        const webUrl = c.contact.website.startsWith('http') ? c.contact.website : `https://${c.contact.website}`;
+        if ($('#link-website')) $('#link-website').href = webUrl;
+        if ($('#footer-website')) {
+          $('#footer-website').href = webUrl;
+          $('#footer-website').innerHTML = `<i class="fas fa-globe" aria-hidden="true"></i> ${escapeHtml(c.contact.website)}`;
+        }
+      }
     }
   }
 

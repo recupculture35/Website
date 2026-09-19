@@ -80,14 +80,6 @@
           "icon": "fa-recycle",
           "color": "#38bdf8",
           "active": true
-        },
-        {
-          "percent": 20,
-          "title": "Humanitaire",
-          "desc": "Dons à des causes humanitaires — la culture au-delà des frontières",
-          "icon": "fa-globe-africa",
-          "color": "#f59e0b",
-          "active": true
         }
       ]
     },
@@ -155,7 +147,7 @@
       "supportEmail": "support@recupculture.fr",
       "instagram": "@RECUPCULTURE sur Instagram",
       "facebook": "@RECUPCULTURE sur Facebook",
-      "website": "recupculture.org"
+      "website": "recupculture.fr"
     }
   },
   "collectPoints": [
