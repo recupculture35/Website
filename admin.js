@@ -352,7 +352,14 @@
 
     // Check existing session
     const session = getSession();
+    const token = getAuthToken();
     if (session) {
+      if (!token) {
+        console.warn('Session trouvée mais token absent : reconnexion requise pour sauvegarder sur le serveur');
+        clearSession();
+        showLoginScreen();
+        return;
+      }
       const user = credentials.users.find(u => u.username === session.username) || session;
       if (user) { currentUser = user; showAdminPanel(user); initAdmin(); return; }
     }
@@ -772,6 +779,15 @@
 
   let currentTeamMembers = [];
 
+  function syncTeamMembersFromDom() {
+    currentTeamMembers = currentTeamMembers.map((m, idx) => ({
+      name: $(`#teamMemberName_${idx}`) ? $(`#teamMemberName_${idx}`).value.trim() : (m.name || ''),
+      role: $(`#teamMemberRole_${idx}`) ? $(`#teamMemberRole_${idx}`).value.trim() : (m.role || ''),
+      bio: $(`#teamMemberBio_${idx}`) ? $(`#teamMemberBio_${idx}`).value.trim() : (m.bio || ''),
+      photo: m.photo || ''
+    }));
+  }
+
   function renderTeamMembersAdmin() {
     const list = $('#teamMembersList');
     if (!list) return;
@@ -879,11 +895,13 @@
       // Delete member
       const btnDelete = $(`.btn-delete-member[data-index="${index}"]`, card);
       if (btnDelete) {
-        btnDelete.addEventListener('click', () => {
+        btnDelete.addEventListener('click', async () => {
           if (confirm(`Supprimer ${member.name ? `le membre "${member.name}"` : 'ce membre'} de l\'équipe ?`)) {
+            syncTeamMembersFromDom();
             currentTeamMembers.splice(index, 1);
             renderTeamMembersAdmin();
-            toast('Membre supprimé.');
+            await saveContentForm(false);
+            toast('Membre supprimé et enregistré !');
           }
         });
       }
@@ -1006,7 +1024,18 @@
     if ($('#contentContactWebsite')) $('#contentContactWebsite').value = ct.website || def.contact.website;
   }
 
-  async function saveContentForm() {
+  async function saveContentForm(showToast = true) {
+    syncImpactItemsFromDom();
+    syncTeamMembersFromDom();
+
+    const token = getAuthToken();
+    if (!token) {
+      toast('Session non authentifiée avec le serveur. Veuillez vous reconnecter.', true);
+      clearSession();
+      showLoginScreen();
+      return;
+    }
+
     const newSiteContent = {
       hero: {
         badge: $('#contentHeroBadge').value.trim(),
@@ -1100,21 +1129,28 @@
       }
     };
 
-    const token = getAuthToken();
-    if (token) {
-      try {
-        const res = await fetch('/api/content', {
-          method: 'PUT',
-          headers: getAuthHeaders(),
-          body: JSON.stringify({ siteContent: newSiteContent })
-        });
-        if (res.ok) {
-          const json = await res.json();
-          if (json.siteContent) appData.siteContent = json.siteContent;
-        }
-      } catch (err) {
-        console.warn('Sauvegarde serveur échouée:', err);
+    try {
+      const res = await fetch('/api/content', {
+        method: 'PUT',
+        headers: getAuthHeaders(),
+        body: JSON.stringify({ siteContent: newSiteContent })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.siteContent) appData.siteContent = json.siteContent;
+      } else if (res.status === 401) {
+        toast('Session expirée. Veuillez vous reconnecter.', true);
+        clearSession();
+        showLoginScreen();
+        return;
+      } else {
+        toast('Erreur lors de la sauvegarde sur le serveur.', true);
+        return;
       }
+    } catch (err) {
+      console.warn('Sauvegarde serveur échouée:', err);
+      toast('Impossible de joindre le serveur.', true);
+      return;
     }
 
     appData.siteContent = newSiteContent;
@@ -1244,13 +1280,21 @@
     // Bouton ajouter membre équipe
     const btnAddMember = $('#btnAddTeamMember');
     if (btnAddMember) {
-      btnAddMember.addEventListener('click', () => {
+      btnAddMember.addEventListener('click', async () => {
+        syncTeamMembersFromDom();
         currentTeamMembers.push({ name: '', role: '', bio: '', photo: '' });
         renderTeamMembersAdmin();
         const newIndex = currentTeamMembers.length - 1;
         const nameField = $(`#teamMemberName_${newIndex}`);
         if (nameField) nameField.focus();
+        await saveContentForm(false);
+        toast('Nouveau membre ajouté et enregistré.');
       });
+    }
+
+    const btnSaveTeam = $('#btnSaveTeamTab');
+    if (btnSaveTeam) {
+      btnSaveTeam.addEventListener('click', () => saveContentForm());
     }
 
     populateContentForm();

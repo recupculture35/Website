@@ -267,7 +267,7 @@
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.12 });
+    }, { threshold: 0.05 });
 
     $$('.reveal').forEach(el => observer.observe(el));
   }
@@ -596,7 +596,7 @@
         const stepsContainer = $('#missionSteps');
         if (stepsContainer) {
           stepsContainer.innerHTML = c.mission.steps.map((st, i) => `
-            <div class="mission-step reveal active" style="--delay: ${i * 0.15}s">
+            <div class="mission-step reveal visible active" style="--delay: ${i * 0.15}s">
               <div class="step-icon" style="--color: ${colors[i % colors.length]}" aria-hidden="true">
                 <i class="fas ${icons[i % icons.length]}"></i>
               </div>
@@ -618,7 +618,7 @@
         const grid = $('#collectGrid');
         if (grid) {
           grid.innerHTML = c.collecte.items.map((it, i) => `
-            <div class="collect-card reveal active" style="--delay: ${i * 0.1}s">
+            <div class="collect-card reveal visible active" style="--delay: ${i * 0.1}s">
               <div class="collect-icon" aria-hidden="true"><i class="fas ${icons[i % icons.length]}"></i></div>
               <h3>${escapeHtml(it.title)}</h3>
               <p>${escapeHtml(it.desc)}</p>
@@ -645,7 +645,7 @@
             const color = it.color || PRESET_COLORS[idx % PRESET_COLORS.length];
             const icon = it.icon || 'fa-chart-pie';
             return `
-              <div class="impact-card reveal active" style="--delay: ${idx * 0.15}s">
+              <div class="impact-card reveal visible active" style="--delay: ${idx * 0.15}s">
                 <div class="impact-ring" role="img" aria-label="${pct}% ${escapeHtml(it.title || '')}">
                   <svg viewBox="0 0 120 120" aria-hidden="true">
                     <circle cx="60" cy="60" r="50" fill="none" class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="12"/>
@@ -733,7 +733,7 @@
         const grid = $('#esatGrid');
         if (grid) {
           grid.innerHTML = c.esat.items.map((it, i) => `
-            <div class="esat-card reveal active" style="--delay: ${i * 0.15}s">
+            <div class="esat-card reveal visible active" style="--delay: ${i * 0.15}s">
               <div class="esat-icon" aria-hidden="true"><i class="fas ${icons[i % icons.length]}"></i></div>
               <h3>${escapeHtml(it.title)}</h3>
               <p>${escapeHtml(it.desc)}</p>
@@ -756,7 +756,7 @@
               ? `<img src="${escapeHtml(m.photo)}" alt="${escapeHtml(m.name)}">`
               : `<i class="fas fa-user"></i>`;
             return `
-              <div class="team-card reveal active" style="--delay: ${i * 0.15}s">
+              <div class="team-card reveal visible active" style="--delay: ${i * 0.15}s">
                 <div class="team-avatar" aria-hidden="true">${avatarHtml}</div>
                 <h3>${escapeHtml(m.name)}</h3>
                 <span class="team-role">${escapeHtml(m.role)}</span>
@@ -793,6 +793,9 @@
         }
       }
     }
+
+    // Réinitialiser les animations d'apparition pour les nouveaux éléments
+    initReveal();
   }
 
   // ─── Gestion du Thème (Clair / Sombre) ───────────────

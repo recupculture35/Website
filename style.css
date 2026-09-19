@@ -830,7 +830,8 @@ p {
   transition-delay: var(--delay, 0s);
 }
 
-.reveal.visible {
+.reveal.visible,
+.reveal.active {
   opacity: 1;
   transform: translateY(0);
 }
