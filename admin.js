@@ -352,14 +352,7 @@
 
     // Check existing session
     const session = getSession();
-    const token = getAuthToken();
     if (session) {
-      if (!token) {
-        console.warn('Session trouvée mais token absent : reconnexion requise pour sauvegarder sur le serveur');
-        clearSession();
-        showLoginScreen();
-        return;
-      }
       const user = credentials.users.find(u => u.username === session.username) || session;
       if (user) { currentUser = user; showAdminPanel(user); initAdmin(); return; }
     }
@@ -1028,14 +1021,6 @@
     syncImpactItemsFromDom();
     syncTeamMembersFromDom();
 
-    const token = getAuthToken();
-    if (!token) {
-      toast('Session non authentifiée avec le serveur. Veuillez vous reconnecter.', true);
-      clearSession();
-      showLoginScreen();
-      return;
-    }
-
     const newSiteContent = {
       hero: {
         badge: $('#contentHeroBadge').value.trim(),
@@ -1128,35 +1113,40 @@
         website: $('#contentContactWebsite').value.trim()
       }
     };
+    const token = getAuthToken();
+    let serverOk = false;
 
-    try {
-      const res = await fetch('/api/content', {
-        method: 'PUT',
-        headers: getAuthHeaders(),
-        body: JSON.stringify({ siteContent: newSiteContent })
-      });
-      if (res.ok) {
-        const json = await res.json();
-        if (json.siteContent) appData.siteContent = json.siteContent;
-      } else if (res.status === 401) {
-        toast('Session expirée. Veuillez vous reconnecter.', true);
-        clearSession();
-        showLoginScreen();
-        return;
-      } else {
-        toast('Erreur lors de la sauvegarde sur le serveur.', true);
-        return;
+    if (token) {
+      try {
+        const res = await fetch('/api/content', {
+          method: 'PUT',
+          headers: getAuthHeaders(),
+          body: JSON.stringify({ siteContent: newSiteContent })
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json.siteContent) appData.siteContent = json.siteContent;
+          serverOk = true;
+        } else if (res.status === 401) {
+          console.warn('Session serveur expirée (401)');
+          toast('Session serveur expirée : reconnexion conseillée via Déconnexion.', true);
+        } else {
+          console.warn(`Erreur serveur (${res.status})`);
+          toast('Erreur lors de la sauvegarde sur le serveur.', true);
+        }
+      } catch (err) {
+        console.warn('Sauvegarde serveur échouée:', err);
       }
-    } catch (err) {
-      console.warn('Sauvegarde serveur échouée:', err);
-      toast('Impossible de joindre le serveur.', true);
-      return;
     }
 
     appData.siteContent = newSiteContent;
     saveData();
     if (showToast) {
-      toast('Contenus du site enregistrés avec succès !');
+      if (serverOk) {
+        toast('Contenus du site enregistrés avec succès !');
+      } else {
+        toast('Modifications enregistrées localement.');
+      }
     }
   }
 

@@ -163,14 +163,19 @@ function hashPassword(str) {
   return crypto.createHash('sha256').update(str).digest('hex');
 }
 
-// ─── Sessions en mémoire ─────────────────────────────
-const sessions = new Map(); // token -> { user, expiresAt }
+// ─── Sessions persistantes signées HMAC (survit aux redémarrages Railway) ───
+const SESSION_SECRET = process.env.SESSION_SECRET || 'recupculture-session-secret-2025-bretagne';
+const sessions = new Map(); // token -> { user, expiresAt } (support legacy)
 const SESSION_TTL = 7 * 24 * 60 * 60 * 1000; // 7 jours
 
 function createSession(user) {
-  const token = crypto.randomBytes(32).toString('hex');
-  const safeUser = { id: user.id, username: user.username, displayName: user.displayName, role: user.role };
-  sessions.set(token, { user: safeUser, expiresAt: Date.now() + SESSION_TTL });
+  const safeUser = { id: user.id, username: user.username, displayName: user.displayName || user.username, role: user.role };
+  const expiresAt = Date.now() + SESSION_TTL;
+  const payload = { ...safeUser, expiresAt };
+  const data = Buffer.from(JSON.stringify(payload)).toString('base64url');
+  const sig = crypto.createHmac('sha256', SESSION_SECRET).update(data).digest('hex');
+  const token = `${data}.${sig}`;
+  sessions.set(token, { user: safeUser, expiresAt });
   return token;
 }
 
@@ -178,13 +183,34 @@ function getSessionUser(req) {
   const auth = req.headers['authorization'];
   if (!auth || !auth.startsWith('Bearer ')) return null;
   const token = auth.substring(7).trim();
-  const sess = sessions.get(token);
-  if (!sess) return null;
-  if (Date.now() > sess.expiresAt) {
-    sessions.delete(token);
-    return null;
+
+  // 1. Vérification par signature cryptographique HMAC (stateless, résiste aux redémarrages)
+  const dotIndex = token.indexOf('.');
+  if (dotIndex > 0) {
+    const data = token.substring(0, dotIndex);
+    const sig = token.substring(dotIndex + 1);
+    const expectedSig = crypto.createHmac('sha256', SESSION_SECRET).update(data).digest('hex');
+    if (sig === expectedSig) {
+      try {
+        const payload = JSON.parse(Buffer.from(data, 'base64url').toString('utf8'));
+        if (payload && payload.expiresAt && Date.now() <= payload.expiresAt) {
+          return { id: payload.id, username: payload.username, displayName: payload.displayName, role: payload.role };
+        }
+      } catch (_) {}
+    }
   }
-  return sess.user;
+
+  // 2. Fallback in-memory
+  const sess = sessions.get(token);
+  if (sess) {
+    if (Date.now() > sess.expiresAt) {
+      sessions.delete(token);
+      return null;
+    }
+    return sess.user;
+  }
+
+  return null;
 }
 
 function requireAuth(req, res, next) {
