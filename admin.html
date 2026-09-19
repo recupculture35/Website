@@ -92,9 +92,17 @@
             <i class="fas fa-newspaper" aria-hidden="true"></i>
             Actualités
           </div>
+          <div class="sidebar-item sidebar-item-highlight" data-section="esat" role="button" tabindex="0">
+            <i class="fas fa-hands-helping" aria-hidden="true"></i>
+            Partenariat ESAT
+          </div>
+          <div class="sidebar-item sidebar-item-highlight" data-section="equipe" role="button" tabindex="0">
+            <i class="fas fa-user-friends" aria-hidden="true"></i>
+            L'Équipe &amp; Photos
+          </div>
           <div class="sidebar-item" data-section="content" role="button" tabindex="0">
             <i class="fas fa-edit" aria-hidden="true"></i>
-            Contenus du site
+            Autres Textes (CMS)
           </div>
           <div class="sidebar-item" data-section="map" role="button" tabindex="0">
             <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
@@ -122,12 +130,34 @@
       <!-- Main content -->
       <main class="admin-main">
 
+        <!-- Mobile & Compact Navigation Bar -->
+        <nav class="admin-mobile-nav" id="adminMobileNav" aria-label="Navigation rapide mobile">
+          <button type="button" class="mobile-nav-btn active" data-section="news">
+            <i class="fas fa-newspaper"></i> <span>Actus</span>
+          </button>
+          <button type="button" class="mobile-nav-btn highlight" data-section="esat">
+            <i class="fas fa-hands-helping"></i> <span>ESAT</span>
+          </button>
+          <button type="button" class="mobile-nav-btn highlight" data-section="equipe">
+            <i class="fas fa-user-friends"></i> <span>Équipe</span>
+          </button>
+          <button type="button" class="mobile-nav-btn" data-section="content">
+            <i class="fas fa-edit"></i> <span>CMS</span>
+          </button>
+          <button type="button" class="mobile-nav-btn" data-section="map">
+            <i class="fas fa-map-marker-alt"></i> <span>Carte</span>
+          </button>
+          <button type="button" class="mobile-nav-btn" data-section="users">
+            <i class="fas fa-users"></i> <span>Accès</span>
+          </button>
+        </nav>
+
         <!-- ========== CONTENUS DU SITE (CMS) ========== -->
         <section class="admin-section" id="section-content" aria-labelledby="content-section-title">
           <div class="admin-page-header">
             <div>
               <h2 class="admin-page-title" id="content-section-title">Contenus du site (CMS)</h2>
-              <p class="admin-page-subtitle">Modifiez les textes, descriptions et chiffres de chaque rubrique du site</p>
+              <p class="admin-page-subtitle">Modifiez les textes, photos et paramètres de chaque rubrique</p>
             </div>
             <button class="btn btn-primary-admin" id="btnSaveContentTop">
               <i class="fas fa-save" aria-hidden="true"></i> Enregistrer les modifications
@@ -137,14 +167,14 @@
           <form id="contentForm" novalidate>
             <!-- Sub-rubrique tabs -->
             <div class="cms-nav-tabs" role="tablist">
-              <button type="button" class="cms-tab active" data-tab="hero">Accueil &amp; Stats</button>
-              <button type="button" class="cms-tab" data-tab="mission">Mission</button>
-              <button type="button" class="cms-tab" data-tab="collecte">Collecte</button>
-              <button type="button" class="cms-tab" data-tab="impact">Impact</button>
-              <button type="button" class="cms-tab" data-tab="boutique">Boutique</button>
-              <button type="button" class="cms-tab" data-tab="esat">Partenariat ESAT</button>
-              <button type="button" class="cms-tab" data-tab="equipe">Équipe</button>
-              <button type="button" class="cms-tab" data-tab="contact">Contact</button>
+              <button type="button" class="cms-tab active" data-tab="hero"><i class="fas fa-home"></i> Accueil</button>
+              <button type="button" class="cms-tab" data-tab="mission"><i class="fas fa-bullseye"></i> Mission</button>
+              <button type="button" class="cms-tab" data-tab="collecte"><i class="fas fa-box-open"></i> Collecte</button>
+              <button type="button" class="cms-tab" data-tab="impact"><i class="fas fa-chart-pie"></i> Impact</button>
+              <button type="button" class="cms-tab" data-tab="boutique"><i class="fas fa-store"></i> Boutique</button>
+              <button type="button" class="cms-tab highlight-tab" data-tab="esat"><i class="fas fa-hands-helping"></i> Partenariat ESAT</button>
+              <button type="button" class="cms-tab highlight-tab" data-tab="equipe"><i class="fas fa-user-friends"></i> L'Équipe</button>
+              <button type="button" class="cms-tab" data-tab="contact"><i class="fas fa-envelope"></i> Contact</button>
             </div>
 
             <!-- Tab Pane 1: Hero -->
@@ -402,6 +432,7 @@
                     <label for="contentBoutiquePrices">Prix solidaires indicatifs</label>
                     <input type="text" id="contentBoutiquePrices">
                   </div>
+                </div>
                 <h4 style="margin:20px 0 10px;color:var(--gray-300);font-size:0.95rem"><i class="fas fa-camera"></i> Photo de la boutique (Vitrine / Local)</h4>
                 <div class="photo-upload-group" id="boutiquePhotoGroup">
                   <div class="photo-upload-row">
@@ -439,8 +470,18 @@
                   </div>
                 </div>
                 <div class="form-group-admin">
-                  <label for="contentEsatDesc">Description</label>
+                  <label for="contentEsatDesc">Description d'introduction</label>
                   <textarea id="contentEsatDesc" rows="2"></textarea>
+                </div>
+                <div class="form-row">
+                  <div class="form-group-admin">
+                    <label for="contentEsatPartnerName">Nom de la structure partenaire</label>
+                    <input type="text" id="contentEsatPartnerName" placeholder="Ex : ESAT de Châteauneuf-d'Ille-et-Vilaine">
+                  </div>
+                  <div class="form-group-admin">
+                    <label for="contentEsatPartnerDesc">Rôle &amp; Mission du partenariat</label>
+                    <textarea id="contentEsatPartnerDesc" rows="2" placeholder="Ex : Tri sélectif, contrôle qualité des livres, DVD, CD et reconditionnement solidaire..."></textarea>
+                  </div>
                 </div>
                 <h4 style="margin:20px 0 10px;color:var(--gray-300);font-size:0.95rem"><i class="fas fa-camera"></i> Photo d'illustration / Atelier de tri ESAT</h4>
                 <div class="photo-upload-group" id="esatPhotoGroup">

@@ -352,14 +352,37 @@
       item.addEventListener('click', () => switchSection(item.dataset.section));
       item.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') switchSection(item.dataset.section); });
     });
+
+    $$('.mobile-nav-btn[data-section]').forEach(btn => {
+      btn.addEventListener('click', () => switchSection(btn.dataset.section));
+    });
   }
 
   function switchSection(name) {
     currentSection = name;
     $$('.sidebar-item').forEach(i => i.classList.remove('active'));
+    $$('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
     $$('.admin-section').forEach(s => s.classList.remove('active'));
+
     const item = $(`.sidebar-item[data-section="${name}"]`);
     if (item) { item.classList.add('active'); item.setAttribute('aria-current','page'); }
+    const mobBtn = $(`.mobile-nav-btn[data-section="${name}"]`);
+    if (mobBtn) { mobBtn.classList.add('active'); }
+
+    if (name === 'esat' || name === 'equipe') {
+      const sec = $('#section-content');
+      if (sec) sec.classList.add('active');
+      $$('.cms-tab').forEach(t => t.classList.remove('active'));
+      $$('.cms-pane').forEach(p => p.classList.remove('active'));
+      const tab = $(`.cms-tab[data-tab="${name}"]`);
+      const pane = $(`#pane-${name}`);
+      if (tab) tab.classList.add('active');
+      if (pane) pane.classList.add('active');
+      populateContentForm();
+      pane?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
+
     const sec = $(`#section-${name}`);
     if (sec) sec.classList.add('active');
 
@@ -704,6 +727,8 @@
     if ($('#contentEsatTag')) $('#contentEsatTag').value = esat.tag || '';
     if ($('#contentEsatTitle')) $('#contentEsatTitle').value = esat.title || '';
     if ($('#contentEsatDesc')) $('#contentEsatDesc').value = esat.description || '';
+    if ($('#contentEsatPartnerName')) $('#contentEsatPartnerName').value = esat.partnerName || 'ESAT de Châteauneuf-d\'Ille-et-Vilaine';
+    if ($('#contentEsatPartnerDesc')) $('#contentEsatPartnerDesc').value = esat.partnerDesc || '';
     const esatPhoto = esat.photo || '';
     if ($('#contentEsatPhoto')) $('#contentEsatPhoto').value = esatPhoto;
     updatePhotoPreviewBox($('#esatPhotoPreview'), esatPhoto);
@@ -797,6 +822,8 @@
         tag: $('#contentEsatTag').value.trim(),
         title: $('#contentEsatTitle').value.trim(),
         description: $('#contentEsatDesc').value.trim(),
+        partnerName: $('#contentEsatPartnerName') ? $('#contentEsatPartnerName').value.trim() : 'ESAT de Châteauneuf-d\'Ille-et-Vilaine',
+        partnerDesc: $('#contentEsatPartnerDesc') ? $('#contentEsatPartnerDesc').value.trim() : '',
         photo: $('#contentEsatPhoto') ? $('#contentEsatPhoto').value.trim() : '',
         items: [
           { title: $('#contentEsatItem1Title').value.trim(), desc: $('#contentEsatItem1Desc').value.trim() },
@@ -857,6 +884,14 @@
         tab.classList.add('active');
         const pane = $(`#pane-${target}`);
         if (pane) pane.classList.add('active');
+
+        // Sync sidebar / mobile nav active highlight
+        $$('.sidebar-item').forEach(i => i.classList.remove('active'));
+        $$('.mobile-nav-btn').forEach(b => b.classList.remove('active'));
+        const sideItem = $(`.sidebar-item[data-section="${target}"]`) || $(`.sidebar-item[data-section="content"]`);
+        if (sideItem) sideItem.classList.add('active');
+        const mobItem = $(`.mobile-nav-btn[data-section="${target}"]`) || $(`.mobile-nav-btn[data-section="content"]`);
+        if (mobItem) mobItem.classList.add('active');
       });
     });
 

@@ -741,11 +741,98 @@ input[type="file"] { display: none; }
 }
 
 /* ========================
+   NAV HIGHLIGHT & MOBILE NAV BAR
+   ======================== */
+.sidebar-item-highlight {
+  color: var(--white);
+  background: rgba(76, 175, 80, 0.08);
+  border-left: 3px solid var(--green-500) !important;
+}
+.sidebar-item-highlight i {
+  color: var(--green-400);
+}
+.sidebar-item-highlight:hover {
+  background: rgba(76, 175, 80, 0.18) !important;
+}
+.sidebar-item-highlight.active {
+  background: linear-gradient(135deg, var(--green-700), var(--blue-700)) !important;
+  border-left-color: var(--white) !important;
+}
+
+.cms-tab.highlight-tab {
+  border-color: rgba(76, 175, 80, 0.5);
+  background: rgba(76, 175, 80, 0.12);
+  color: #a5d6a7;
+  font-weight: 600;
+}
+.cms-tab.highlight-tab:hover {
+  background: rgba(76, 175, 80, 0.25);
+  color: var(--white);
+}
+.cms-tab.highlight-tab.active {
+  background: linear-gradient(135deg, var(--green-600), var(--blue-600));
+  color: var(--white);
+  border-color: var(--green-400);
+}
+
+.admin-mobile-nav {
+  display: none;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 14px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--gray-700);
+  -webkit-overflow-scrolling: touch;
+}
+.admin-mobile-nav::-webkit-scrollbar {
+  height: 4px;
+}
+.admin-mobile-nav::-webkit-scrollbar-thumb {
+  background: var(--gray-700);
+  border-radius: 4px;
+}
+.mobile-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--dark-2);
+  border: 1px solid var(--gray-700);
+  border-radius: 20px;
+  color: var(--gray-300);
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: var(--transition);
+  flex-shrink: 0;
+}
+.mobile-nav-btn:hover {
+  background: var(--dark-3);
+  color: var(--white);
+}
+.mobile-nav-btn.active {
+  background: var(--green-700);
+  color: var(--white);
+  border-color: var(--green-500);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+.mobile-nav-btn.highlight {
+  border-color: rgba(76, 175, 80, 0.5);
+  color: #a5d6a7;
+}
+.mobile-nav-btn.highlight.active {
+  background: linear-gradient(135deg, var(--green-600), var(--blue-600));
+  color: var(--white);
+}
+
+/* ========================
    RESPONSIVE
    ======================== */
 @media (max-width: 900px) {
   .admin-sidebar { display: none; }
-  .admin-main { padding: 20px; }
+  .admin-mobile-nav { display: flex; }
+  .admin-main { padding: 16px; }
   .form-row { grid-template-columns: 1fr; }
   .import-export-grid { grid-template-columns: 1fr; }
 }

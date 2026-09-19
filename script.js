@@ -61,9 +61,11 @@
         photo: ""
       },
       esat: {
-        tag: "Partenariat ESAT",
-        title: "Une économie circulaire et inclusive",
-        description: "Nous croyons que l'écologie et l'inclusion sociale peuvent avancer ensemble.",
+        tag: "Partenariat Solidaire & Social",
+        title: "Notre Partenariat avec les ESAT",
+        description: "L'économie circulaire au service de l'inclusion des personnes en situation de handicap.",
+        partnerName: "ESAT de Châteauneuf-d'Ille-et-Vilaine",
+        partnerDesc: "Le tri, le contrôle qualité et le reconditionnement de l'ensemble des biens culturels collectés sont réalisés par les travailleurs de l'ESAT, leur offrant une activité valorisante et stimulante.",
         photo: "",
         items: [
           { title: "Activité valorisante", desc: "Le tri des articles collectés est réalisé par les travailleurs de l'ESAT de Châteauneuf — une activité concrète et valorisante pour des personnes en situation de handicap." },
@@ -610,24 +612,29 @@
 
     // ESAT
     if (c.esat) {
-      if (c.esat.tag && $('#esatTag')) $('#esatTag').textContent = c.esat.tag;
+      if (c.esat.tag && $('#esatTag')) $('#esatTag').innerHTML = `<i class="fas fa-hands-helping" aria-hidden="true"></i> ${escapeHtml(c.esat.tag)}`;
       if (c.esat.title && $('#esat-title')) $('#esat-title').textContent = c.esat.title;
       if (c.esat.description && $('#esatDesc')) $('#esatDesc').textContent = c.esat.description;
+      if (c.esat.partnerName && $('#esatPartnerName')) $('#esatPartnerName').textContent = c.esat.partnerName;
+      if (c.esat.partnerDesc && $('#esatPartnerDesc')) $('#esatPartnerDesc').textContent = c.esat.partnerDesc;
 
-      const banner = $('#esatPhotoBanner');
-      if (banner) {
+      const photoContainer = $('#esatPhotoContainer');
+      if (photoContainer) {
         if (c.esat.photo) {
-          banner.style.display = 'block';
-          banner.innerHTML = `
-            <img src="${escapeHtml(c.esat.photo)}" alt="Atelier de tri solidaire ESAT">
-            <div class="esat-showcase-caption">
-              <i class="fas fa-hands-helping" style="color:var(--logo-green-bright);font-size:1.2rem"></i>
-              <span>L'atelier de tri et revalorisation culturelle en partenariat avec l'ESAT</span>
+          photoContainer.innerHTML = `
+            <div class="esat-photo-frame">
+              <img src="${escapeHtml(c.esat.photo)}" alt="${escapeHtml(c.esat.partnerName || 'Atelier de tri solidaire ESAT')}">
             </div>
           `;
         } else {
-          banner.style.display = 'none';
-          banner.innerHTML = '';
+          photoContainer.innerHTML = `
+            <div class="esat-photo-fallback" id="esatDefaultVisual">
+              <div class="esat-fallback-icon" aria-hidden="true"><i class="fas fa-hands-helping"></i></div>
+              <h4>Atelier de tri solidaire</h4>
+              <p>Valorisation culturelle &amp; inclusion par le travail</p>
+              <span class="esat-fallback-tag"><i class="fas fa-check-circle" aria-hidden="true"></i> ${escapeHtml(c.esat.partnerName || "Châteauneuf-d'Ille-et-Vilaine")}</span>
+            </div>
+          `;
         }
       }
 

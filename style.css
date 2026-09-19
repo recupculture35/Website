@@ -1386,6 +1386,174 @@ p {
 /* =========================================================
    ESAT SECTION (Économie circulaire & Inclusive)
    ========================================================= */
+/* =========================================================
+   ESAT SECTION (Économie circulaire & Inclusive)
+   ========================================================= */
+.section-esat {
+  position: relative;
+  background: radial-gradient(circle at 10% 20%, rgba(15, 76, 129, 0.12) 0%, transparent 50%),
+              radial-gradient(circle at 90% 80%, rgba(46, 125, 50, 0.1) 0%, transparent 50%);
+}
+
+.nav-link-esat {
+  color: var(--logo-green-bright) !important;
+  font-weight: 600;
+}
+
+/* Spotlight Hero Card ESAT */
+.esat-hero-card {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 36px;
+  background: var(--bg-surface-card);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--border-highlight);
+  border-radius: var(--radius-xl);
+  padding: 36px;
+  margin-bottom: 44px;
+  box-shadow: var(--shadow-lg), 0 0 35px rgba(30, 136, 229, 0.15);
+  align-items: center;
+}
+
+.esat-hero-media {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+}
+
+.esat-photo-fallback {
+  background: linear-gradient(135deg, #0e2a47 0%, #103b29 100%);
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  border-radius: var(--radius-lg);
+  padding: 40px 24px;
+  text-align: center;
+  color: var(--text-white);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.4);
+}
+
+.esat-fallback-icon {
+  width: 72px;
+  height: 72px;
+  background: var(--brand-gradient);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: white;
+  margin: 0 auto 16px;
+  box-shadow: 0 0 25px rgba(119, 184, 65, 0.4);
+}
+
+.esat-photo-fallback h4 {
+  font-family: var(--font-heading);
+  font-size: 1.35rem;
+  margin-bottom: 6px;
+  color: var(--text-white);
+}
+
+.esat-photo-fallback p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+}
+
+.esat-fallback-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  background: rgba(119, 184, 65, 0.2);
+  border: 1px solid rgba(119, 184, 65, 0.4);
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  color: var(--logo-green-bright);
+  font-weight: 500;
+}
+
+.esat-photo-frame {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  max-height: 340px;
+}
+
+.esat-photo-frame img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  display: block;
+}
+
+.esat-photo-caption {
+  position: absolute;
+  bottom: 0;
+  inset-inline: 0;
+  padding: 12px 18px;
+  background: linear-gradient(to top, rgba(10, 18, 30, 0.92) 0%, transparent 100%);
+  color: var(--text-white);
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Partner Info */
+.esat-partner-info {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.esat-partner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  background: var(--logo-blue-tint);
+  border: 1px solid rgba(30, 136, 229, 0.35);
+  border-radius: var(--radius-pill);
+  color: var(--logo-blue-bright);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  width: fit-content;
+}
+
+.esat-partner-info h3 {
+  font-size: 1.6rem;
+  color: var(--text-white);
+  line-height: 1.3;
+}
+
+.esat-partner-desc {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.esat-pill-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.esat-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.92rem;
+  color: var(--text-primary);
+}
+
+.esat-pill i {
+  color: var(--logo-green-bright);
+  font-size: 1rem;
+}
+
 .esat-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1441,6 +1609,66 @@ p {
   color: var(--text-secondary);
   font-size: 0.94rem;
   line-height: 1.7;
+}
+
+/* Callout Join Banner */
+.esat-join-banner {
+  margin-top: 40px;
+  background: linear-gradient(135deg, rgba(15, 76, 129, 0.25) 0%, rgba(46, 125, 50, 0.2) 100%);
+  border: 1px solid var(--border-highlight);
+  border-radius: var(--radius-xl);
+  padding: 28px 36px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.esat-join-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.esat-join-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: var(--brand-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.esat-join-content h4 {
+  color: var(--text-white);
+  font-size: 1.15rem;
+  margin-bottom: 4px;
+}
+
+.esat-join-content p {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+@media (max-width: 860px) {
+  .esat-hero-card {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+  .esat-grid {
+    grid-template-columns: 1fr;
+  }
+  .esat-join-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px;
+  }
 }
 
 /* =========================================================

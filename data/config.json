@@ -92,9 +92,11 @@
       "photo": ""
     },
     "esat": {
-      "tag": "Partenariat ESAT",
-      "title": "Une économie circulaire et inclusive",
-      "description": "Nous croyons que l'écologie et l'inclusion sociale peuvent avancer ensemble.",
+      "tag": "Partenariat Solidaire & Social",
+      "title": "Notre Partenariat avec les ESAT",
+      "description": "L'économie circulaire au service de l'inclusion des personnes en situation de handicap.",
+      "partnerName": "ESAT de Châteauneuf-d'Ille-et-Vilaine",
+      "partnerDesc": "Le tri, le contrôle qualité et le reconditionnement de l'ensemble des biens culturels collectés sont réalisés par les travailleurs de l'ESAT, leur offrant une activité valorisante et stimulante.",
       "photo": "",
       "items": [
         {

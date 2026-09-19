@@ -40,6 +40,7 @@
         <li><a href="#impact">Impact</a></li>
         <li><a href="#points-depot">Dépôts</a></li>
         <li><a href="#boutique">Boutique</a></li>
+        <li><a href="#esat" class="nav-link-esat"><i class="fas fa-hands-helping" style="font-size:0.85em;margin-right:4px"></i> Partenariat ESAT</a></li>
         <li><a href="#actualites">Actualités</a></li>
         <li><a href="#equipe">Équipe</a></li>
         <li><a href="#contact" class="nav-cta">Nous contacter</a></li>
@@ -315,14 +316,50 @@
   </section>
 
   <!-- ======================== ESAT ======================== -->
-  <section id="esat" class="section" aria-labelledby="esat-title">
+  <section id="esat" class="section section-esat" aria-labelledby="esat-title">
     <div class="container">
       <div class="section-header reveal">
-        <span class="section-tag" id="esatTag">Partenariat ESAT</span>
-        <h2 id="esat-title">Une économie circulaire et inclusive</h2>
-        <p id="esatDesc">Nous croyons que l'écologie et l'inclusion sociale peuvent avancer ensemble.</p>
+        <span class="section-tag highlight" id="esatTag"><i class="fas fa-hands-helping" aria-hidden="true"></i> Partenariat Solidaire</span>
+        <h2 id="esat-title">Notre Partenariat avec les ESAT</h2>
+        <p id="esatDesc">L'économie circulaire au service de l'inclusion sociale et du handicap.</p>
       </div>
-      <div id="esatPhotoBanner" class="esat-showcase-banner reveal" style="display:none"></div>
+
+      <!-- Spotlight Hero Card Partenaire -->
+      <div class="esat-hero-card reveal">
+        <div class="esat-hero-media" id="esatPhotoContainer">
+          <div class="esat-photo-fallback" id="esatDefaultVisual">
+            <div class="esat-fallback-icon" aria-hidden="true"><i class="fas fa-hands-helping"></i></div>
+            <h4>Atelier de tri solidaire</h4>
+            <p>Valorisation culturelle &amp; inclusion par le travail</p>
+            <span class="esat-fallback-tag"><i class="fas fa-check-circle" aria-hidden="true"></i> Châteauneuf-d'Ille-et-Vilaine</span>
+          </div>
+        </div>
+        <div class="esat-partner-info">
+          <div class="esat-partner-badge">
+            <i class="fas fa-shield-alt" aria-hidden="true"></i>
+            <span>Partenaire Territorial Conventionné</span>
+          </div>
+          <h3 id="esatPartnerName">ESAT de Châteauneuf-d'Ille-et-Vilaine</h3>
+          <p class="esat-partner-desc" id="esatPartnerDesc">
+            Le tri, le contrôle qualité et le reconditionnement de l'ensemble des biens culturels collectés sont réalisés par les travailleurs de l'ESAT, leur offrant une activité valorisante et stimulante.
+          </p>
+          <div class="esat-pill-row">
+            <div class="esat-pill">
+              <i class="fas fa-check-circle" aria-hidden="true"></i>
+              <span>Tri minutieux &amp; reconditionnement</span>
+            </div>
+            <div class="esat-pill">
+              <i class="fas fa-heart" aria-hidden="true"></i>
+              <span>Inclusion sociale &amp; handicap</span>
+            </div>
+            <div class="esat-pill">
+              <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+              <span>Bassin Saint-Malo &amp; Ille-et-Vilaine</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="esat-grid" id="esatGrid">
         <div class="esat-card reveal" style="--delay: 0s">
           <div class="esat-icon" aria-hidden="true"><i class="fas fa-hands-helping"></i></div>
@@ -339,6 +376,21 @@
           <h3>Impact territorial</h3>
           <p>Ancrée dans le bassin de Saint-Malo, notre association soutient l'économie locale et crée des liens entre différents acteurs du territoire.</p>
         </div>
+      </div>
+
+      <!-- Callout pour élargir les partenariats -->
+      <div class="esat-join-banner reveal" style="--delay: 0.2s">
+        <div class="esat-join-content">
+          <div class="esat-join-icon" aria-hidden="true"><i class="fas fa-handshake"></i></div>
+          <div>
+            <h4>Vous représentez un ESAT, une association ou une collectivité ?</h4>
+            <p>RECUP CULTURE développe des ateliers de réemploi culturel adaptés et solidaires sur tout le territoire breton.</p>
+          </div>
+        </div>
+        <a href="#contact" class="btn-primary btn-sm" id="btnJoinPartnership">
+          <i class="fas fa-envelope" aria-hidden="true"></i>
+          <span>Proposer un partenariat</span>
+        </a>
       </div>
     </div>
   </section>
@@ -460,7 +512,9 @@
             <li><a href="#collecte">Ce qu'on collecte</a></li>
             <li><a href="#points-depot">Points de dépôt</a></li>
             <li><a href="#boutique">Boutique</a></li>
+            <li><a href="#esat">Partenariat ESAT</a></li>
             <li><a href="#actualites">Actualités</a></li>
+            <li><a href="#equipe">L'Équipe</a></li>
             <li><a href="#contact">Contact</a></li>
           </ul>
         </nav>
