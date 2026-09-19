@@ -1024,7 +1024,7 @@ p {
    ========================================================= */
 .impact-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 32px;
 }
 
@@ -1077,6 +1077,21 @@ p {
 .impact-card:nth-child(3) .ring-progress {
   stroke: var(--accent-amber);
   filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.6));
+}
+
+.impact-card:nth-child(4) .ring-progress {
+  stroke: #a855f7;
+  filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));
+}
+
+.impact-card:nth-child(5) .ring-progress {
+  stroke: #ec4899;
+  filter: drop-shadow(0 0 8px rgba(236, 72, 153, 0.6));
+}
+
+.impact-card:nth-child(6) .ring-progress {
+  stroke: #14b8a6;
+  filter: drop-shadow(0 0 8px rgba(20, 184, 166, 0.6));
 }
 
 .impact-ring .impact-percent {

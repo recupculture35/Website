@@ -341,48 +341,22 @@
                   <label for="contentImpactDesc">Description d'introduction</label>
                   <textarea id="contentImpactDesc" rows="2"></textarea>
                 </div>
-                <h4 style="margin:20px 0 10px;color:var(--gray-300);font-size:0.95rem"><i class="fas fa-percentage"></i> Répartition des dons</h4>
-                <div class="form-row">
-                  <div class="form-group-admin" style="max-width:120px">
-                    <label for="contentImpactPercent1">Pourcentage (%)</label>
-                    <input type="number" id="contentImpactPercent1">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin:28px 0 14px;flex-wrap:wrap;gap:12px">
+                  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                    <h4 style="margin:0;color:var(--gray-300);font-size:0.95rem">
+                      <i class="fas fa-percentage"></i> Répartition des dons (Parts configurables)
+                    </h4>
+                    <span id="impactTotalBadge" class="impact-total-badge" style="font-size:0.8rem;padding:4px 10px;border-radius:12px;background:rgba(76,175,80,0.15);color:#4caf50;font-weight:600;display:inline-flex;align-items:center;gap:6px">
+                      <i class="fas fa-check-circle"></i> Total actif : 100%
+                    </span>
                   </div>
-                  <div class="form-group-admin">
-                    <label for="contentImpactTitle1">Titre</label>
-                    <input type="text" id="contentImpactTitle1">
-                  </div>
-                  <div class="form-group-admin">
-                    <label for="contentImpactDesc1">Description</label>
-                    <input type="text" id="contentImpactDesc1">
-                  </div>
+                  <button type="button" class="btn btn-secondary-admin btn-sm" id="btnAddImpactItem">
+                    <i class="fas fa-plus"></i> Ajouter une part
+                  </button>
                 </div>
-                <div class="form-row">
-                  <div class="form-group-admin" style="max-width:120px">
-                    <label for="contentImpactPercent2">Pourcentage (%)</label>
-                    <input type="number" id="contentImpactPercent2">
-                  </div>
-                  <div class="form-group-admin">
-                    <label for="contentImpactTitle2">Titre</label>
-                    <input type="text" id="contentImpactTitle2">
-                  </div>
-                  <div class="form-group-admin">
-                    <label for="contentImpactDesc2">Description</label>
-                    <input type="text" id="contentImpactDesc2">
-                  </div>
-                </div>
-                <div class="form-row">
-                  <div class="form-group-admin" style="max-width:120px">
-                    <label for="contentImpactPercent3">Pourcentage (%)</label>
-                    <input type="number" id="contentImpactPercent3">
-                  </div>
-                  <div class="form-group-admin">
-                    <label for="contentImpactTitle3">Titre</label>
-                    <input type="text" id="contentImpactTitle3">
-                  </div>
-                  <div class="form-group-admin">
-                    <label for="contentImpactDesc3">Description</label>
-                    <input type="text" id="contentImpactDesc3">
-                  </div>
+
+                <div id="impactItemsList">
+                  <!-- Injecté dynamiquement par admin.js -->
                 </div>
               </div>
             </div>

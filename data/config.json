@@ -68,17 +68,26 @@
         {
           "percent": 50,
           "title": "Revente",
-          "desc": "Boutique solidaire & en ligne — accès à la culture à prix abordable"
+          "desc": "Boutique solidaire & en ligne — accès à la culture à prix abordable",
+          "icon": "fa-store",
+          "color": "#8ce44c",
+          "active": true
         },
         {
           "percent": 30,
           "title": "Recyclage",
-          "desc": "Transformation en papier recyclé — zéro déchet pour la planète"
+          "desc": "Transformation en papier recyclé — zéro déchet pour la planète",
+          "icon": "fa-recycle",
+          "color": "#38bdf8",
+          "active": true
         },
         {
           "percent": 20,
           "title": "Humanitaire",
-          "desc": "Dons à des causes humanitaires — la culture au-delà des frontières"
+          "desc": "Dons à des causes humanitaires — la culture au-delà des frontières",
+          "icon": "fa-globe-africa",
+          "color": "#f59e0b",
+          "active": true
         }
       ]
     },

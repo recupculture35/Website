@@ -84,9 +84,9 @@
         title: "Ce que deviennent vos dons",
         description: "Pour chaque lot de 10 000 livres collectés, voici leur destination :",
         items: [
-          { percent: 50, title: "Revente", desc: "Boutique solidaire & en ligne — accès à la culture à prix abordable" },
-          { percent: 30, title: "Recyclage", desc: "Transformation en papier recyclé — zéro déchet pour la planète" },
-          { percent: 20, title: "Humanitaire", desc: "Dons à des causes humanitaires — la culture au-delà des frontières" }
+          { percent: 50, title: "Revente", desc: "Boutique solidaire & en ligne — accès à la culture à prix abordable", icon: "fa-store", color: "#8ce44c", active: true },
+          { percent: 30, title: "Recyclage", desc: "Transformation en papier recyclé — zéro déchet pour la planète", icon: "fa-recycle", color: "#38bdf8", active: true },
+          { percent: 20, title: "Humanitaire", desc: "Dons à des causes humanitaires — la culture au-delà des frontières", icon: "fa-globe-africa", color: "#f59e0b", active: true }
         ]
       },
       boutique: {
@@ -587,6 +587,158 @@
   }
 
   // Équipe dynamique state
+  // ─── GESTION DYNAMIQUE DES PARTS D'IMPACT ───────────
+  let currentImpactItems = [];
+
+  function updateImpactTotalBadge() {
+    const badge = $('#impactTotalBadge');
+    if (!badge) return;
+    const activeItems = currentImpactItems.filter(it => it.active !== false);
+    const total = activeItems.reduce((acc, it) => acc + (parseFloat(it.percent) || 0), 0);
+    const roundedTotal = Math.round(total * 10) / 10;
+
+    if (roundedTotal === 100) {
+      badge.className = 'impact-total-badge optimal';
+      badge.innerHTML = `<i class="fas fa-check-circle"></i> Total actif : ${roundedTotal}% (${activeItems.length} part(s) active(s))`;
+    } else {
+      badge.className = 'impact-total-badge warning';
+      badge.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Total actif : ${roundedTotal}% (Cible idéale : 100%)`;
+    }
+  }
+
+  function renderImpactItemsAdmin() {
+    const list = $('#impactItemsList');
+    if (!list) return;
+    list.innerHTML = '';
+
+    if (!currentImpactItems.length) {
+      list.innerHTML = '<div style="padding:24px;text-align:center;color:var(--gray-400);background:rgba(255,255,255,0.02);border-radius:8px;border:1px dashed var(--gray-700)">Aucune part configurée. Cliquez sur "Ajouter une part" pour commencer.</div>';
+      updateImpactTotalBadge();
+      return;
+    }
+
+    const PRESET_COLORS = ['#8ce44c', '#38bdf8', '#f59e0b', '#a855f7', '#ec4899', '#14b8a6'];
+    const PRESET_ICONS = [
+      { id: 'fa-store', label: 'Boutique / Revente' },
+      { id: 'fa-recycle', label: 'Recyclage / Écologie' },
+      { id: 'fa-globe-africa', label: 'Humanitaire / Solidarité' },
+      { id: 'fa-book-reader', label: 'Lecture / Éducation' },
+      { id: 'fa-hands-helping', label: 'Partenariat / Entraide' },
+      { id: 'fa-heart', label: 'Cœur / Don' },
+      { id: 'fa-boxes', label: 'Stock / Logistique' },
+      { id: 'fa-seedling', label: 'Environnement' }
+    ];
+
+    currentImpactItems.forEach((item, index) => {
+      const card = document.createElement('div');
+      const isActive = item.active !== false;
+      card.className = `impact-item-admin-card ${isActive ? '' : 'inactive'}`;
+      card.dataset.index = index;
+
+      const color = item.color || PRESET_COLORS[index % PRESET_COLORS.length];
+      item.color = color;
+      const icon = item.icon || 'fa-chart-pie';
+
+      card.innerHTML = `
+        <div class="impact-item-header">
+          <div class="impact-item-title-badge">
+            <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${color};box-shadow:0 0 6px ${color}88"></span>
+            <span>Part #${index + 1} &nbsp;—&nbsp; <strong id="impactCardTitleText_${index}">${escapeHtml(item.title || 'Nouvelle part')}</strong></span>
+            <span id="impactCardPercentBadge_${index}" style="font-size:0.8rem;padding:2px 8px;border-radius:10px;background:rgba(0,0,0,0.06);color:var(--gray-600);font-weight:600">
+              ${item.percent || 0}%
+            </span>
+          </div>
+          <div class="impact-item-header-actions">
+            <label class="impact-status-toggle" title="Activer ou désactiver cette part">
+              <input type="checkbox" id="impactActive_${index}" ${isActive ? 'checked' : ''}>
+              <span>${isActive ? 'Active' : 'Désactivée'}</span>
+            </label>
+            <button type="button" class="btn btn-danger btn-sm btn-delete-impact" data-index="${index}" aria-label="Supprimer cette part">
+              <i class="fas fa-trash"></i> Supprimer
+            </button>
+          </div>
+        </div>
+        <div class="form-row" style="grid-template-columns: 140px 1fr 200px;">
+          <div class="form-group-admin">
+            <label for="impactPercent_${index}">Pourcentage (%) *</label>
+            <input type="number" id="impactPercent_${index}" min="0" max="100" step="1" value="${item.percent ?? 0}" required placeholder="Ex: 50">
+          </div>
+          <div class="form-group-admin">
+            <label for="impactTitle_${index}">Titre de la destination *</label>
+            <input type="text" id="impactTitle_${index}" value="${escapeHtml(item.title || '')}" placeholder="Ex : Revente solidaire">
+          </div>
+          <div class="form-group-admin">
+            <label for="impactIcon_${index}">Icône</label>
+            <select id="impactIcon_${index}">
+              ${PRESET_ICONS.map(ic => `
+                <option value="${ic.id}" ${ic.id === icon ? 'selected' : ''}>${ic.label}</option>
+              `).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="form-group-admin" style="margin-bottom:0">
+          <label for="impactDesc_${index}">Description</label>
+          <input type="text" id="impactDesc_${index}" value="${escapeHtml(item.desc || '')}" placeholder="Ex : Boutique solidaire & en ligne — accès à la culture à prix abordable">
+        </div>
+      `;
+
+      list.appendChild(card);
+
+      const percentInput = $(`#impactPercent_${index}`, card);
+      const titleInput = $(`#impactTitle_${index}`, card);
+      const descInput = $(`#impactDesc_${index}`, card);
+      const iconSelect = $(`#impactIcon_${index}`, card);
+      const activeCheckbox = $(`#impactActive_${index}`, card);
+      const btnDelete = $(`.btn-delete-impact[data-index="${index}"]`, card);
+
+      if (percentInput) {
+        percentInput.addEventListener('input', e => {
+          item.percent = parseFloat(e.target.value) || 0;
+          const badgeEl = $(`#impactCardPercentBadge_${index}`, card);
+          if (badgeEl) badgeEl.textContent = `${item.percent}%`;
+          updateImpactTotalBadge();
+        });
+      }
+      if (titleInput) {
+        titleInput.addEventListener('input', e => {
+          item.title = e.target.value;
+          const titleTextEl = $(`#impactCardTitleText_${index}`, card);
+          if (titleTextEl) titleTextEl.textContent = item.title || 'Nouvelle part';
+        });
+      }
+      if (descInput) {
+        descInput.addEventListener('input', e => {
+          item.desc = e.target.value;
+        });
+      }
+      if (iconSelect) {
+        iconSelect.addEventListener('change', e => {
+          item.icon = e.target.value;
+        });
+      }
+      if (activeCheckbox) {
+        activeCheckbox.addEventListener('change', e => {
+          item.active = e.target.checked;
+          const statusText = activeCheckbox.parentElement.querySelector('span');
+          if (statusText) statusText.textContent = item.active ? 'Active' : 'Désactivée';
+          card.classList.toggle('inactive', !item.active);
+          updateImpactTotalBadge();
+        });
+      }
+      if (btnDelete) {
+        btnDelete.addEventListener('click', () => {
+          if (confirm(`Supprimer la part "${item.title || `#${index + 1}`}" ?`)) {
+            currentImpactItems.splice(index, 1);
+            renderImpactItemsAdmin();
+            toast('Part supprimée.');
+          }
+        });
+      }
+    });
+
+    updateImpactTotalBadge();
+  }
+
   let currentTeamMembers = [];
 
   function renderTeamMembersAdmin() {
@@ -759,16 +911,12 @@
     if ($('#contentImpactTag')) $('#contentImpactTag').value = impact.tag || def.impact.tag;
     if ($('#contentImpactTitle')) $('#contentImpactTitle').value = impact.title || def.impact.title;
     if ($('#contentImpactDesc')) $('#contentImpactDesc').value = impact.description || def.impact.description;
-    const impItems = (impact.items && impact.items.length) ? impact.items : def.impact.items;
-    if ($('#contentImpactPercent1')) $('#contentImpactPercent1').value = impItems[0]?.percent ?? def.impact.items[0].percent;
-    if ($('#contentImpactTitle1')) $('#contentImpactTitle1').value = impItems[0]?.title || def.impact.items[0].title;
-    if ($('#contentImpactDesc1')) $('#contentImpactDesc1').value = impItems[0]?.desc || def.impact.items[0].desc;
-    if ($('#contentImpactPercent2')) $('#contentImpactPercent2').value = impItems[1]?.percent ?? def.impact.items[1].percent;
-    if ($('#contentImpactTitle2')) $('#contentImpactTitle2').value = impItems[1]?.title || def.impact.items[1].title;
-    if ($('#contentImpactDesc2')) $('#contentImpactDesc2').value = impItems[1]?.desc || def.impact.items[1].desc;
-    if ($('#contentImpactPercent3')) $('#contentImpactPercent3').value = impItems[2]?.percent ?? def.impact.items[2].percent;
-    if ($('#contentImpactTitle3')) $('#contentImpactTitle3').value = impItems[2]?.title || def.impact.items[2].title;
-    if ($('#contentImpactDesc3')) $('#contentImpactDesc3').value = impItems[2]?.desc || def.impact.items[2].desc;
+    if (impact.items && Array.isArray(impact.items) && impact.items.length) {
+      currentImpactItems = JSON.parse(JSON.stringify(impact.items));
+    } else {
+      currentImpactItems = JSON.parse(JSON.stringify(def.impact.items));
+    }
+    renderImpactItemsAdmin();
 
     // Boutique
     const b = c.boutique || def.boutique;
@@ -863,11 +1011,14 @@
         tag: $('#contentImpactTag').value.trim(),
         title: $('#contentImpactTitle').value.trim(),
         description: $('#contentImpactDesc').value.trim(),
-        items: [
-          { percent: parseInt($('#contentImpactPercent1').value) || 50, title: $('#contentImpactTitle1').value.trim(), desc: $('#contentImpactDesc1').value.trim() },
-          { percent: parseInt($('#contentImpactPercent2').value) || 30, title: $('#contentImpactTitle2').value.trim(), desc: $('#contentImpactDesc2').value.trim() },
-          { percent: parseInt($('#contentImpactPercent3').value) || 20, title: $('#contentImpactTitle3').value.trim(), desc: $('#contentImpactDesc3').value.trim() }
-        ]
+        items: currentImpactItems.map((it, idx) => ({
+          percent: parseFloat($(`#impactPercent_${idx}`)?.value) || it.percent || 0,
+          title: $(`#impactTitle_${idx}`) ? $(`#impactTitle_${idx}`).value.trim() : (it.title || ''),
+          desc: $(`#impactDesc_${idx}`) ? $(`#impactDesc_${idx}`).value.trim() : (it.desc || ''),
+          icon: $(`#impactIcon_${idx}`) ? $(`#impactIcon_${idx}`).value : (it.icon || 'fa-chart-pie'),
+          color: it.color || '#8ce44c',
+          active: $(`#impactActive_${idx}`) ? $(`#impactActive_${idx}`).checked : (it.active !== false)
+        }))
       },
       boutique: {
         tag: $('#contentBoutiqueTag').value.trim(),
@@ -1021,6 +1172,27 @@
         updatePhotoPreviewBox($('#esatPhotoPreview'), '');
         btnRemoveEsat.style.display = 'none';
         toast('Photo de l\'ESAT retirée.');
+      });
+    }
+
+    // Bouton ajouter part impact
+    const btnAddImpact = $('#btnAddImpactItem');
+    if (btnAddImpact) {
+      btnAddImpact.addEventListener('click', () => {
+        const PRESET_COLORS = ['#8ce44c', '#38bdf8', '#f59e0b', '#a855f7', '#ec4899', '#14b8a6'];
+        const nextColor = PRESET_COLORS[currentImpactItems.length % PRESET_COLORS.length];
+        currentImpactItems.push({
+          percent: 10,
+          title: '',
+          desc: '',
+          icon: 'fa-chart-pie',
+          color: nextColor,
+          active: true
+        });
+        renderImpactItemsAdmin();
+        const newIndex = currentImpactItems.length - 1;
+        const titleField = $(`#impactTitle_${newIndex}`);
+        if (titleField) titleField.focus();
       });
     }
 

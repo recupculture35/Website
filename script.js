@@ -46,9 +46,9 @@
         title: "Ce que deviennent vos dons",
         description: "Pour chaque lot de 10 000 livres collectés, voici leur destination :",
         items: [
-          { percent: 50, title: "Revente", desc: "Boutique solidaire & en ligne — accès à la culture à prix abordable" },
-          { percent: 30, title: "Recyclage", desc: "Transformation en papier recyclé — zéro déchet pour la planète" },
-          { percent: 20, title: "Humanitaire", desc: "Dons à des causes humanitaires — la culture au-delà des frontières" }
+          { percent: 50, title: "Revente", desc: "Boutique solidaire & en ligne — accès à la culture à prix abordable", icon: "fa-store", color: "#8ce44c", active: true },
+          { percent: 30, title: "Recyclage", desc: "Transformation en papier recyclé — zéro déchet pour la planète", icon: "fa-recycle", color: "#38bdf8", active: true },
+          { percent: 20, title: "Humanitaire", desc: "Dons à des causes humanitaires — la culture au-delà des frontières", icon: "fa-globe-africa", color: "#f59e0b", active: true }
         ]
       },
       boutique: {
@@ -285,33 +285,49 @@
     requestAnimationFrame(step);
   }
 
+  let impactObserver = null;
+
   function initImpactCounters() {
     const impactSection = $('#impact');
     if (!impactSection) return;
 
+    if (impactObserver) {
+      impactObserver.disconnect();
+    }
+
+    const runAnimations = () => {
+      // Compteurs chiffres
+      $$('.impact-percent').forEach(el => {
+        const target = parseInt(el.dataset.target, 10) || 0;
+        animateCounter(el, target, 1800);
+      });
+
+      // Anneaux SVG
+      $$('.ring-progress').forEach(ring => {
+        const offset = parseInt(ring.dataset.offset, 10);
+        ring.style.transition = 'stroke-dashoffset 2s cubic-bezier(0.4,0,0.2,1)';
+        requestAnimationFrame(() => {
+          ring.style.strokeDashoffset = offset;
+        });
+      });
+    };
+
+    // Si la section est déjà visible à l'écran, déclencher directement
+    const rect = impactSection.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      runAnimations();
+      return;
+    }
+
     let triggered = false;
-    const observer = new IntersectionObserver(entries => {
+    impactObserver = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting && !triggered) {
         triggered = true;
-
-        // Compteurs chiffres
-        $$('.impact-percent').forEach(el => {
-          const target = parseInt(el.dataset.target, 10);
-          animateCounter(el, target, 1800);
-        });
-
-        // Anneaux SVG
-        $$('.ring-progress').forEach(ring => {
-          const offset = parseInt(ring.dataset.offset, 10);
-          ring.style.transition = 'stroke-dashoffset 2s cubic-bezier(0.4,0,0.2,1)';
-          requestAnimationFrame(() => {
-            ring.style.strokeDashoffset = offset;
-          });
-        });
+        runAnimations();
       }
-    }, { threshold: 0.3 });
+    }, { threshold: 0.2 });
 
-    observer.observe(impactSection);
+    impactObserver.observe(impactSection);
   }
 
   // ─── Carte Leaflet ─────────────────────────────────
@@ -617,6 +633,42 @@
       if (c.impact.tag && $('#impactTag')) $('#impactTag').textContent = c.impact.tag;
       if (c.impact.title && $('#impact-title')) $('#impact-title').textContent = c.impact.title;
       if (c.impact.description && $('#impactDesc')) $('#impactDesc').textContent = c.impact.description;
+
+      const grid = $('#impactGrid');
+      if (grid && Array.isArray(c.impact.items)) {
+        const activeItems = c.impact.items.filter(it => it.active !== false);
+        if (activeItems.length > 0) {
+          const PRESET_COLORS = ['#8ce44c', '#38bdf8', '#f59e0b', '#a855f7', '#ec4899', '#14b8a6'];
+          grid.innerHTML = activeItems.map((it, idx) => {
+            const pct = Math.max(0, Math.min(100, parseFloat(it.percent) || 0));
+            const offset = Math.round(314 * (1 - pct / 100));
+            const color = it.color || PRESET_COLORS[idx % PRESET_COLORS.length];
+            const icon = it.icon || 'fa-chart-pie';
+            return `
+              <div class="impact-card reveal active" style="--delay: ${idx * 0.15}s">
+                <div class="impact-ring" role="img" aria-label="${pct}% ${escapeHtml(it.title || '')}">
+                  <svg viewBox="0 0 120 120" aria-hidden="true">
+                    <circle cx="60" cy="60" r="50" fill="none" class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="12"/>
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="${color}" stroke-width="12"
+                      stroke-dasharray="314" stroke-dashoffset="314" class="ring-progress" data-offset="${offset}"/>
+                  </svg>
+                  <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:2px">
+                    <span class="impact-percent" data-target="${pct}" aria-label="${pct} pourcent">0</span>
+                    <span class="impact-unit">%</span>
+                  </div>
+                </div>
+                <div class="impact-info">
+                  <i class="fas ${escapeHtml(icon)}" aria-hidden="true"></i>
+                  <h3>${escapeHtml(it.title || '')}</h3>
+                  <p>${escapeHtml(it.desc || '')}</p>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          initImpactCounters();
+        }
+      }
     }
 
     // Boutique

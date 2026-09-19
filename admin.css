@@ -852,3 +852,81 @@ input[type="file"] { display: none; }
   .import-export-grid { grid-template-columns: 1fr; }
 }
 
+/* =========================================================
+   GESTION DYNAMIQUE DES PARTS D'IMPACT (CMS)
+   ========================================================= */
+.impact-item-admin-card {
+  background: var(--gray-50);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  transition: var(--transition);
+}
+.impact-item-admin-card:hover {
+  border-color: var(--green-300);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+}
+.impact-item-admin-card.inactive {
+  opacity: 0.65;
+  background: #f9f9f9;
+  border-style: dashed;
+}
+.impact-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.impact-item-title-badge {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--gray-800);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.impact-item-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.impact-status-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  user-select: none;
+}
+.impact-status-toggle input[type="checkbox"] {
+  accent-color: var(--green-700);
+  width: 17px;
+  height: 17px;
+  cursor: pointer;
+}
+.impact-total-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all 0.25s ease;
+}
+.impact-total-badge.optimal {
+  background: rgba(46, 125, 50, 0.12);
+  color: #2e7d32;
+  border: 1px solid rgba(46, 125, 50, 0.3);
+}
+.impact-total-badge.warning {
+  background: rgba(230, 81, 0, 0.12);
+  color: #e65100;
+  border: 1px solid rgba(230, 81, 0, 0.3);
+}
+
