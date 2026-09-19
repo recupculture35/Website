@@ -131,6 +131,23 @@
     ]
   };
 
+  // Helper pour fusionner en profondeur sans écraser par du vide
+  function deepMerge(target, source) {
+    if (!source || typeof source !== 'object') return target;
+    const output = JSON.parse(JSON.stringify(target || {}));
+    for (const key of Object.keys(source)) {
+      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+        if (Object.keys(source[key]).length === 0 && output[key] && Object.keys(output[key]).length > 0) {
+          continue;
+        }
+        output[key] = deepMerge(output[key] || {}, source[key]);
+      } else if (source[key] !== undefined && source[key] !== null && source[key] !== '') {
+        output[key] = source[key];
+      }
+    }
+    return output;
+  }
+
   let appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
 
   async function loadData() {
@@ -140,7 +157,7 @@
       if (res.ok) {
         const json = await res.json();
         if (json && (Array.isArray(json.collectPoints) || json.siteContent)) {
-          appData = Object.assign({}, DEFAULT_DATA, json);
+          appData = deepMerge(DEFAULT_DATA, json);
           try { localStorage.setItem('recupculture_data', JSON.stringify(appData)); } catch (_) {}
           return;
         }
@@ -155,7 +172,7 @@
       try {
         const parsed = JSON.parse(stored);
         if (parsed && (Array.isArray(parsed.collectPoints) || parsed.siteContent)) {
-          appData = Object.assign({}, DEFAULT_DATA, parsed);
+          appData = deepMerge(DEFAULT_DATA, parsed);
           return;
         }
       } catch (e) { /* ignore */ }
@@ -167,7 +184,7 @@
       if (res.ok) {
         const json = await res.json();
         if (json && (Array.isArray(json.collectPoints) || json.siteContent)) {
-          appData = Object.assign({}, DEFAULT_DATA, json);
+          appData = deepMerge(DEFAULT_DATA, json);
         }
       }
     } catch (e) {
@@ -514,7 +531,7 @@
 
   // ─── Rendu dynamique des contenus de rubriques (CMS) ─
   function renderSiteContent() {
-    const c = appData.siteContent;
+    const c = deepMerge(DEFAULT_DATA.siteContent, appData.siteContent || {});
     if (!c) return;
 
     // Hero

@@ -18,6 +18,10 @@ const UPLOADS_DIR = process.env.UPLOADS_DIR || path.join(__dirname, 'uploads');
 const CONFIG_FILE = path.join(DATA_DIR, 'config.json');
 const CREDS_FILE = path.join(DATA_DIR, 'credentials.json');
 
+const BUNDLED_DATA_DIR = path.join(__dirname, 'data');
+const BUNDLED_CONFIG = path.join(BUNDLED_DATA_DIR, 'config.json');
+const BUNDLED_CREDS = path.join(BUNDLED_DATA_DIR, 'credentials.json');
+
 // S'assurer que les dossiers nécessaires existent
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -53,6 +57,56 @@ function writeJson(filePath, data) {
     return false;
   }
 }
+
+// ─── Initialisation robuste des données au démarrage ───
+function initDataFiles() {
+  try {
+    let currentConfig = readJson(CONFIG_FILE, null);
+    const bundledConfig = readJson(BUNDLED_CONFIG, {});
+    let needsWriteConfig = false;
+
+    if (!currentConfig || !currentConfig.siteContent || Object.keys(currentConfig.siteContent).length === 0) {
+      currentConfig = Object.assign({}, bundledConfig, currentConfig || {});
+      needsWriteConfig = true;
+    } else if (bundledConfig.siteContent) {
+      // Vérifier et restaurer chaque rubrique manquante
+      for (const key of Object.keys(bundledConfig.siteContent)) {
+        if (!currentConfig.siteContent[key] || Object.keys(currentConfig.siteContent[key]).length === 0) {
+          currentConfig.siteContent[key] = bundledConfig.siteContent[key];
+          needsWriteConfig = true;
+        }
+      }
+      if (!Array.isArray(currentConfig.collectPoints) || currentConfig.collectPoints.length === 0) {
+        if (Array.isArray(bundledConfig.collectPoints) && bundledConfig.collectPoints.length > 0) {
+          currentConfig.collectPoints = bundledConfig.collectPoints;
+          needsWriteConfig = true;
+        }
+      }
+      if (!Array.isArray(currentConfig.news) || currentConfig.news.length === 0) {
+        if (Array.isArray(bundledConfig.news) && bundledConfig.news.length > 0) {
+          currentConfig.news = bundledConfig.news;
+          needsWriteConfig = true;
+        }
+      }
+    }
+
+    if (needsWriteConfig) {
+      writeJson(CONFIG_FILE, currentConfig);
+      console.log(`[INIT] config.json synchronisé avec les données par défaut.`);
+    }
+
+    // Initialiser credentials.json s'il n'existe pas
+    if (!fs.existsSync(CREDS_FILE) || fs.statSync(CREDS_FILE).size < 10) {
+      if (fs.existsSync(BUNDLED_CREDS)) {
+        fs.copyFileSync(BUNDLED_CREDS, CREDS_FILE);
+        console.log(`[INIT] credentials.json initialisé depuis le fichier par défaut.`);
+      }
+    }
+  } catch (err) {
+    console.error(`[INIT] Erreur lors de l'initialisation des fichiers:`, err.message);
+  }
+}
+initDataFiles();
 
 function hashPassword(str) {
   return crypto.createHash('sha256').update(str).digest('hex');
@@ -105,7 +159,23 @@ app.get('/api/health', (req, res) => {
 });
 
 app.get('/api/data', (req, res) => {
-  const config = readJson(CONFIG_FILE, { siteContent: {}, collectPoints: [], news: [] });
+  let config = readJson(CONFIG_FILE, null);
+  const bundled = readJson(BUNDLED_CONFIG, { siteContent: {}, collectPoints: [], news: [] });
+  if (!config || !config.siteContent || Object.keys(config.siteContent).length === 0) {
+    config = Object.assign({}, bundled, config || {});
+  } else if (bundled.siteContent) {
+    for (const key of Object.keys(bundled.siteContent)) {
+      if (!config.siteContent[key] || Object.keys(config.siteContent[key]).length === 0) {
+        config.siteContent[key] = bundled.siteContent[key];
+      }
+    }
+    if (!Array.isArray(config.collectPoints) || config.collectPoints.length === 0) {
+      config.collectPoints = bundled.collectPoints || [];
+    }
+    if (!Array.isArray(config.news) || config.news.length === 0) {
+      config.news = bundled.news || [];
+    }
+  }
   res.json(config);
 });
 

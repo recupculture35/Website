@@ -13,3 +13,4 @@ Thumbs.db
 *.tmp
 /*.png
 /*.pdf
+.agents/

@@ -99,9 +99,11 @@
         photo: ""
       },
       esat: {
-        tag: "Partenariat ESAT",
-        title: "Une économie circulaire et inclusive",
-        description: "Nous croyons que l'écologie et l'inclusion sociale peuvent avancer ensemble.",
+        tag: "Partenariat Solidaire & Social",
+        title: "Notre Partenariat avec les ESAT",
+        description: "L'économie circulaire au service de l'inclusion des personnes en situation de handicap.",
+        partnerName: "ESAT de Châteauneuf-d'Ille-et-Vilaine",
+        partnerDesc: "Le tri, le contrôle qualité et le reconditionnement de l'ensemble des biens culturels collectés sont réalisés par les travailleurs de l'ESAT, leur offrant une activité valorisante et stimulante.",
         photo: "",
         items: [
           { title: "Activité valorisante", desc: "Le tri des articles collectés est réalisé par les travailleurs de l'ESAT de Châteauneuf — une activité concrète et valorisante pour des personnes en situation de handicap." },
@@ -149,43 +151,69 @@
     ]
   };
 
+  // Helper pour fusionner en profondeur sans écraser par du vide
+  function deepMerge(target, source) {
+    if (!source || typeof source !== 'object') return target;
+    const output = JSON.parse(JSON.stringify(target || {}));
+    for (const key of Object.keys(source)) {
+      if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+        if (Object.keys(source[key]).length === 0 && output[key] && Object.keys(output[key]).length > 0) {
+          continue;
+        }
+        output[key] = deepMerge(output[key] || {}, source[key]);
+      } else if (source[key] !== undefined && source[key] !== null && source[key] !== '') {
+        output[key] = source[key];
+      }
+    }
+    return output;
+  }
+
   let appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
   let credentials = JSON.parse(JSON.stringify(DEFAULT_CREDS));
 
   async function loadData() {
     // 1. Tenter l'API backend (/api/data)
+    let dataLoaded = false;
     try {
       const res = await fetch('/api/data', { cache: 'no-cache' });
       if (res.ok) {
         const json = await res.json();
         if (json && (Array.isArray(json.collectPoints) || json.siteContent)) {
-          appData = Object.assign({}, DEFAULT_DATA, json);
+          appData = deepMerge(DEFAULT_DATA, json);
+          if (!appData.siteContent || Object.keys(appData.siteContent).length === 0) {
+            appData.siteContent = JSON.parse(JSON.stringify(DEFAULT_DATA.siteContent));
+          }
           saveData();
+          dataLoaded = true;
         }
       }
     } catch (_) {}
 
-    // 2. Si non connecté à l'API, vérifier le localStorage
-    if (!appData.collectPoints || !appData.collectPoints.length) {
+    // 2. Vérifier le cache localStorage
+    if (!dataLoaded) {
       const d = localStorage.getItem(LS_DATA);
       if (d) {
         try {
           const parsed = JSON.parse(d);
           if (parsed && (Array.isArray(parsed.collectPoints) || parsed.siteContent)) {
-            appData = Object.assign({}, DEFAULT_DATA, parsed);
-          }
-        } catch(_) {}
-      } else {
-        try {
-          const r = await fetch('data/config.json');
-          if (r.ok) {
-            const json = await r.json();
-            if (json && (Array.isArray(json.collectPoints) || json.siteContent)) {
-              appData = Object.assign({}, DEFAULT_DATA, json);
-            }
+            appData = deepMerge(DEFAULT_DATA, parsed);
+            dataLoaded = true;
           }
         } catch(_) {}
       }
+    }
+
+    // 3. Fallback direct vers data/config.json
+    if (!dataLoaded) {
+      try {
+        const r = await fetch('data/config.json');
+        if (r.ok) {
+          const json = await r.json();
+          if (json && (Array.isArray(json.collectPoints) || json.siteContent)) {
+            appData = deepMerge(DEFAULT_DATA, json);
+          }
+        }
+      } catch(_) {}
     }
 
     // Utilisateurs
@@ -662,120 +690,120 @@
 
   // ─── CONTENUS DU SITE (CMS) ─────────────────────────
   function populateContentForm() {
-    const c = appData.siteContent || {};
+    // S'assurer que appData.siteContent est fusionné avec les valeurs par défaut
+    appData.siteContent = deepMerge(DEFAULT_DATA.siteContent, appData.siteContent || {});
+    const c = appData.siteContent;
+    const def = DEFAULT_DATA.siteContent;
 
     // Hero
-    const hero = c.hero || {};
-    if ($('#contentHeroBadge')) $('#contentHeroBadge').value = hero.badge || '';
-    if ($('#contentHeroSubtitle')) $('#contentHeroSubtitle').value = hero.subtitle || '';
-    const stats = hero.stats || [];
-    if ($('#contentHeroStatNum1')) $('#contentHeroStatNum1').value = stats[0]?.num || '';
-    if ($('#contentHeroStatLabel1')) $('#contentHeroStatLabel1').value = stats[0]?.label || '';
-    if ($('#contentHeroStatNum2')) $('#contentHeroStatNum2').value = stats[1]?.num || '';
-    if ($('#contentHeroStatLabel2')) $('#contentHeroStatLabel2').value = stats[1]?.label || '';
-    if ($('#contentHeroStatNum3')) $('#contentHeroStatNum3').value = stats[2]?.num || '';
-    if ($('#contentHeroStatLabel3')) $('#contentHeroStatLabel3').value = stats[2]?.label || '';
+    const hero = c.hero || def.hero;
+    if ($('#contentHeroBadge')) $('#contentHeroBadge').value = hero.badge || def.hero.badge;
+    if ($('#contentHeroSubtitle')) $('#contentHeroSubtitle').value = hero.subtitle || def.hero.subtitle;
+    const stats = (hero.stats && hero.stats.length) ? hero.stats : def.hero.stats;
+    if ($('#contentHeroStatNum1')) $('#contentHeroStatNum1').value = stats[0]?.num || def.hero.stats[0].num;
+    if ($('#contentHeroStatLabel1')) $('#contentHeroStatLabel1').value = stats[0]?.label || def.hero.stats[0].label;
+    if ($('#contentHeroStatNum2')) $('#contentHeroStatNum2').value = stats[1]?.num || def.hero.stats[1].num;
+    if ($('#contentHeroStatLabel2')) $('#contentHeroStatLabel2').value = stats[1]?.label || def.hero.stats[1].label;
+    if ($('#contentHeroStatNum3')) $('#contentHeroStatNum3').value = stats[2]?.num || def.hero.stats[2].num;
+    if ($('#contentHeroStatLabel3')) $('#contentHeroStatLabel3').value = stats[2]?.label || def.hero.stats[2].label;
 
     // Mission
-    const mission = c.mission || {};
-    if ($('#contentMissionTag')) $('#contentMissionTag').value = mission.tag || '';
-    if ($('#contentMissionTitle')) $('#contentMissionTitle').value = mission.title || '';
-    if ($('#contentMissionDesc')) $('#contentMissionDesc').value = mission.description || '';
-    const steps = mission.steps || [];
-    if ($('#contentMissionStep1Title')) $('#contentMissionStep1Title').value = steps[0]?.title || '';
-    if ($('#contentMissionStep1Desc')) $('#contentMissionStep1Desc').value = steps[0]?.desc || '';
-    if ($('#contentMissionStep2Title')) $('#contentMissionStep2Title').value = steps[1]?.title || '';
-    if ($('#contentMissionStep2Desc')) $('#contentMissionStep2Desc').value = steps[1]?.desc || '';
-    if ($('#contentMissionStep3Title')) $('#contentMissionStep3Title').value = steps[2]?.title || '';
-    if ($('#contentMissionStep3Desc')) $('#contentMissionStep3Desc').value = steps[2]?.desc || '';
+    const mission = c.mission || def.mission;
+    if ($('#contentMissionTag')) $('#contentMissionTag').value = mission.tag || def.mission.tag;
+    if ($('#contentMissionTitle')) $('#contentMissionTitle').value = mission.title || def.mission.title;
+    if ($('#contentMissionDesc')) $('#contentMissionDesc').value = mission.description || def.mission.description;
+    const steps = (mission.steps && mission.steps.length) ? mission.steps : def.mission.steps;
+    if ($('#contentMissionStep1Title')) $('#contentMissionStep1Title').value = steps[0]?.title || def.mission.steps[0].title;
+    if ($('#contentMissionStep1Desc')) $('#contentMissionStep1Desc').value = steps[0]?.desc || def.mission.steps[0].desc;
+    if ($('#contentMissionStep2Title')) $('#contentMissionStep2Title').value = steps[1]?.title || def.mission.steps[1].title;
+    if ($('#contentMissionStep2Desc')) $('#contentMissionStep2Desc').value = steps[1]?.desc || def.mission.steps[1].desc;
+    if ($('#contentMissionStep3Title')) $('#contentMissionStep3Title').value = steps[2]?.title || def.mission.steps[2].title;
+    if ($('#contentMissionStep3Desc')) $('#contentMissionStep3Desc').value = steps[2]?.desc || def.mission.steps[2].desc;
 
     // Collecte
-    const col = c.collecte || {};
-    if ($('#contentCollecteTag')) $('#contentCollecteTag').value = col.tag || '';
-    if ($('#contentCollecteTitle')) $('#contentCollecteTitle').value = col.title || '';
-    if ($('#contentCollecteDesc')) $('#contentCollecteDesc').value = col.description || '';
-    const cItems = col.items || [];
-    if ($('#contentCollecteItem1Title')) $('#contentCollecteItem1Title').value = cItems[0]?.title || '';
-    if ($('#contentCollecteItem1Desc')) $('#contentCollecteItem1Desc').value = cItems[0]?.desc || '';
-    if ($('#contentCollecteItem2Title')) $('#contentCollecteItem2Title').value = cItems[1]?.title || '';
-    if ($('#contentCollecteItem2Desc')) $('#contentCollecteItem2Desc').value = cItems[1]?.desc || '';
-    if ($('#contentCollecteItem3Title')) $('#contentCollecteItem3Title').value = cItems[2]?.title || '';
-    if ($('#contentCollecteItem3Desc')) $('#contentCollecteItem3Desc').value = cItems[2]?.desc || '';
-    if ($('#contentCollecteItem4Title')) $('#contentCollecteItem4Title').value = cItems[3]?.title || '';
-    if ($('#contentCollecteItem4Desc')) $('#contentCollecteItem4Desc').value = cItems[3]?.desc || '';
+    const col = c.collecte || def.collecte;
+    if ($('#contentCollecteTag')) $('#contentCollecteTag').value = col.tag || def.collecte.tag;
+    if ($('#contentCollecteTitle')) $('#contentCollecteTitle').value = col.title || def.collecte.title;
+    if ($('#contentCollecteDesc')) $('#contentCollecteDesc').value = col.description || def.collecte.description;
+    const cItems = (col.items && col.items.length) ? col.items : def.collecte.items;
+    if ($('#contentCollecteItem1Title')) $('#contentCollecteItem1Title').value = cItems[0]?.title || def.collecte.items[0].title;
+    if ($('#contentCollecteItem1Desc')) $('#contentCollecteItem1Desc').value = cItems[0]?.desc || def.collecte.items[0].desc;
+    if ($('#contentCollecteItem2Title')) $('#contentCollecteItem2Title').value = cItems[1]?.title || def.collecte.items[1].title;
+    if ($('#contentCollecteItem2Desc')) $('#contentCollecteItem2Desc').value = cItems[1]?.desc || def.collecte.items[1].desc;
+    if ($('#contentCollecteItem3Title')) $('#contentCollecteItem3Title').value = cItems[2]?.title || def.collecte.items[2].title;
+    if ($('#contentCollecteItem3Desc')) $('#contentCollecteItem3Desc').value = cItems[2]?.desc || def.collecte.items[2].desc;
+    if ($('#contentCollecteItem4Title')) $('#contentCollecteItem4Title').value = cItems[3]?.title || def.collecte.items[3].title;
+    if ($('#contentCollecteItem4Desc')) $('#contentCollecteItem4Desc').value = cItems[3]?.desc || def.collecte.items[3].desc;
 
     // Impact
-    const impact = c.impact || {};
-    if ($('#contentImpactTag')) $('#contentImpactTag').value = impact.tag || '';
-    if ($('#contentImpactTitle')) $('#contentImpactTitle').value = impact.title || '';
-    if ($('#contentImpactDesc')) $('#contentImpactDesc').value = impact.description || '';
-    const impItems = impact.items || [];
-    if ($('#contentImpactPercent1')) $('#contentImpactPercent1').value = impItems[0]?.percent ?? 50;
-    if ($('#contentImpactTitle1')) $('#contentImpactTitle1').value = impItems[0]?.title || '';
-    if ($('#contentImpactDesc1')) $('#contentImpactDesc1').value = impItems[0]?.desc || '';
-    if ($('#contentImpactPercent2')) $('#contentImpactPercent2').value = impItems[1]?.percent ?? 30;
-    if ($('#contentImpactTitle2')) $('#contentImpactTitle2').value = impItems[1]?.title || '';
-    if ($('#contentImpactDesc2')) $('#contentImpactDesc2').value = impItems[1]?.desc || '';
-    if ($('#contentImpactPercent3')) $('#contentImpactPercent3').value = impItems[2]?.percent ?? 20;
-    if ($('#contentImpactTitle3')) $('#contentImpactTitle3').value = impItems[2]?.title || '';
-    if ($('#contentImpactDesc3')) $('#contentImpactDesc3').value = impItems[2]?.desc || '';
+    const impact = c.impact || def.impact;
+    if ($('#contentImpactTag')) $('#contentImpactTag').value = impact.tag || def.impact.tag;
+    if ($('#contentImpactTitle')) $('#contentImpactTitle').value = impact.title || def.impact.title;
+    if ($('#contentImpactDesc')) $('#contentImpactDesc').value = impact.description || def.impact.description;
+    const impItems = (impact.items && impact.items.length) ? impact.items : def.impact.items;
+    if ($('#contentImpactPercent1')) $('#contentImpactPercent1').value = impItems[0]?.percent ?? def.impact.items[0].percent;
+    if ($('#contentImpactTitle1')) $('#contentImpactTitle1').value = impItems[0]?.title || def.impact.items[0].title;
+    if ($('#contentImpactDesc1')) $('#contentImpactDesc1').value = impItems[0]?.desc || def.impact.items[0].desc;
+    if ($('#contentImpactPercent2')) $('#contentImpactPercent2').value = impItems[1]?.percent ?? def.impact.items[1].percent;
+    if ($('#contentImpactTitle2')) $('#contentImpactTitle2').value = impItems[1]?.title || def.impact.items[1].title;
+    if ($('#contentImpactDesc2')) $('#contentImpactDesc2').value = impItems[1]?.desc || def.impact.items[1].desc;
+    if ($('#contentImpactPercent3')) $('#contentImpactPercent3').value = impItems[2]?.percent ?? def.impact.items[2].percent;
+    if ($('#contentImpactTitle3')) $('#contentImpactTitle3').value = impItems[2]?.title || def.impact.items[2].title;
+    if ($('#contentImpactDesc3')) $('#contentImpactDesc3').value = impItems[2]?.desc || def.impact.items[2].desc;
 
     // Boutique
-    const b = c.boutique || {};
-    if ($('#contentBoutiqueTag')) $('#contentBoutiqueTag').value = b.tag || '';
-    if ($('#contentBoutiqueTitle')) $('#contentBoutiqueTitle').value = b.title || '';
-    if ($('#contentBoutiqueLead')) $('#contentBoutiqueLead').value = b.lead || '';
-    if ($('#contentBoutiqueAddress')) $('#contentBoutiqueAddress').value = b.address || '';
-    if ($('#contentBoutiqueHours')) $('#contentBoutiqueHours').value = b.hours || '';
-    if ($('#contentBoutiquePrices')) $('#contentBoutiquePrices').value = b.prices || '';
+    const b = c.boutique || def.boutique;
+    if ($('#contentBoutiqueTag')) $('#contentBoutiqueTag').value = b.tag || def.boutique.tag;
+    if ($('#contentBoutiqueTitle')) $('#contentBoutiqueTitle').value = b.title || def.boutique.title;
+    if ($('#contentBoutiqueLead')) $('#contentBoutiqueLead').value = b.lead || def.boutique.lead;
+    if ($('#contentBoutiqueAddress')) $('#contentBoutiqueAddress').value = b.address || def.boutique.address;
+    if ($('#contentBoutiqueHours')) $('#contentBoutiqueHours').value = b.hours || def.boutique.hours;
+    if ($('#contentBoutiquePrices')) $('#contentBoutiquePrices').value = b.prices || def.boutique.prices;
     const bPhoto = b.photo || '';
     if ($('#contentBoutiquePhoto')) $('#contentBoutiquePhoto').value = bPhoto;
     updatePhotoPreviewBox($('#boutiquePhotoPreview'), bPhoto);
     if ($('#btnRemoveBoutiquePhoto')) $('#btnRemoveBoutiquePhoto').style.display = bPhoto ? 'inline-flex' : 'none';
 
     // ESAT
-    const esat = c.esat || {};
-    if ($('#contentEsatTag')) $('#contentEsatTag').value = esat.tag || '';
-    if ($('#contentEsatTitle')) $('#contentEsatTitle').value = esat.title || '';
-    if ($('#contentEsatDesc')) $('#contentEsatDesc').value = esat.description || '';
-    if ($('#contentEsatPartnerName')) $('#contentEsatPartnerName').value = esat.partnerName || 'ESAT de Châteauneuf-d\'Ille-et-Vilaine';
-    if ($('#contentEsatPartnerDesc')) $('#contentEsatPartnerDesc').value = esat.partnerDesc || '';
+    const esat = c.esat || def.esat;
+    if ($('#contentEsatTag')) $('#contentEsatTag').value = esat.tag || def.esat.tag;
+    if ($('#contentEsatTitle')) $('#contentEsatTitle').value = esat.title || def.esat.title;
+    if ($('#contentEsatDesc')) $('#contentEsatDesc').value = esat.description || def.esat.description;
+    if ($('#contentEsatPartnerName')) $('#contentEsatPartnerName').value = esat.partnerName || def.esat.partnerName;
+    if ($('#contentEsatPartnerDesc')) $('#contentEsatPartnerDesc').value = esat.partnerDesc || def.esat.partnerDesc;
     const esatPhoto = esat.photo || '';
     if ($('#contentEsatPhoto')) $('#contentEsatPhoto').value = esatPhoto;
     updatePhotoPreviewBox($('#esatPhotoPreview'), esatPhoto);
     if ($('#btnRemoveEsatPhoto')) $('#btnRemoveEsatPhoto').style.display = esatPhoto ? 'inline-flex' : 'none';
 
-    const esatItems = esat.items || [];
-    if ($('#contentEsatItem1Title')) $('#contentEsatItem1Title').value = esatItems[0]?.title || '';
-    if ($('#contentEsatItem1Desc')) $('#contentEsatItem1Desc').value = esatItems[0]?.desc || '';
-    if ($('#contentEsatItem2Title')) $('#contentEsatItem2Title').value = esatItems[1]?.title || '';
-    if ($('#contentEsatItem2Desc')) $('#contentEsatItem2Desc').value = esatItems[1]?.desc || '';
-    if ($('#contentEsatItem3Title')) $('#contentEsatItem3Title').value = esatItems[2]?.title || '';
-    if ($('#contentEsatItem3Desc')) $('#contentEsatItem3Desc').value = esatItems[2]?.desc || '';
+    const esatItems = (esat.items && esat.items.length) ? esat.items : def.esat.items;
+    if ($('#contentEsatItem1Title')) $('#contentEsatItem1Title').value = esatItems[0]?.title || def.esat.items[0].title;
+    if ($('#contentEsatItem1Desc')) $('#contentEsatItem1Desc').value = esatItems[0]?.desc || def.esat.items[0].desc;
+    if ($('#contentEsatItem2Title')) $('#contentEsatItem2Title').value = esatItems[1]?.title || def.esat.items[1].title;
+    if ($('#contentEsatItem2Desc')) $('#contentEsatItem2Desc').value = esatItems[1]?.desc || def.esat.items[1].desc;
+    if ($('#contentEsatItem3Title')) $('#contentEsatItem3Title').value = esatItems[2]?.title || def.esat.items[2].title;
+    if ($('#contentEsatItem3Desc')) $('#contentEsatItem3Desc').value = esatItems[2]?.desc || def.esat.items[2].desc;
 
     // Équipe
-    const eq = c.equipe || {};
-    if ($('#contentEquipeTag')) $('#contentEquipeTag').value = eq.tag || '';
-    if ($('#contentEquipeTitle')) $('#contentEquipeTitle').value = eq.title || '';
-    if ($('#contentEquipeDesc')) $('#contentEquipeDesc').value = eq.description || '';
+    const eq = c.equipe || def.equipe;
+    if ($('#contentEquipeTag')) $('#contentEquipeTag').value = eq.tag || def.equipe.tag;
+    if ($('#contentEquipeTitle')) $('#contentEquipeTitle').value = eq.title || def.equipe.title;
+    if ($('#contentEquipeDesc')) $('#contentEquipeDesc').value = eq.description || def.equipe.description;
     if (Array.isArray(eq.members) && eq.members.length) {
       currentTeamMembers = JSON.parse(JSON.stringify(eq.members));
     } else {
-      currentTeamMembers = [
-        { name: "Fabien Lemoine", role: "Co-fondateur", bio: "15 ans d'expérience dans le domaine du patrimoine culturel. Passionné par la préservation et le partage de la culture sous toutes ses formes.", photo: "" },
-        { name: "François-Xavier Mahoïc", role: "Co-fondateur", bio: "Plus de 15 ans d'expérience dans l'accompagnement des ESAT et du handicap psychique. Convaincu que l'inclusion sociale est un levier de transformation.", photo: "" }
-      ];
+      currentTeamMembers = JSON.parse(JSON.stringify(def.equipe.members));
     }
     renderTeamMembersAdmin();
 
     // Contact
-    const ct = c.contact || {};
-    if ($('#contentContactTag')) $('#contentContactTag').value = ct.tag || '';
-    if ($('#contentContactTitle')) $('#contentContactTitle').value = ct.title || '';
-    if ($('#contentContactDesc')) $('#contentContactDesc').value = ct.description || '';
-    if ($('#contentContactInstagram')) $('#contentContactInstagram').value = ct.instagram || '';
-    if ($('#contentContactFacebook')) $('#contentContactFacebook').value = ct.facebook || '';
-    if ($('#contentContactWebsite')) $('#contentContactWebsite').value = ct.website || '';
+    const ct = c.contact || def.contact;
+    if ($('#contentContactTag')) $('#contentContactTag').value = ct.tag || def.contact.tag;
+    if ($('#contentContactTitle')) $('#contentContactTitle').value = ct.title || def.contact.title;
+    if ($('#contentContactDesc')) $('#contentContactDesc').value = ct.description || def.contact.description;
+    if ($('#contentContactInstagram')) $('#contentContactInstagram').value = ct.instagram || def.contact.instagram;
+    if ($('#contentContactFacebook')) $('#contentContactFacebook').value = ct.facebook || def.contact.facebook;
+    if ($('#contentContactWebsite')) $('#contentContactWebsite').value = ct.website || def.contact.website;
   }
 
   async function saveContentForm() {
