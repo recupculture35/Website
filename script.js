@@ -141,6 +141,12 @@
           continue;
         }
         output[key] = deepMerge(output[key] || {}, source[key]);
+      } else if (Array.isArray(source[key])) {
+        // Ne pas écraser un tableau par défaut par un tableau vide
+        if (source[key].length === 0 && Array.isArray(output[key]) && output[key].length > 0) {
+          continue;
+        }
+        output[key] = source[key];
       } else if (source[key] !== undefined && source[key] !== null && source[key] !== '') {
         output[key] = source[key];
       }
@@ -151,15 +157,15 @@
   let appData = JSON.parse(JSON.stringify(DEFAULT_DATA));
 
   async function loadData() {
+    let dataLoaded = false;
     // 1. Essayer l'API backend (/api/data) en premier si servi par le serveur Node.js / Railway
     try {
       const res = await fetch('/api/data', { cache: 'no-cache' });
       if (res.ok) {
         const json = await res.json();
-        if (json && (Array.isArray(json.collectPoints) || json.siteContent)) {
+        if (json && (Array.isArray(json.collectPoints) || json.siteContent || Array.isArray(json.news))) {
           appData = deepMerge(DEFAULT_DATA, json);
-          try { localStorage.setItem('recupculture_data', JSON.stringify(appData)); } catch (_) {}
-          return;
+          dataLoaded = true;
         }
       }
     } catch (_) {
@@ -167,29 +173,42 @@
     }
 
     // 2. Essayer localStorage (cache navigateur / admin local)
-    const stored = localStorage.getItem('recupculture_data');
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (parsed && (Array.isArray(parsed.collectPoints) || parsed.siteContent)) {
-          appData = deepMerge(DEFAULT_DATA, parsed);
-          return;
-        }
-      } catch (e) { /* ignore */ }
+    if (!dataLoaded) {
+      const stored = localStorage.getItem('recupculture_data');
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          if (parsed && (Array.isArray(parsed.collectPoints) || parsed.siteContent || Array.isArray(parsed.news))) {
+            appData = deepMerge(DEFAULT_DATA, parsed);
+            dataLoaded = true;
+          }
+        } catch (e) { /* ignore */ }
+      }
     }
 
     // 3. Fallback : fichier statique data/config.json
-    try {
-      const res = await fetch('data/config.json');
-      if (res.ok) {
-        const json = await res.json();
-        if (json && (Array.isArray(json.collectPoints) || json.siteContent)) {
-          appData = deepMerge(DEFAULT_DATA, json);
+    if (!dataLoaded) {
+      try {
+        const res = await fetch('data/config.json');
+        if (res.ok) {
+          const json = await res.json();
+          if (json && (Array.isArray(json.collectPoints) || json.siteContent || Array.isArray(json.news))) {
+            appData = deepMerge(DEFAULT_DATA, json);
+          }
         }
+      } catch (e) {
+        // Sous file://, fetch est bloqué par sécurité browser : DEFAULT_DATA est déjà actif
       }
-    } catch (e) {
-      // Sous file://, fetch est bloqué par sécurité browser : DEFAULT_DATA est déjà actif
     }
+
+    // Sécurisation stricte des points et news
+    if (!Array.isArray(appData.collectPoints) || appData.collectPoints.length === 0) {
+      appData.collectPoints = JSON.parse(JSON.stringify(DEFAULT_DATA.collectPoints));
+    }
+    if (!Array.isArray(appData.news) || appData.news.length === 0) {
+      appData.news = JSON.parse(JSON.stringify(DEFAULT_DATA.news));
+    }
+    try { localStorage.setItem('recupculture_data', JSON.stringify(appData)); } catch (_) {}
   }
 
   // ─── Navigation ────────────────────────────────────

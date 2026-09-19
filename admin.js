@@ -161,6 +161,12 @@
           continue;
         }
         output[key] = deepMerge(output[key] || {}, source[key]);
+      } else if (Array.isArray(source[key])) {
+        // Si le tableau source est vide mais que la cible a des éléments par défaut, ne pas écraser
+        if (source[key].length === 0 && Array.isArray(output[key]) && output[key].length > 0) {
+          continue;
+        }
+        output[key] = source[key];
       } else if (source[key] !== undefined && source[key] !== null && source[key] !== '') {
         output[key] = source[key];
       }
@@ -178,12 +184,8 @@
       const res = await fetch('/api/data', { cache: 'no-cache' });
       if (res.ok) {
         const json = await res.json();
-        if (json && (Array.isArray(json.collectPoints) || json.siteContent)) {
+        if (json && (Array.isArray(json.collectPoints) || json.siteContent || Array.isArray(json.news))) {
           appData = deepMerge(DEFAULT_DATA, json);
-          if (!appData.siteContent || Object.keys(appData.siteContent).length === 0) {
-            appData.siteContent = JSON.parse(JSON.stringify(DEFAULT_DATA.siteContent));
-          }
-          saveData();
           dataLoaded = true;
         }
       }
@@ -195,7 +197,7 @@
       if (d) {
         try {
           const parsed = JSON.parse(d);
-          if (parsed && (Array.isArray(parsed.collectPoints) || parsed.siteContent)) {
+          if (parsed && (Array.isArray(parsed.collectPoints) || parsed.siteContent || Array.isArray(parsed.news))) {
             appData = deepMerge(DEFAULT_DATA, parsed);
             dataLoaded = true;
           }
@@ -209,12 +211,24 @@
         const r = await fetch('data/config.json');
         if (r.ok) {
           const json = await r.json();
-          if (json && (Array.isArray(json.collectPoints) || json.siteContent)) {
+          if (json && (Array.isArray(json.collectPoints) || json.siteContent || Array.isArray(json.news))) {
             appData = deepMerge(DEFAULT_DATA, json);
           }
         }
       } catch(_) {}
     }
+
+    // Sécurisation stricte : garantir que rien n'est vide
+    if (!appData.siteContent || Object.keys(appData.siteContent).length === 0) {
+      appData.siteContent = JSON.parse(JSON.stringify(DEFAULT_DATA.siteContent));
+    }
+    if (!Array.isArray(appData.collectPoints) || appData.collectPoints.length === 0) {
+      appData.collectPoints = JSON.parse(JSON.stringify(DEFAULT_DATA.collectPoints));
+    }
+    if (!Array.isArray(appData.news) || appData.news.length === 0) {
+      appData.news = JSON.parse(JSON.stringify(DEFAULT_DATA.news));
+    }
+    saveData();
 
     // Utilisateurs
     const token = getAuthToken();
@@ -406,7 +420,10 @@
     const sec = $(`#section-${name}`);
     if (sec) sec.classList.add('active');
 
-    if (name === 'map') initAdminMap();
+    if (name === 'map') {
+      initAdminMap();
+      renderAdminMapPoints();
+    }
     if (name === 'content') {
       populateContentForm();
       if (targetTab) {
@@ -1106,7 +1123,11 @@
   let pendingClick = null; // marker temporaire pour nouveau point
 
   function initAdminMap() {
-    if (adminMap) { adminMap.invalidateSize(); return; }
+    if (adminMap) {
+      adminMap.invalidateSize();
+      renderAdminMapPoints();
+      return;
+    }
 
     adminMap = L.map('adminMap', {
       center: [48.644, -2.010],
@@ -1554,6 +1575,7 @@
     // Rendre les données initiales
     renderNewsTable();
     renderUsersTable();
+    renderPointsTable();
   }
 
   // ─── BOOT ────────────────────────────────────────────

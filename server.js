@@ -22,6 +22,47 @@ const BUNDLED_DATA_DIR = path.join(__dirname, 'data');
 const BUNDLED_CONFIG = path.join(BUNDLED_DATA_DIR, 'config.json');
 const BUNDLED_CREDS = path.join(BUNDLED_DATA_DIR, 'credentials.json');
 
+// Points de collecte et actualités par défaut garantis (indépendants du volume persistant)
+const DEFAULT_COLLECT_POINTS = [
+  {
+    id: 1,
+    name: "Nous Anti Gaspi",
+    address: "Dinard, 35800",
+    description: "Point de dépôt partenaire – déposez vos livres, CD, DVD et jeux vidéo",
+    hours: "Selon horaires du magasin",
+    lat: 48.6353,
+    lng: -2.0601
+  },
+  {
+    id: 2,
+    name: "Coop Bio de l'Espérance",
+    address: "Saint-Malo, 35400",
+    description: "Point de dépôt partenaire – déposez vos livres, CD, DVD et jeux vidéo",
+    hours: "Selon horaires du magasin",
+    lat: 48.6493,
+    lng: -2.0260
+  },
+  {
+    id: 3,
+    name: "Déchèterie de Saint-Malo",
+    address: "Saint-Malo, 35400",
+    description: "Point de dépôt en déchèterie – évitez l'incinération, donnez une seconde vie !",
+    hours: "Selon horaires de la déchèterie",
+    lat: 48.6540,
+    lng: -1.9800
+  }
+];
+
+const DEFAULT_NEWS = [
+  {
+    id: 1,
+    title: "Ouverture boutique – Octobre 2025",
+    category: "boutique",
+    date: "2025-10-11",
+    content: "<p>La boutique <strong>Halle aux Artistes</strong> vous accueille le <strong>2ème week-end d'octobre</strong> (11 & 12 octobre 2025) à Châteauneuf-d'Ille-et-Vilaine.</p><p>Venez chiner des livres, CD, DVD et jeux vidéo à prix solidaire !</p>"
+  }
+];
+
 // S'assurer que les dossiers nécessaires existent
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -65,9 +106,16 @@ function initDataFiles() {
     const bundledConfig = readJson(BUNDLED_CONFIG, {});
     let needsWriteConfig = false;
 
-    if (!currentConfig || !currentConfig.siteContent || Object.keys(currentConfig.siteContent).length === 0) {
-      currentConfig = Object.assign({}, bundledConfig, currentConfig || {});
+    if (!currentConfig || typeof currentConfig !== 'object') {
+      currentConfig = Object.assign({}, bundledConfig, { siteContent: {}, collectPoints: [], news: [] });
       needsWriteConfig = true;
+    }
+
+    if (!currentConfig.siteContent || Object.keys(currentConfig.siteContent).length === 0) {
+      if (bundledConfig.siteContent && Object.keys(bundledConfig.siteContent).length > 0) {
+        currentConfig.siteContent = bundledConfig.siteContent;
+        needsWriteConfig = true;
+      }
     } else if (bundledConfig.siteContent) {
       // Vérifier et restaurer chaque rubrique manquante
       for (const key of Object.keys(bundledConfig.siteContent)) {
@@ -76,18 +124,20 @@ function initDataFiles() {
           needsWriteConfig = true;
         }
       }
-      if (!Array.isArray(currentConfig.collectPoints) || currentConfig.collectPoints.length === 0) {
-        if (Array.isArray(bundledConfig.collectPoints) && bundledConfig.collectPoints.length > 0) {
-          currentConfig.collectPoints = bundledConfig.collectPoints;
-          needsWriteConfig = true;
-        }
-      }
-      if (!Array.isArray(currentConfig.news) || currentConfig.news.length === 0) {
-        if (Array.isArray(bundledConfig.news) && bundledConfig.news.length > 0) {
-          currentConfig.news = bundledConfig.news;
-          needsWriteConfig = true;
-        }
-      }
+    }
+
+    if (!Array.isArray(currentConfig.collectPoints) || currentConfig.collectPoints.length === 0) {
+      currentConfig.collectPoints = (Array.isArray(bundledConfig.collectPoints) && bundledConfig.collectPoints.length > 0)
+        ? bundledConfig.collectPoints
+        : JSON.parse(JSON.stringify(DEFAULT_COLLECT_POINTS));
+      needsWriteConfig = true;
+    }
+
+    if (!Array.isArray(currentConfig.news) || currentConfig.news.length === 0) {
+      currentConfig.news = (Array.isArray(bundledConfig.news) && bundledConfig.news.length > 0)
+        ? bundledConfig.news
+        : JSON.parse(JSON.stringify(DEFAULT_NEWS));
+      needsWriteConfig = true;
     }
 
     if (needsWriteConfig) {
@@ -107,6 +157,7 @@ function initDataFiles() {
   }
 }
 initDataFiles();
+
 
 function hashPassword(str) {
   return crypto.createHash('sha256').update(str).digest('hex');
@@ -161,21 +212,48 @@ app.get('/api/health', (req, res) => {
 app.get('/api/data', (req, res) => {
   let config = readJson(CONFIG_FILE, null);
   const bundled = readJson(BUNDLED_CONFIG, { siteContent: {}, collectPoints: [], news: [] });
-  if (!config || !config.siteContent || Object.keys(config.siteContent).length === 0) {
-    config = Object.assign({}, bundled, config || {});
+  let needsSave = false;
+
+  if (!config || typeof config !== 'object') {
+    config = { siteContent: {}, collectPoints: [], news: [] };
+    needsSave = true;
+  }
+
+  // Vérifier siteContent
+  if (!config.siteContent || Object.keys(config.siteContent).length === 0) {
+    if (bundled.siteContent && Object.keys(bundled.siteContent).length > 0) {
+      config.siteContent = bundled.siteContent;
+      needsSave = true;
+    }
   } else if (bundled.siteContent) {
     for (const key of Object.keys(bundled.siteContent)) {
       if (!config.siteContent[key] || Object.keys(config.siteContent[key]).length === 0) {
         config.siteContent[key] = bundled.siteContent[key];
+        needsSave = true;
       }
     }
-    if (!Array.isArray(config.collectPoints) || config.collectPoints.length === 0) {
-      config.collectPoints = bundled.collectPoints || [];
-    }
-    if (!Array.isArray(config.news) || config.news.length === 0) {
-      config.news = bundled.news || [];
-    }
   }
+
+  // Vérifier collectPoints
+  if (!Array.isArray(config.collectPoints) || config.collectPoints.length === 0) {
+    config.collectPoints = (Array.isArray(bundled.collectPoints) && bundled.collectPoints.length > 0)
+      ? bundled.collectPoints
+      : JSON.parse(JSON.stringify(DEFAULT_COLLECT_POINTS));
+    needsSave = true;
+  }
+
+  // Vérifier news
+  if (!Array.isArray(config.news) || config.news.length === 0) {
+    config.news = (Array.isArray(bundled.news) && bundled.news.length > 0)
+      ? bundled.news
+      : JSON.parse(JSON.stringify(DEFAULT_NEWS));
+    needsSave = true;
+  }
+
+  if (needsSave) {
+    writeJson(CONFIG_FILE, config);
+  }
+
   res.json(config);
 });
 
