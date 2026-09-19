@@ -95,12 +95,14 @@
         lead: "Venez chiner et repartir avec vos nouvelles trouvailles culturelles à prix solidaire !",
         address: "3 place du Martray\nChâteauneuf-d'Ille-et-Vilaine",
         hours: "2ème week-end de chaque mois",
-        prices: "Livres dès 0,50€ · DVD dès 1€ · CD dès 0,50€"
+        prices: "Livres dès 0,50€ · DVD dès 1€ · CD dès 0,50€",
+        photo: ""
       },
       esat: {
         tag: "Partenariat ESAT",
         title: "Une économie circulaire et inclusive",
         description: "Nous croyons que l'écologie et l'inclusion sociale peuvent avancer ensemble.",
+        photo: "",
         items: [
           { title: "Activité valorisante", desc: "Le tri des articles collectés est réalisé par les travailleurs de l'ESAT de Châteauneuf — une activité concrète et valorisante pour des personnes en situation de handicap." },
           { title: "Économie circulaire", desc: "En associant l'inclusion sociale et le réemploi culturel, RECUP CULTURE crée un modèle innovant où l'écologie et le social avancent ensemble." },
@@ -112,8 +114,8 @@
         title: "Les fondateurs",
         description: "Deux passionnés engagés pour une culture accessible et un monde plus solidaire.",
         members: [
-          { name: "Fabien Lemoine", role: "Co-fondateur", bio: "15 ans d'expérience dans le domaine du patrimoine culturel. Passionné par la préservation et le partage de la culture sous toutes ses formes." },
-          { name: "François-Xavier Mahoïc", role: "Co-fondateur", bio: "Plus de 15 ans d'expérience dans l'accompagnement des ESAT et du handicap psychique. Convaincu que l'inclusion sociale est un levier de transformation." }
+          { name: "Fabien Lemoine", role: "Co-fondateur", bio: "15 ans d'expérience dans le domaine du patrimoine culturel. Passionné par la préservation et le partage de la culture sous toutes ses formes.", photo: "" },
+          { name: "François-Xavier Mahoïc", role: "Co-fondateur", bio: "Plus de 15 ans d'expérience dans l'accompagnement des ESAT et du handicap psychique. Convaincu que l'inclusion sociale est un levier de transformation.", photo: "" }
         ]
       },
       contact: {
@@ -436,6 +438,10 @@
       $('#newsCategory').value = item.category || 'actualite';
       $('#newsDate').value = item.date || '';
       quill.root.innerHTML = item.content || '';
+      const img = item.image || '';
+      if ($('#newsPhoto')) $('#newsPhoto').value = img;
+      updatePhotoPreviewBox($('#newsPhotoPreview'), img);
+      if ($('#btnRemoveNewsPhoto')) $('#btnRemoveNewsPhoto').style.display = img ? 'inline-flex' : 'none';
     } else {
       title.textContent = 'Nouvel article';
       $('#newsId').value = '';
@@ -443,12 +449,182 @@
       quill.root.innerHTML = '';
       // Date par défaut = aujourd'hui
       $('#newsDate').value = new Date().toISOString().split('T')[0];
+      if ($('#newsPhoto')) $('#newsPhoto').value = '';
+      updatePhotoPreviewBox($('#newsPhotoPreview'), '');
+      if ($('#btnRemoveNewsPhoto')) $('#btnRemoveNewsPhoto').style.display = 'none';
     }
     modal.classList.add('open');
     $('#newsTitle').focus();
   }
 
   function closeNewsModal() { $('#modalNews').classList.remove('open'); }
+
+  // ─── GESTION DES UPLOADS D'IMAGES ─────────────────────
+  async function uploadImageFile(file) {
+    if (!file) return null;
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const dataUrl = e.target.result;
+        const token = getAuthToken();
+        if (token) {
+          try {
+            const res = await fetch('/api/upload', {
+              method: 'POST',
+              headers: getAuthHeaders(),
+              body: JSON.stringify({
+                image: dataUrl,
+                dataUrl: dataUrl,
+                filename: file.name,
+                fileName: file.name
+              })
+            });
+            if (res.ok) {
+              const json = await res.json();
+              if (json && json.url) {
+                return resolve(json.url);
+              }
+            }
+          } catch (err) {
+            console.warn('API Upload inaccessible, fallback dataUrl:', err);
+          }
+        }
+        resolve(dataUrl);
+      };
+      reader.onerror = () => reject(new Error('Erreur de lecture du fichier image'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function updatePhotoPreviewBox(previewEl, photoUrl, isRound = false) {
+    if (!previewEl) return;
+    if (photoUrl) {
+      previewEl.innerHTML = `<img src="${escapeHtml(photoUrl)}" alt="Aperçu" style="width:100%;height:100%;object-fit:cover;${isRound ? 'border-radius:50%;' : ''}">`;
+    } else {
+      previewEl.innerHTML = `<i class="fas fa-image" style="font-size:1.6rem;margin-bottom:6px"></i><span>Aucune photo</span>`;
+    }
+  }
+
+  // Équipe dynamique state
+  let currentTeamMembers = [];
+
+  function renderTeamMembersAdmin() {
+    const list = $('#teamMembersList');
+    if (!list) return;
+    list.innerHTML = '';
+
+    if (!currentTeamMembers.length) {
+      list.innerHTML = '<div style="padding:24px;text-align:center;color:var(--gray-400);background:rgba(255,255,255,0.02);border-radius:8px;border:1px dashed var(--gray-700)">Aucun membre dans l\'équipe. Cliquez sur "Ajouter un membre".</div>';
+      return;
+    }
+
+    currentTeamMembers.forEach((member, index) => {
+      const card = document.createElement('div');
+      card.className = 'team-member-admin-card';
+      card.dataset.index = index;
+
+      const avatarContent = member.photo 
+        ? `<img src="${escapeHtml(member.photo)}" alt="${escapeHtml(member.name || 'Membre')}">`
+        : `<i class="fas fa-user"></i>`;
+
+      card.innerHTML = `
+        <div class="team-member-header">
+          <span class="team-member-number"><i class="fas fa-user-circle"></i> Membre #${index + 1}</span>
+          <button type="button" class="btn btn-danger btn-sm btn-delete-member" data-index="${index}">
+            <i class="fas fa-trash"></i> Supprimer
+          </button>
+        </div>
+        <div class="photo-upload-row" style="margin-bottom:14px">
+          <div class="photo-preview-box round" id="memberPreview_${index}">
+            ${avatarContent}
+          </div>
+          <div class="photo-upload-actions">
+            <input type="file" id="memberPhotoInput_${index}" accept="image/*" style="display:none">
+            <button type="button" class="btn btn-secondary-admin btn-sm btn-upload-member-photo" data-index="${index}">
+              <i class="fas fa-upload"></i> Photo
+            </button>
+            <button type="button" class="btn btn-danger btn-sm btn-remove-member-photo" data-index="${index}" style="${member.photo ? 'display:inline-flex;' : 'display:none;'}">
+              <i class="fas fa-trash"></i> Retirer
+            </button>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group-admin">
+            <label for="teamMemberName_${index}">Nom complet *</label>
+            <input type="text" id="teamMemberName_${index}" value="${escapeHtml(member.name || '')}" placeholder="Ex : Marie Dupont">
+          </div>
+          <div class="form-group-admin">
+            <label for="teamMemberRole_${index}">Rôle / Titre *</label>
+            <input type="text" id="teamMemberRole_${index}" value="${escapeHtml(member.role || '')}" placeholder="Ex : Bénévole référente">
+          </div>
+        </div>
+        <div class="form-group-admin" style="margin-bottom:0">
+          <label for="teamMemberBio_${index}">Biographie / Présentation</label>
+          <textarea id="teamMemberBio_${index}" rows="2" placeholder="Quelques mots sur son parcours et engagement…">${escapeHtml(member.bio || '')}</textarea>
+        </div>
+      `;
+
+      list.appendChild(card);
+
+      // Event listeners for inputs to sync state
+      const nameInput = $(`#teamMemberName_${index}`, card);
+      const roleInput = $(`#teamMemberRole_${index}`, card);
+      const bioInput  = $(`#teamMemberBio_${index}`, card);
+      if (nameInput) nameInput.addEventListener('input', e => { member.name = e.target.value; });
+      if (roleInput) roleInput.addEventListener('input', e => { member.role = e.target.value; });
+      if (bioInput) bioInput.addEventListener('input', e => { member.bio = e.target.value; });
+
+      // Photo upload
+      const fileInput = $(`#memberPhotoInput_${index}`, card);
+      const btnUpload = $(`.btn-upload-member-photo[data-index="${index}"]`, card);
+      const btnRemove = $(`.btn-remove-member-photo[data-index="${index}"]`, card);
+      const previewBox = $(`#memberPreview_${index}`, card);
+
+      if (btnUpload && fileInput) {
+        btnUpload.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', async () => {
+          const file = fileInput.files[0];
+          if (!file) return;
+          try {
+            btnUpload.disabled = true;
+            btnUpload.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Upload…';
+            const url = await uploadImageFile(file);
+            member.photo = url;
+            previewBox.innerHTML = `<img src="${escapeHtml(url)}" alt="${escapeHtml(member.name || 'Membre')}">`;
+            btnRemove.style.display = 'inline-flex';
+            toast('Photo du membre ajoutée.');
+          } catch (err) {
+            toast('Échec de l\'envoi de la photo.', true);
+          } finally {
+            btnUpload.disabled = false;
+            btnUpload.innerHTML = '<i class="fas fa-upload"></i> Photo';
+            fileInput.value = '';
+          }
+        });
+      }
+
+      if (btnRemove) {
+        btnRemove.addEventListener('click', () => {
+          member.photo = '';
+          previewBox.innerHTML = '<i class="fas fa-user"></i>';
+          btnRemove.style.display = 'none';
+          toast('Photo retirée.');
+        });
+      }
+
+      // Delete member
+      const btnDelete = $(`.btn-delete-member[data-index="${index}"]`, card);
+      if (btnDelete) {
+        btnDelete.addEventListener('click', () => {
+          if (confirm(`Supprimer ${member.name ? `le membre "${member.name}"` : 'ce membre'} de l\'équipe ?`)) {
+            currentTeamMembers.splice(index, 1);
+            renderTeamMembersAdmin();
+            toast('Membre supprimé.');
+          }
+        });
+      }
+    });
+  }
 
   // ─── CONTENUS DU SITE (CMS) ─────────────────────────
   function populateContentForm() {
@@ -518,12 +694,21 @@
     if ($('#contentBoutiqueAddress')) $('#contentBoutiqueAddress').value = b.address || '';
     if ($('#contentBoutiqueHours')) $('#contentBoutiqueHours').value = b.hours || '';
     if ($('#contentBoutiquePrices')) $('#contentBoutiquePrices').value = b.prices || '';
+    const bPhoto = b.photo || '';
+    if ($('#contentBoutiquePhoto')) $('#contentBoutiquePhoto').value = bPhoto;
+    updatePhotoPreviewBox($('#boutiquePhotoPreview'), bPhoto);
+    if ($('#btnRemoveBoutiquePhoto')) $('#btnRemoveBoutiquePhoto').style.display = bPhoto ? 'inline-flex' : 'none';
 
     // ESAT
     const esat = c.esat || {};
     if ($('#contentEsatTag')) $('#contentEsatTag').value = esat.tag || '';
     if ($('#contentEsatTitle')) $('#contentEsatTitle').value = esat.title || '';
     if ($('#contentEsatDesc')) $('#contentEsatDesc').value = esat.description || '';
+    const esatPhoto = esat.photo || '';
+    if ($('#contentEsatPhoto')) $('#contentEsatPhoto').value = esatPhoto;
+    updatePhotoPreviewBox($('#esatPhotoPreview'), esatPhoto);
+    if ($('#btnRemoveEsatPhoto')) $('#btnRemoveEsatPhoto').style.display = esatPhoto ? 'inline-flex' : 'none';
+
     const esatItems = esat.items || [];
     if ($('#contentEsatItem1Title')) $('#contentEsatItem1Title').value = esatItems[0]?.title || '';
     if ($('#contentEsatItem1Desc')) $('#contentEsatItem1Desc').value = esatItems[0]?.desc || '';
@@ -537,13 +722,15 @@
     if ($('#contentEquipeTag')) $('#contentEquipeTag').value = eq.tag || '';
     if ($('#contentEquipeTitle')) $('#contentEquipeTitle').value = eq.title || '';
     if ($('#contentEquipeDesc')) $('#contentEquipeDesc').value = eq.description || '';
-    const members = eq.members || [];
-    if ($('#contentEquipeMember1Name')) $('#contentEquipeMember1Name').value = members[0]?.name || '';
-    if ($('#contentEquipeMember1Role')) $('#contentEquipeMember1Role').value = members[0]?.role || '';
-    if ($('#contentEquipeMember1Bio')) $('#contentEquipeMember1Bio').value = members[0]?.bio || '';
-    if ($('#contentEquipeMember2Name')) $('#contentEquipeMember2Name').value = members[1]?.name || '';
-    if ($('#contentEquipeMember2Role')) $('#contentEquipeMember2Role').value = members[1]?.role || '';
-    if ($('#contentEquipeMember2Bio')) $('#contentEquipeMember2Bio').value = members[1]?.bio || '';
+    if (Array.isArray(eq.members) && eq.members.length) {
+      currentTeamMembers = JSON.parse(JSON.stringify(eq.members));
+    } else {
+      currentTeamMembers = [
+        { name: "Fabien Lemoine", role: "Co-fondateur", bio: "15 ans d'expérience dans le domaine du patrimoine culturel. Passionné par la préservation et le partage de la culture sous toutes ses formes.", photo: "" },
+        { name: "François-Xavier Mahoïc", role: "Co-fondateur", bio: "Plus de 15 ans d'expérience dans l'accompagnement des ESAT et du handicap psychique. Convaincu que l'inclusion sociale est un levier de transformation.", photo: "" }
+      ];
+    }
+    renderTeamMembersAdmin();
 
     // Contact
     const ct = c.contact || {};
@@ -603,12 +790,14 @@
         lead: $('#contentBoutiqueLead').value.trim(),
         address: $('#contentBoutiqueAddress').value.trim(),
         hours: $('#contentBoutiqueHours').value.trim(),
-        prices: $('#contentBoutiquePrices').value.trim()
+        prices: $('#contentBoutiquePrices').value.trim(),
+        photo: $('#contentBoutiquePhoto') ? $('#contentBoutiquePhoto').value.trim() : ''
       },
       esat: {
         tag: $('#contentEsatTag').value.trim(),
         title: $('#contentEsatTitle').value.trim(),
         description: $('#contentEsatDesc').value.trim(),
+        photo: $('#contentEsatPhoto') ? $('#contentEsatPhoto').value.trim() : '',
         items: [
           { title: $('#contentEsatItem1Title').value.trim(), desc: $('#contentEsatItem1Desc').value.trim() },
           { title: $('#contentEsatItem2Title').value.trim(), desc: $('#contentEsatItem2Desc').value.trim() },
@@ -619,10 +808,12 @@
         tag: $('#contentEquipeTag').value.trim(),
         title: $('#contentEquipeTitle').value.trim(),
         description: $('#contentEquipeDesc').value.trim(),
-        members: [
-          { name: $('#contentEquipeMember1Name').value.trim(), role: $('#contentEquipeMember1Role').value.trim(), bio: $('#contentEquipeMember1Bio').value.trim() },
-          { name: $('#contentEquipeMember2Name').value.trim(), role: $('#contentEquipeMember2Role').value.trim(), bio: $('#contentEquipeMember2Bio').value.trim() }
-        ]
+        members: currentTeamMembers.map((m, idx) => ({
+          name: $(`#teamMemberName_${idx}`) ? $(`#teamMemberName_${idx}`).value.trim() : (m.name || ''),
+          role: $(`#teamMemberRole_${idx}`) ? $(`#teamMemberRole_${idx}`).value.trim() : (m.role || ''),
+          bio: $(`#teamMemberBio_${idx}`) ? $(`#teamMemberBio_${idx}`).value.trim() : (m.bio || ''),
+          photo: m.photo || ''
+        }))
       },
       contact: {
         tag: $('#contentContactTag').value.trim(),
@@ -678,6 +869,88 @@
     const btnTop = $('#btnSaveContentTop');
     if (btnTop) btnTop.addEventListener('click', () => saveContentForm());
 
+    // Upload photo Boutique
+    const btnUploadBoutique = $('#btnUploadBoutiquePhoto');
+    const inputBoutiquePhoto = $('#contentBoutiquePhotoInput');
+    const btnRemoveBoutique = $('#btnRemoveBoutiquePhoto');
+    if (btnUploadBoutique && inputBoutiquePhoto) {
+      btnUploadBoutique.addEventListener('click', () => inputBoutiquePhoto.click());
+      inputBoutiquePhoto.addEventListener('change', async () => {
+        const file = inputBoutiquePhoto.files[0];
+        if (!file) return;
+        try {
+          btnUploadBoutique.disabled = true;
+          btnUploadBoutique.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Upload…';
+          const url = await uploadImageFile(file);
+          if ($('#contentBoutiquePhoto')) $('#contentBoutiquePhoto').value = url;
+          updatePhotoPreviewBox($('#boutiquePhotoPreview'), url);
+          if (btnRemoveBoutique) btnRemoveBoutique.style.display = 'inline-flex';
+          toast('Photo de la boutique ajoutée.');
+        } catch (err) {
+          toast('Échec de l\'envoi de la photo.', true);
+        } finally {
+          btnUploadBoutique.disabled = false;
+          btnUploadBoutique.innerHTML = '<i class="fas fa-upload"></i> Choisir une photo';
+          inputBoutiquePhoto.value = '';
+        }
+      });
+    }
+    if (btnRemoveBoutique) {
+      btnRemoveBoutique.addEventListener('click', () => {
+        if ($('#contentBoutiquePhoto')) $('#contentBoutiquePhoto').value = '';
+        updatePhotoPreviewBox($('#boutiquePhotoPreview'), '');
+        btnRemoveBoutique.style.display = 'none';
+        toast('Photo de la boutique retirée.');
+      });
+    }
+
+    // Upload photo ESAT
+    const btnUploadEsat = $('#btnUploadEsatPhoto');
+    const inputEsatPhoto = $('#contentEsatPhotoInput');
+    const btnRemoveEsat = $('#btnRemoveEsatPhoto');
+    if (btnUploadEsat && inputEsatPhoto) {
+      btnUploadEsat.addEventListener('click', () => inputEsatPhoto.click());
+      inputEsatPhoto.addEventListener('change', async () => {
+        const file = inputEsatPhoto.files[0];
+        if (!file) return;
+        try {
+          btnUploadEsat.disabled = true;
+          btnUploadEsat.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Upload…';
+          const url = await uploadImageFile(file);
+          if ($('#contentEsatPhoto')) $('#contentEsatPhoto').value = url;
+          updatePhotoPreviewBox($('#esatPhotoPreview'), url);
+          if (btnRemoveEsat) btnRemoveEsat.style.display = 'inline-flex';
+          toast('Photo de l\'ESAT ajoutée.');
+        } catch (err) {
+          toast('Échec de l\'envoi de la photo.', true);
+        } finally {
+          btnUploadEsat.disabled = false;
+          btnUploadEsat.innerHTML = '<i class="fas fa-upload"></i> Choisir une photo';
+          inputEsatPhoto.value = '';
+        }
+      });
+    }
+    if (btnRemoveEsat) {
+      btnRemoveEsat.addEventListener('click', () => {
+        if ($('#contentEsatPhoto')) $('#contentEsatPhoto').value = '';
+        updatePhotoPreviewBox($('#esatPhotoPreview'), '');
+        btnRemoveEsat.style.display = 'none';
+        toast('Photo de l\'ESAT retirée.');
+      });
+    }
+
+    // Bouton ajouter membre équipe
+    const btnAddMember = $('#btnAddTeamMember');
+    if (btnAddMember) {
+      btnAddMember.addEventListener('click', () => {
+        currentTeamMembers.push({ name: '', role: '', bio: '', photo: '' });
+        renderTeamMembersAdmin();
+        const newIndex = currentTeamMembers.length - 1;
+        const nameField = $(`#teamMemberName_${newIndex}`);
+        if (nameField) nameField.focus();
+      });
+    }
+
     populateContentForm();
   }
 
@@ -687,12 +960,47 @@
     $('#modalNewsCancelBtn').addEventListener('click', closeNewsModal);
     $('#modalNews').addEventListener('click', e => { if(e.target===$('#modalNews')) closeNewsModal(); });
 
+    // Photo News Upload
+    const btnUploadNews = $('#btnUploadNewsPhoto');
+    const inputNewsPhoto = $('#newsPhotoInput');
+    const btnRemoveNews = $('#btnRemoveNewsPhoto');
+    if (btnUploadNews && inputNewsPhoto) {
+      btnUploadNews.addEventListener('click', () => inputNewsPhoto.click());
+      inputNewsPhoto.addEventListener('change', async () => {
+        const file = inputNewsPhoto.files[0];
+        if (!file) return;
+        try {
+          btnUploadNews.disabled = true;
+          btnUploadNews.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Upload…';
+          const url = await uploadImageFile(file);
+          if ($('#newsPhoto')) $('#newsPhoto').value = url;
+          updatePhotoPreviewBox($('#newsPhotoPreview'), url);
+          if (btnRemoveNews) btnRemoveNews.style.display = 'inline-flex';
+          toast('Image d\'illustration ajoutée.');
+        } catch (err) {
+          toast('Échec de l\'envoi de l\'image.', true);
+        } finally {
+          btnUploadNews.disabled = false;
+          btnUploadNews.innerHTML = '<i class="fas fa-upload"></i> Choisir une image';
+          inputNewsPhoto.value = '';
+        }
+      });
+    }
+    if (btnRemoveNews) {
+      btnRemoveNews.addEventListener('click', () => {
+        if ($('#newsPhoto')) $('#newsPhoto').value = '';
+        updatePhotoPreviewBox($('#newsPhotoPreview'), '');
+        btnRemoveNews.style.display = 'none';
+      });
+    }
+
     $('#newsForm').addEventListener('submit', async e => {
       e.preventDefault();
       const title = $('#newsTitle').value.trim();
       const cat   = $('#newsCategory').value;
       const date  = $('#newsDate').value;
       const content = quill ? quill.root.innerHTML : '';
+      const image = $('#newsPhoto') ? $('#newsPhoto').value.trim() : '';
 
       if (!title || !date) { toast('Veuillez remplir les champs obligatoires.', true); return; }
 
@@ -703,7 +1011,7 @@
           const res = await fetch('/api/news', {
             method: 'POST',
             headers: getAuthHeaders(),
-            body: JSON.stringify({ id, title, category: cat, date, content })
+            body: JSON.stringify({ id, title, category: cat, date, content, image })
           });
           if (res.ok) {
             const json = await res.json();
@@ -715,11 +1023,11 @@
       if (!token) {
         if (id) {
           const idx = (appData.news||[]).findIndex(n => n.id===id);
-          if (idx > -1) { appData.news[idx] = { id, title, category:cat, date, content }; }
+          if (idx > -1) { appData.news[idx] = { id, title, category:cat, date, content, image }; }
         } else {
           if (!appData.news) appData.news = [];
           const newId = Date.now();
-          appData.news.unshift({ id:newId, title, category:cat, date, content });
+          appData.news.unshift({ id:newId, title, category:cat, date, content, image });
         }
       }
 

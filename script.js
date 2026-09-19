@@ -57,12 +57,14 @@
         lead: "Venez chiner et repartir avec vos nouvelles trouvailles culturelles à prix solidaire !",
         address: "3 place du Martray\nChâteauneuf-d'Ille-et-Vilaine",
         hours: "2ème week-end de chaque mois",
-        prices: "Livres dès 0,50€ · DVD dès 1€ · CD dès 0,50€"
+        prices: "Livres dès 0,50€ · DVD dès 1€ · CD dès 0,50€",
+        photo: ""
       },
       esat: {
         tag: "Partenariat ESAT",
         title: "Une économie circulaire et inclusive",
         description: "Nous croyons que l'écologie et l'inclusion sociale peuvent avancer ensemble.",
+        photo: "",
         items: [
           { title: "Activité valorisante", desc: "Le tri des articles collectés est réalisé par les travailleurs de l'ESAT de Châteauneuf — une activité concrète et valorisante pour des personnes en situation de handicap." },
           { title: "Économie circulaire", desc: "En associant l'inclusion sociale et le réemploi culturel, RECUP CULTURE crée un modèle innovant où l'écologie et le social avancent ensemble." },
@@ -74,8 +76,8 @@
         title: "Les fondateurs",
         description: "Deux passionnés engagés pour une culture accessible et un monde plus solidaire.",
         members: [
-          { name: "Fabien Lemoine", role: "Co-fondateur", bio: "15 ans d'expérience dans le domaine du patrimoine culturel. Passionné par la préservation et le partage de la culture sous toutes ses formes." },
-          { name: "François-Xavier Mahoïc", role: "Co-fondateur", bio: "Plus de 15 ans d'expérience dans l'accompagnement des ESAT et du handicap psychique. Convaincu que l'inclusion sociale est un levier de transformation." }
+          { name: "Fabien Lemoine", role: "Co-fondateur", bio: "15 ans d'expérience dans le domaine du patrimoine culturel. Passionné par la préservation et le partage de la culture sous toutes ses formes.", photo: "" },
+          { name: "François-Xavier Mahoïc", role: "Co-fondateur", bio: "Plus de 15 ans d'expérience dans l'accompagnement des ESAT et du handicap psychique. Convaincu que l'inclusion sociale est un levier de transformation.", photo: "" }
         ]
       },
       contact: {
@@ -437,8 +439,14 @@
       const card = document.createElement('article');
       card.className = 'news-card';
       const excerpt = stripHtml(item.content || '').substring(0, 120) + (stripHtml(item.content || '').length > 120 ? '…' : '');
+      const mediaHtml = item.image ? `
+        <div class="news-card-media">
+          <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}">
+        </div>
+      ` : '';
 
       card.innerHTML = `
+        ${mediaHtml}
         <div class="news-card-header">
           <span class="news-badge ${cat.cls}">${escapeHtml(cat.label)}</span>
           <span class="news-date">${formatDate(item.date)}</span>
@@ -579,6 +587,25 @@
       if (c.boutique.address && $('#boutiqueAddress')) $('#boutiqueAddress').innerHTML = escapeHtml(c.boutique.address).replace(/\n/g, '<br>');
       if (c.boutique.hours && $('#boutiqueHours')) $('#boutiqueHours').textContent = c.boutique.hours;
       if (c.boutique.prices && $('#boutiquePrices')) $('#boutiquePrices').textContent = c.boutique.prices;
+
+      const visualContainer = $('#boutiqueVisual');
+      if (visualContainer) {
+        if (c.boutique.photo) {
+          visualContainer.innerHTML = `
+            <div class="boutique-photo-wrapper">
+              <img src="${escapeHtml(c.boutique.photo)}" alt="${escapeHtml(c.boutique.title || 'La Halle aux Artistes')}">
+            </div>
+          `;
+        } else {
+          visualContainer.innerHTML = `
+            <div class="boutique-card-visual" id="boutiqueCardVisual">
+              <i class="fas fa-store-alt"></i>
+              <p>${escapeHtml(c.boutique.title || 'Halle aux Artistes')}</p>
+              <span>Châteauneuf-d'Ille-et-Vilaine</span>
+            </div>
+          `;
+        }
+      }
     }
 
     // ESAT
@@ -586,6 +613,24 @@
       if (c.esat.tag && $('#esatTag')) $('#esatTag').textContent = c.esat.tag;
       if (c.esat.title && $('#esat-title')) $('#esat-title').textContent = c.esat.title;
       if (c.esat.description && $('#esatDesc')) $('#esatDesc').textContent = c.esat.description;
+
+      const banner = $('#esatPhotoBanner');
+      if (banner) {
+        if (c.esat.photo) {
+          banner.style.display = 'block';
+          banner.innerHTML = `
+            <img src="${escapeHtml(c.esat.photo)}" alt="Atelier de tri solidaire ESAT">
+            <div class="esat-showcase-caption">
+              <i class="fas fa-hands-helping" style="color:var(--logo-green-bright);font-size:1.2rem"></i>
+              <span>L'atelier de tri et revalorisation culturelle en partenariat avec l'ESAT</span>
+            </div>
+          `;
+        } else {
+          banner.style.display = 'none';
+          banner.innerHTML = '';
+        }
+      }
+
       if (Array.isArray(c.esat.items) && c.esat.items.length) {
         const icons = ['fa-hands-helping', 'fa-leaf', 'fa-balance-scale'];
         const grid = $('#esatGrid');
@@ -609,14 +654,19 @@
       if (Array.isArray(c.equipe.members) && c.equipe.members.length) {
         const grid = $('#equipeGrid');
         if (grid) {
-          grid.innerHTML = c.equipe.members.map((m, i) => `
-            <div class="team-card reveal active" style="--delay: ${i * 0.2}s">
-              <div class="team-avatar" aria-hidden="true"><i class="fas fa-user"></i></div>
-              <h3>${escapeHtml(m.name)}</h3>
-              <span class="team-role">${escapeHtml(m.role)}</span>
-              <p>${escapeHtml(m.bio)}</p>
-            </div>
-          `).join('');
+          grid.innerHTML = c.equipe.members.map((m, i) => {
+            const avatarHtml = m.photo 
+              ? `<img src="${escapeHtml(m.photo)}" alt="${escapeHtml(m.name)}">`
+              : `<i class="fas fa-user"></i>`;
+            return `
+              <div class="team-card reveal active" style="--delay: ${i * 0.15}s">
+                <div class="team-avatar" aria-hidden="true">${avatarHtml}</div>
+                <h3>${escapeHtml(m.name)}</h3>
+                <span class="team-role">${escapeHtml(m.role)}</span>
+                <p>${escapeHtml(m.bio)}</p>
+              </div>
+            `;
+          }).join('');
         }
       }
     }

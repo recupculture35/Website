@@ -14,19 +14,26 @@ const PORT = process.env.PORT || 3000;
 
 // Emplacements des données (support des volumes Railway via DATA_DIR si configuré)
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
+const UPLOADS_DIR = process.env.UPLOADS_DIR || path.join(__dirname, 'uploads');
 const CONFIG_FILE = path.join(DATA_DIR, 'config.json');
 const CREDS_FILE = path.join(DATA_DIR, 'credentials.json');
 
-// S'assurer que le dossier data existe
+// S'assurer que les dossiers nécessaires existent
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+if (!fs.existsSync(UPLOADS_DIR)) {
+  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
 
 // ─── Helpers de lecture / écriture JSON sécurisée ────
 function readJson(filePath, fallback = {}) {
   try {
     if (fs.existsSync(filePath)) {
-      const raw = fs.readFileSync(filePath, 'utf8');
+      let raw = fs.readFileSync(filePath, 'utf8');
+      if (raw.charCodeAt(0) === 0xFEFF) {
+        raw = raw.slice(1);
+      }
       return JSON.parse(raw);
     }
   } catch (err) {
@@ -86,8 +93,11 @@ function requireAuth(req, res, next) {
 
 // ─── Middlewares ─────────────────────────────────────
 app.use(cors());
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '30mb' }));
+app.use(express.urlencoded({ extended: true, limit: '30mb' }));
+
+// Servir le dossier uploads pour les images publiques
+app.use('/uploads', express.static(UPLOADS_DIR));
 
 // ─── API PUBLIQUE : Données du site ──────────────────
 app.get('/api/health', (req, res) => {
@@ -97,6 +107,51 @@ app.get('/api/health', (req, res) => {
 app.get('/api/data', (req, res) => {
   const config = readJson(CONFIG_FILE, { siteContent: {}, collectPoints: [], news: [] });
   res.json(config);
+});
+
+// ─── API UPLOAD D'IMAGES ─────────────────────────────
+app.post('/api/upload', requireAuth, (req, res) => {
+  try {
+    const rawImage = req.body?.image || req.body?.dataUrl;
+    const rawFilename = req.body?.filename || req.body?.fileName;
+    if (!rawImage || typeof rawImage !== 'string') {
+      return res.status(400).json({ error: 'Données d\'image manquantes ou invalides.' });
+    }
+
+    // Format attendu: data:image/...;base64,... ou base64 brut
+    const matches = rawImage.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    let ext = '.jpg';
+    let buffer;
+
+    if (matches) {
+      const mime = matches[1].toLowerCase();
+      if (mime.includes('png')) ext = '.png';
+      else if (mime.includes('webp')) ext = '.webp';
+      else if (mime.includes('gif')) ext = '.gif';
+      else if (mime.includes('svg')) ext = '.svg';
+      else ext = '.jpg';
+
+      buffer = Buffer.from(matches[2], 'base64');
+    } else {
+      buffer = Buffer.from(rawImage, 'base64');
+    }
+
+    if (buffer.length > 15 * 1024 * 1024) {
+      return res.status(400).json({ error: 'Fichier trop volumineux (maximum 15 Mo).' });
+    }
+
+    const safeBase = rawFilename ? path.parse(rawFilename).name.replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 30) : 'photo';
+    const uniqueName = `${safeBase}-${Date.now()}-${crypto.randomBytes(4).toString('hex')}${ext}`;
+    const destPath = path.join(UPLOADS_DIR, uniqueName);
+
+    fs.writeFileSync(destPath, buffer);
+    const publicUrl = `/uploads/${uniqueName}`;
+
+    return res.json({ success: true, url: publicUrl, filename: uniqueName, size: buffer.length });
+  } catch (err) {
+    console.error('Erreur upload:', err);
+    return res.status(500).json({ error: 'Erreur lors de l\'enregistrement de l\'image.' });
+  }
 });
 
 // ─── API AUTHENTIFICATION ────────────────────────────
@@ -156,7 +211,7 @@ app.put('/api/content', requireAuth, (req, res) => {
 
 // ─── API ADMIN : Actualités ──────────────────────────
 app.post('/api/news', requireAuth, (req, res) => {
-  const { id, title, category, date, content } = req.body || {};
+  const { id, title, category, date, content, image } = req.body || {};
   if (!title || !date) {
     return res.status(400).json({ error: 'Titre et date requis.' });
   }
@@ -170,7 +225,8 @@ app.post('/api/news', requireAuth, (req, res) => {
     title: title.trim(),
     category: category || 'actualite',
     date,
-    content: content || ''
+    content: content || '',
+    image: image || null
   };
 
   if (existingId) {

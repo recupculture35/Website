@@ -1549,9 +1549,9 @@ p {
    ========================================================= */
 .team-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 32px;
-  max-width: 860px;
+  max-width: 960px;
   margin: 0 auto;
 }
 
@@ -1573,8 +1573,8 @@ p {
 }
 
 .team-avatar {
-  width: 88px;
-  height: 88px;
+  width: 96px;
+  height: 96px;
   background: var(--brand-gradient);
   border-radius: 50%;
   display: flex;
@@ -1584,6 +1584,16 @@ p {
   font-size: 2.2rem;
   color: var(--text-white);
   box-shadow: 0 8px 26px rgba(119, 184, 65, 0.35);
+  overflow: hidden;
+  position: relative;
+  border: 3px solid rgba(119, 184, 65, 0.4);
+}
+
+.team-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .team-card h3 {
@@ -1606,6 +1616,78 @@ p {
   color: var(--text-secondary);
   font-size: 0.93rem;
   line-height: 1.7;
+}
+
+/* =========================================================
+   PHOTOS D'ILLUSTRATION DU SITE (ESAT, BOUTIQUE, NEWS)
+   ========================================================= */
+.esat-showcase-banner {
+  margin-bottom: 36px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface-card);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  max-height: 380px;
+}
+
+.esat-showcase-banner img {
+  width: 100%;
+  height: 360px;
+  object-fit: cover;
+  display: block;
+}
+
+.esat-showcase-caption {
+  position: absolute;
+  bottom: 0;
+  inset-inline: 0;
+  padding: 16px 24px;
+  background: linear-gradient(to top, rgba(10, 18, 30, 0.92) 0%, rgba(10, 18, 30, 0.4) 65%, transparent 100%);
+  color: var(--text-white);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.boutique-photo-wrapper {
+  width: 100%;
+  max-width: 420px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--border-highlight);
+  box-shadow: var(--shadow-lg), 0 0 40px rgba(30, 136, 229, 0.2);
+  position: relative;
+}
+
+.boutique-photo-wrapper img {
+  width: 100%;
+  height: auto;
+  max-height: 360px;
+  object-fit: cover;
+  display: block;
+}
+
+.news-card-media {
+  width: 100%;
+  height: 190px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.news-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  display: block;
+}
+
+.news-card:hover .news-card-media img {
+  transform: scale(1.05);
 }
 
 /* =========================================================
