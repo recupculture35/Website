@@ -974,7 +974,7 @@
         const saved = localStorage.getItem('recupculture_theme');
         if (saved === 'light' || saved === 'dark') return saved;
       } catch (_) {}
-      return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+      return 'light'; // Thème clair sélectionné par défaut
     }
 
     function applyTheme(theme, save = true) {

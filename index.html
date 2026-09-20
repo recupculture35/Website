@@ -91,7 +91,7 @@
     (function() {
       try {
         const saved = localStorage.getItem('recupculture_theme');
-        const theme = saved ? saved : (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        const theme = saved ? saved : 'light'; // Thème clair sélectionné par défaut
         document.documentElement.setAttribute('data-theme', theme);
       } catch (e) {}
     })();
@@ -118,7 +118,7 @@
         <li><a href="#contact" class="nav-cta">Nous contacter</a></li>
       </ul>
       <div class="nav-actions">
-        <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-checked="true" aria-label="Basculer le mode clair / sombre" title="Passer au mode clair">
+        <button class="theme-toggle" id="themeToggle" type="button" role="switch" aria-checked="false" aria-label="Basculer le mode clair / sombre" title="Passer au mode sombre">
           <span class="theme-toggle-track">
             <i class="fas fa-sun theme-icon-sun" aria-hidden="true"></i>
             <i class="fas fa-moon theme-icon-moon" aria-hidden="true"></i>

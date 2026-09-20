@@ -67,46 +67,82 @@
   --nav-height: 78px;
 }
 
-/* --- Thème Clair (Light Mode Pop & Harmonieux) --- */
+/* =========================================================
+   THÈME CLAIR (TEST : PÂTE À PAPIER RECYCLÉ & BLANC CASSÉ)
+   Palette chaude lin, vélin ivoire & fibres naturelles.
+   Pour ROLLBACK immédiat vers le blanc froid classique,
+   inverser les deux blocs ci-dessous.
+   ========================================================= */
+
+/* --- VARIATION ACTIVE : Pâte à papier & fibres naturelles --- */
 [data-theme="light"] {
-  /* Palette Claire Lumineuse */
+  /* Palette Pâte à Papier Recyclé (Tons lin, ivoire doux et blanc cassé naturel) */
+  --bg-root: #f6f3eb;              /* Fond général : blanc cassé lin naturel / pâte à papier */
+  --bg-surface-1: #fbf9f4;          /* Papier vélin ivoire doux pour cartes & conteneurs */
+  --bg-surface-2: #efebe1;          /* Teinte pulpe de papier légèrement texturée */
+  --bg-surface-card: rgba(251, 249, 244, 0.95);
+  --bg-surface-card-hover: #ffffff;
+  --bg-surface-elevated: #fbf9f4;
+
+  /* Typographie Encre Végétale Haute Lisibilité */
+  --text-white: #1a251b;            /* Titres : noir végétal profond à nuance forêt */
+  --text-primary: #253326;          /* Encre naturelle sombre */
+  --text-secondary: #3d4a3e;        /* Gris minéral végétal équilibré */
+  --text-muted: #667567;            /* Teinte pierre / sauge */
+  --text-dim: #8b998a;              /* Gris lin discret */
+
+  /* Couleurs de marque Recup Culture (Vert #77b841 & Bleu #1e88e5) */
+  --logo-green-bright: #4e8c1e;     /* Vert feuille dense pour contraste optimal */
+  --logo-green-glow: rgba(119, 184, 65, 0.28);
+  --logo-green-tint: rgba(119, 184, 65, 0.12);
+
+  --logo-blue-bright: #0284c7;      /* Bleu cyan profond encre artisanale */
+  --logo-blue-glow: rgba(30, 136, 229, 0.28);
+  --logo-blue-tint: rgba(30, 136, 229, 0.12);
+
+  /* Bordures douces papier & reliure artisanale */
+  --border-subtle: rgba(185, 175, 155, 0.35);
+  --border-highlight: rgba(165, 155, 135, 0.52);
+  --border-green: rgba(119, 184, 65, 0.5);
+  --border-blue: rgba(30, 136, 229, 0.5);
+
+  /* Ombres chaudes et diffuses (teinte sépia/kraft légère) */
+  --shadow-sm: 0 3px 12px rgba(60, 50, 35, 0.05);
+  --shadow-md: 0 8px 24px rgba(60, 50, 35, 0.07);
+  --shadow-lg: 0 16px 42px rgba(60, 50, 35, 0.09);
+  --shadow-green-glow: 0 6px 25px rgba(119, 184, 65, 0.2);
+  --shadow-blue-glow: 0 6px 25px rgba(30, 136, 229, 0.2);
+  --shadow-brand-glow: 0 8px 30px rgba(119, 184, 65, 0.18), 0 8px 30px rgba(30, 136, 229, 0.15);
+}
+
+/* --- OPTION ROLLBACK : Thème clair froid standard (conservé pour bascule rapide) ---
+[data-theme="light-classic"] {
   --bg-root: #f8fafc;
   --bg-surface-1: #ffffff;
   --bg-surface-2: #f1f5f9;
   --bg-surface-card: #ffffff;
   --bg-surface-card-hover: #f8fafc;
   --bg-surface-elevated: #ffffff;
-
-  /* Typographie haute clarté */
-  --text-white: #0f172a;       /* Slate 900 pour tous les titres */
-  --text-primary: #1e293b;     /* Slate 800 */
-  --text-secondary: #334155;   /* Slate 700 */
-  --text-muted: #64748b;       /* Slate 500 */
-  --text-dim: #94a3b8;         /* Slate 400 */
-
-  /* Nuances du logo adaptées au fond clair pour contraste parfait */
+  --text-white: #0f172a;
+  --text-primary: #1e293b;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-dim: #94a3b8;
   --logo-green-bright: #4e8c1e;
   --logo-green-glow: rgba(119, 184, 65, 0.25);
   --logo-green-tint: rgba(119, 184, 65, 0.1);
-
   --logo-blue-bright: #0284c7;
   --logo-blue-glow: rgba(30, 136, 229, 0.25);
   --logo-blue-tint: rgba(30, 136, 229, 0.1);
-
-  /* Bordures fines & élégantes */
   --border-subtle: #e2e8f0;
   --border-highlight: #cbd5e1;
   --border-green: rgba(119, 184, 65, 0.45);
   --border-blue: rgba(30, 136, 229, 0.45);
-
-  /* Ombres réalistes et diffuses */
   --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.05);
   --shadow-md: 0 10px 28px rgba(15, 23, 42, 0.07);
   --shadow-lg: 0 20px 45px rgba(15, 23, 42, 0.1);
-  --shadow-green-glow: 0 6px 25px rgba(119, 184, 65, 0.2);
-  --shadow-blue-glow: 0 6px 25px rgba(30, 136, 229, 0.2);
-  --shadow-brand-glow: 0 8px 30px rgba(119, 184, 65, 0.18), 0 8px 30px rgba(30, 136, 229, 0.15);
 }
+*/
 
 /* =========================================================
    Reset & Base
@@ -2062,44 +2098,46 @@ p {
   font-size: 1rem;
 }
 
-/* Thème clair FAQ */
+/* Thème clair FAQ - Harmonisé Pâte à Papier */
 [data-theme="light"] .section-faq {
-  background: #f1f5f9;
+  background: var(--bg-surface-2);
 }
 
 [data-theme="light"] .faq-item {
-  background: #ffffff;
-  border-color: #e2e8f0;
+  background: var(--bg-surface-1);
+  border-color: var(--border-subtle);
+  box-shadow: 0 3px 12px rgba(60, 50, 35, 0.04);
 }
 
 [data-theme="light"] .faq-question {
-  color: #0f172a;
+  color: var(--text-white);
 }
 
 [data-theme="light"] .faq-item:hover .faq-question,
 [data-theme="light"] .faq-item.active .faq-question {
-  color: #3b7e17;
+  color: var(--logo-green-bright);
 }
 
 [data-theme="light"] .faq-item.active {
-  border-color: #77b841;
-  box-shadow: 0 8px 24px rgba(119, 184, 65, 0.12);
+  background: #ffffff;
+  border-color: var(--logo-green-bright);
+  box-shadow: 0 8px 24px rgba(119, 184, 65, 0.14), 0 2px 8px rgba(60, 50, 35, 0.04);
 }
 
 [data-theme="light"] .faq-answer {
-  color: #475569;
+  color: var(--text-secondary);
 }
 
 [data-theme="light"] .faq-icon {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-  color: #64748b;
+  background: #f6f3eb;
+  border-color: rgba(185, 175, 155, 0.45);
+  color: var(--text-muted);
 }
 
 [data-theme="light"] .faq-item.active .faq-icon {
-  background: #e8f5e9;
-  border-color: #77b841;
-  color: #2e7d32;
+  background: rgba(119, 184, 65, 0.14);
+  border-color: var(--logo-green-bright);
+  color: var(--logo-green-bright);
 }
 
 /* =========================================================
@@ -2380,9 +2418,19 @@ p {
 }
 
 /* =========================================================
-   RÈGLES SPÉCIFIQUES AU THÈME CLAIR (Light Mode)
-   Harmonie exacte avec le Dark Mode : Vert (#77b841) & Bleu (#1e88e5)
+   RÈGLES DU THÈME CLAIR (TEST : PÂTE À PAPIER RECYCLÉ & LIN NATUREL)
+   Tons blanc cassé lin, papier vélin ivoire & accents Vert/Bleu Recup Culture
    ========================================================= */
+
+/* Texture micro-grain papier recyclé & pâte à papier (100% vectoriel, 0 latence) */
+[data-theme="light"] body {
+  background-color: var(--bg-root);
+  background-image:
+    radial-gradient(ellipse 1300px 800px at 15% 10%, rgba(119, 184, 65, 0.035) 0%, transparent 60%),
+    radial-gradient(ellipse 1100px 700px at 85% 55%, rgba(30, 136, 229, 0.035) 0%, transparent 60%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.3 0 0 0 0  0 0.28 0 0 0  0 0 0.25 0 0  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperGrain)'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+}
 
 /* Typographie & accents */
 [data-theme="light"] .highlight-green {
@@ -2396,127 +2444,127 @@ p {
 }
 
 [data-theme="light"] .section-tag {
-  background: rgba(119, 184, 65, 0.1);
+  background: rgba(119, 184, 65, 0.12);
   color: #4e8c1e;
-  border-color: rgba(119, 184, 65, 0.35);
+  border-color: rgba(119, 184, 65, 0.4);
   box-shadow: 0 0 14px rgba(119, 184, 65, 0.1);
 }
 
 [data-theme="light"] .section-tag.blue {
-  background: rgba(30, 136, 229, 0.1);
+  background: rgba(30, 136, 229, 0.12);
   color: #0284c7;
-  border-color: rgba(30, 136, 229, 0.35);
+  border-color: rgba(30, 136, 229, 0.4);
   box-shadow: 0 0 14px rgba(30, 136, 229, 0.1);
 }
 
-/* Bouton secondaire */
+/* Bouton secondaire en papier vélin naturel */
 [data-theme="light"] .btn-secondary {
-  background: #ffffff;
-  color: #0f172a;
-  border: 1px solid #cbd5e1;
-  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
+  background: var(--bg-surface-1);
+  color: var(--text-white);
+  border: 1px solid rgba(185, 175, 155, 0.5);
+  box-shadow: 0 2px 8px rgba(60, 50, 35, 0.05);
 }
 
 [data-theme="light"] .btn-secondary:hover {
-  background: #f8fafc;
+  background: #ffffff;
   border-color: var(--logo-blue-bright);
   color: var(--logo-blue-bright);
-  box-shadow: 0 6px 20px rgba(30, 136, 229, 0.16);
+  box-shadow: 0 6px 20px rgba(30, 136, 229, 0.18);
 }
 
-/* Navigation principale */
+/* Navigation principale en blanc cassé lin semi-translucide */
 [data-theme="light"] #navbar {
-  background: rgba(255, 255, 255, 0.88);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.9);
-  box-shadow: 0 2px 14px rgba(15, 23, 42, 0.04);
+  background: rgba(246, 243, 235, 0.88);
+  border-bottom: 1px solid rgba(185, 175, 155, 0.38);
+  box-shadow: 0 2px 14px rgba(60, 50, 35, 0.04);
 }
 
 [data-theme="light"] #navbar.scrolled {
-  background: rgba(255, 255, 255, 0.98);
-  border-bottom: 1px solid #cbd5e1;
-  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+  background: rgba(246, 243, 235, 0.97);
+  border-bottom: 1px solid rgba(165, 155, 135, 0.48);
+  box-shadow: 0 8px 30px rgba(60, 50, 35, 0.08);
 }
 
 [data-theme="light"] .nav-links a {
-  color: #334155;
+  color: var(--text-secondary);
 }
 
 [data-theme="light"] .nav-links a:hover {
-  color: #0f172a;
-  background: rgba(15, 23, 42, 0.05);
+  color: var(--text-white);
+  background: rgba(60, 50, 35, 0.06);
 }
 
-/* Hero section */
+/* Hero section au dégradé doux lin et fibres végétales */
 [data-theme="light"] #hero {
-  background: radial-gradient(ellipse 1200px 700px at 50% 15%, #e0f2fe 0%, #f0fdf4 35%, var(--bg-root) 85%);
+  background: radial-gradient(ellipse 1150px 700px at 50% 18%, #fbf8f0 0%, #edf2e7 45%, var(--bg-root) 85%);
 }
 
 [data-theme="light"] .hero-bg::before {
-  opacity: 0.6;
+  opacity: 0.5;
 }
 
 [data-theme="light"] .hero-bg::after {
   background-image:
-    radial-gradient(circle 1.5px at 15% 20%, rgba(15, 23, 42, 0.06) 0%, transparent 100%),
-    radial-gradient(circle 1.5px at 85% 15%, rgba(15, 23, 42, 0.06) 0%, transparent 100%),
-    radial-gradient(circle 1px at 45% 75%, rgba(15, 23, 42, 0.06) 0%, transparent 100%),
-    radial-gradient(circle 1.5px at 75% 80%, rgba(15, 23, 42, 0.06) 0%, transparent 100%);
+    radial-gradient(circle 1.5px at 15% 20%, rgba(60, 50, 35, 0.06) 0%, transparent 100%),
+    radial-gradient(circle 1.5px at 85% 15%, rgba(60, 50, 35, 0.06) 0%, transparent 100%),
+    radial-gradient(circle 1px at 45% 75%, rgba(60, 50, 35, 0.06) 0%, transparent 100%),
+    radial-gradient(circle 1.5px at 75% 80%, rgba(60, 50, 35, 0.06) 0%, transparent 100%);
 }
 
 [data-theme="light"] .hero-badge {
-  background: rgba(255, 255, 255, 0.94);
-  border-color: rgba(119, 184, 65, 0.35);
-  color: #0f172a;
-  box-shadow: 0 4px 18px rgba(119, 184, 65, 0.12);
+  background: rgba(251, 249, 244, 0.95);
+  border-color: rgba(119, 184, 65, 0.4);
+  color: var(--text-primary);
+  box-shadow: 0 4px 18px rgba(60, 50, 35, 0.07);
 }
 
 [data-theme="light"] .hero-title {
-  color: #0f172a;
+  color: var(--text-white);
   text-shadow: none;
 }
 
 [data-theme="light"] .hero-subtitle strong {
-  color: #0f172a;
+  color: var(--text-white);
 }
 
 [data-theme="light"] .hero-logo {
-  filter: drop-shadow(0 12px 30px rgba(15, 23, 42, 0.1))
+  filter: drop-shadow(0 12px 30px rgba(60, 50, 35, 0.1))
          drop-shadow(0 0 25px rgba(119, 184, 65, 0.2))
          drop-shadow(0 0 35px rgba(30, 136, 229, 0.2));
 }
 
 [data-theme="light"] .hero-stat-card {
-  background: #ffffff;
-  border-color: #e2e8f0;
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+  background: var(--bg-surface-1);
+  border-color: var(--border-subtle);
+  box-shadow: 0 4px 16px rgba(60, 50, 35, 0.05);
 }
 
 [data-theme="light"] .hero-stat-card:hover {
   background: #ffffff;
-  border-color: #cbd5e1;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+  border-color: var(--border-highlight);
+  box-shadow: 0 8px 24px rgba(60, 50, 35, 0.08);
 }
 
 [data-theme="light"] .hero-stat-icon.green {
   background: rgba(119, 184, 65, 0.12);
   color: #4e8c1e;
-  border-color: rgba(119, 184, 65, 0.3);
+  border-color: rgba(119, 184, 65, 0.35);
 }
 
 [data-theme="light"] .hero-stat-icon.blue {
   background: rgba(30, 136, 229, 0.12);
   color: #0284c7;
-  border-color: rgba(30, 136, 229, 0.3);
+  border-color: rgba(30, 136, 229, 0.35);
 }
 
 [data-theme="light"] .scroll-arrow {
-  border-right-color: rgba(15, 23, 42, 0.4);
-  border-bottom-color: rgba(15, 23, 42, 0.4);
+  border-right-color: rgba(60, 50, 35, 0.4);
+  border-bottom-color: rgba(60, 50, 35, 0.4);
 }
 
-/* Sections sombres converties en sections élégantes */
+/* Sections sombres converties en sections douces lin & papier */
 [data-theme="light"] .section-dark {
-  background: linear-gradient(180deg, #f8fafc 0%, #edf2f6 100%);
+  background: linear-gradient(180deg, #efebe1 0%, #e8e2d4 100%);
 }
 
 /* Impact Rings */
@@ -2534,20 +2582,21 @@ p {
 }
 
 [data-theme="light"] .ring-bg {
-  stroke: #e2e8f0;
+  stroke: rgba(185, 175, 155, 0.35);
 }
 
 /* Points de collecte */
 [data-theme="light"] .point-card {
-  background: #ffffff;
-  border-color: #e2e8f0;
+  background: var(--bg-surface-1);
+  border-color: var(--border-subtle);
+  box-shadow: 0 3px 12px rgba(60, 50, 35, 0.04);
 }
 
 [data-theme="light"] .point-card:hover,
 [data-theme="light"] .point-card.active {
   background: #ffffff;
   border-color: #4e8c1e;
-  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08), 0 0 20px rgba(119, 184, 65, 0.15);
+  box-shadow: 0 6px 20px rgba(60, 50, 35, 0.08), 0 0 20px rgba(119, 184, 65, 0.15);
 }
 
 [data-theme="light"] .point-card .point-hours {
@@ -2556,46 +2605,46 @@ p {
 
 /* Popup Leaflet en mode clair */
 [data-theme="light"] .leaflet-popup-content-wrapper {
-  background: #ffffff !important;
-  color: #0f172a !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12), 0 0 20px rgba(30, 136, 229, 0.15) !important;
+  background: #fbf9f4 !important;
+  color: #1a251b !important;
+  border: 1px solid rgba(185, 175, 155, 0.45) !important;
+  box-shadow: 0 10px 30px rgba(60, 50, 35, 0.12), 0 0 20px rgba(30, 136, 229, 0.15) !important;
 }
 
 [data-theme="light"] .leaflet-popup-tip {
-  background: #ffffff !important;
+  background: #fbf9f4 !important;
 }
 
 [data-theme="light"] .leaflet-popup-content h4 {
-  color: #0f172a !important;
+  color: #1a251b !important;
 }
 
 [data-theme="light"] .leaflet-popup-content p {
-  color: #475569 !important;
+  color: #3d4a3e !important;
 }
 
 /* Formulaire de contact */
 [data-theme="light"] .contact-form {
-  background: #ffffff;
-  border-color: #e2e8f0;
-  box-shadow: 0 15px 45px rgba(15, 23, 42, 0.07);
+  background: var(--bg-surface-1);
+  border-color: var(--border-subtle);
+  box-shadow: 0 15px 45px rgba(60, 50, 35, 0.07);
 }
 
 [data-theme="light"] .form-group label {
-  color: #0f172a;
+  color: var(--text-white);
 }
 
 [data-theme="light"] .form-group input,
 [data-theme="light"] .form-group select,
 [data-theme="light"] .form-group textarea {
-  background: #f8fafc;
-  border: 1px solid #cbd5e1;
-  color: #0f172a;
+  background: #f6f3eb;
+  border: 1px solid rgba(185, 175, 155, 0.5);
+  color: var(--text-white);
 }
 
 [data-theme="light"] .form-group input::placeholder,
 [data-theme="light"] .form-group textarea::placeholder {
-  color: #94a3b8;
+  color: #8b998a;
 }
 
 [data-theme="light"] .form-group input:focus,
@@ -2607,16 +2656,16 @@ p {
 }
 
 [data-theme="light"] .form-group select option {
-  background: #ffffff;
-  color: #0f172a;
+  background: #fbf9f4;
+  color: #1a251b;
 }
 
 /* Carte visuelle Boutique (La Halle aux Artistes) en mode clair */
 [data-theme="light"] .boutique-card-visual {
-  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 45%, #e0f2fe 100%);
-  border: 1px solid #cbd5e1;
-  color: #0f172a;
-  box-shadow: 0 14px 40px rgba(15, 23, 42, 0.08), 0 0 35px rgba(119, 184, 65, 0.15);
+  background: linear-gradient(135deg, #fbf9f4 0%, #edf4e8 45%, #e8f0f8 100%);
+  border: 1px solid rgba(185, 175, 155, 0.45);
+  color: var(--text-white);
+  box-shadow: 0 14px 40px rgba(60, 50, 35, 0.07), 0 0 35px rgba(119, 184, 65, 0.12);
 }
 
 [data-theme="light"] .boutique-card-visual::before {
@@ -2633,19 +2682,19 @@ p {
 }
 
 [data-theme="light"] .boutique-card-visual p {
-  color: #0f172a;
+  color: var(--text-white);
 }
 
 [data-theme="light"] .boutique-card-visual span {
-  color: #475569;
+  color: var(--text-secondary);
 }
 
 /* Carte visuelle Partenariat ESAT (fallback) en mode clair */
 [data-theme="light"] .esat-photo-fallback {
-  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 45%, #f0fdf4 100%);
-  border: 1px solid #cbd5e1;
-  color: #0f172a;
-  box-shadow: inset 0 0 20px rgba(15, 23, 42, 0.02), 0 10px 30px rgba(15, 23, 42, 0.06);
+  background: linear-gradient(135deg, #fbf9f4 0%, #edf4f8 45%, #edf4e8 100%);
+  border: 1px solid rgba(185, 175, 155, 0.45);
+  color: var(--text-white);
+  box-shadow: inset 0 0 20px rgba(60, 50, 35, 0.02), 0 10px 30px rgba(60, 50, 35, 0.06);
 }
 
 [data-theme="light"] .esat-fallback-icon {
@@ -2655,11 +2704,11 @@ p {
 }
 
 [data-theme="light"] .esat-photo-fallback h4 {
-  color: #0f172a;
+  color: var(--text-white);
 }
 
 [data-theme="light"] .esat-photo-fallback p {
-  color: #475569;
+  color: var(--text-secondary);
 }
 
 [data-theme="light"] .esat-fallback-tag {
@@ -2671,9 +2720,9 @@ p {
 
 /* Bannière d'appel ESAT en mode clair */
 [data-theme="light"] .esat-join-banner {
-  background: linear-gradient(135deg, rgba(240, 253, 244, 0.95) 0%, rgba(224, 242, 254, 0.95) 100%);
-  border: 1px solid #cbd5e1;
-  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+  background: linear-gradient(135deg, rgba(239, 247, 235, 0.95) 0%, rgba(233, 243, 251, 0.95) 100%);
+  border: 1px solid rgba(185, 175, 155, 0.45);
+  box-shadow: 0 8px 30px rgba(60, 50, 35, 0.06);
 }
 
 [data-theme="light"] .esat-join-icon {
@@ -2682,18 +2731,18 @@ p {
 }
 
 [data-theme="light"] .esat-join-content h4 {
-  color: #0f172a;
+  color: var(--text-white);
 }
 
 [data-theme="light"] .esat-join-content p {
-  color: #334155;
+  color: var(--text-secondary);
 }
 
-/* Footer soigné en mode clair */
+/* Footer soigné en mode clair pâte à papier / lin */
 [data-theme="light"] .footer {
-  background: #f1f5f9;
-  color: #64748b;
-  border-top: 1px solid #e2e8f0;
+  background: #ede7db;
+  color: #5d6a5c;
+  border-top: 1px solid rgba(185, 175, 155, 0.45);
 }
 
 [data-theme="light"] .footer::before {
@@ -2701,16 +2750,16 @@ p {
 }
 
 [data-theme="light"] .footer-brand p {
-  color: #475569;
+  color: #5d6a5c;
 }
 
 [data-theme="light"] .footer-links h4,
 [data-theme="light"] .footer-social h4 {
-  color: #0f172a;
+  color: var(--text-white);
 }
 
 [data-theme="light"] .footer-links a {
-  color: #64748b;
+  color: #5d6a5c;
 }
 
 [data-theme="light"] .footer-links a:hover {
@@ -2718,7 +2767,7 @@ p {
 }
 
 [data-theme="light"] .footer-social a {
-  color: #64748b;
+  color: #5d6a5c;
 }
 
 [data-theme="light"] .footer-social a:hover {
@@ -2726,8 +2775,8 @@ p {
 }
 
 [data-theme="light"] .footer-bottom {
-  border-top-color: #e2e8f0;
-  color: #94a3b8;
+  border-top-color: rgba(185, 175, 155, 0.4);
+  color: #8b998a;
 }
 
 /* =========================================================
