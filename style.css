@@ -77,10 +77,10 @@
 /* --- VARIATION ACTIVE : Pâte à papier & fibres naturelles --- */
 [data-theme="light"] {
   /* Palette Pâte à Papier Recyclé (Tons lin, ivoire doux et blanc cassé naturel) */
-  --bg-root: #f6f3eb;              /* Fond général : blanc cassé lin naturel / pâte à papier */
-  --bg-surface-1: #fbf9f4;          /* Papier vélin ivoire doux pour cartes & conteneurs */
-  --bg-surface-2: #efebe1;          /* Teinte pulpe de papier légèrement texturée */
-  --bg-surface-card: rgba(251, 249, 244, 0.95);
+  --bg-root: #f4eee3;              /* Fond général : blanc cassé lin naturel / pâte à papier */
+  --bg-surface-1: #f4eee3;          /* Blanc cassé chaud lin & vélin pour sections & conteneurs */
+  --bg-surface-2: #ebe4d6;          /* Teinte pulpe de papier recyclé doux (contraste adouci) */
+  --bg-surface-card: #fbf9f4;       /* Papier vélin ivoire doux pour cartes */
   --bg-surface-card-hover: #ffffff;
   --bg-surface-elevated: #fbf9f4;
 
@@ -2474,13 +2474,13 @@ p {
 
 /* Navigation principale en blanc cassé lin semi-translucide */
 [data-theme="light"] #navbar {
-  background: rgba(246, 243, 235, 0.88);
+  background: rgba(244, 238, 227, 0.88);
   border-bottom: 1px solid rgba(185, 175, 155, 0.38);
   box-shadow: 0 2px 14px rgba(60, 50, 35, 0.04);
 }
 
 [data-theme="light"] #navbar.scrolled {
-  background: rgba(246, 243, 235, 0.97);
+  background: rgba(244, 238, 227, 0.97);
   border-bottom: 1px solid rgba(165, 155, 135, 0.48);
   box-shadow: 0 8px 30px rgba(60, 50, 35, 0.08);
 }
@@ -2562,9 +2562,30 @@ p {
   border-bottom-color: rgba(60, 50, 35, 0.4);
 }
 
-/* Sections sombres converties en sections douces lin & papier */
+/* Sections en mode clair : contrastes doux, harmonieux et transitions élégantes */
 [data-theme="light"] .section-dark {
-  background: linear-gradient(180deg, #efebe1 0%, #e8e2d4 100%);
+  background: linear-gradient(180deg, #ebe4d6 0%, #ded6c4 100%);
+  border-top: 1px solid rgba(185, 175, 155, 0.35);
+  border-bottom: 1px solid rgba(185, 175, 155, 0.45);
+}
+
+[data-theme="light"] .section-alt {
+  border-top: 1px solid rgba(185, 175, 155, 0.28);
+  border-bottom: 1px solid rgba(185, 175, 155, 0.28);
+}
+
+[data-theme="light"] .section-esat {
+  background-color: var(--bg-surface-1);
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(30, 136, 229, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(119, 184, 65, 0.08) 0%, transparent 50%);
+  border-top: 1px solid rgba(185, 175, 155, 0.28);
+  border-bottom: 1px solid rgba(185, 175, 155, 0.28);
+}
+
+/* Page Dépôts : fond blanc cassé doux harmonisé */
+[data-theme="light"] #points-depot {
+  background-color: var(--bg-surface-1);
 }
 
 /* Impact Rings */
@@ -2585,18 +2606,18 @@ p {
   stroke: rgba(185, 175, 155, 0.35);
 }
 
-/* Points de collecte */
+/* Points de collecte : cartes en papier vélin ivoire doux */
 [data-theme="light"] .point-card {
-  background: var(--bg-surface-1);
-  border-color: var(--border-subtle);
-  box-shadow: 0 3px 12px rgba(60, 50, 35, 0.04);
+  background: var(--bg-surface-card);
+  border: 1px solid rgba(185, 175, 155, 0.45);
+  box-shadow: 0 4px 14px rgba(60, 50, 35, 0.05);
 }
 
 [data-theme="light"] .point-card:hover,
 [data-theme="light"] .point-card.active {
   background: #ffffff;
   border-color: #4e8c1e;
-  box-shadow: 0 6px 20px rgba(60, 50, 35, 0.08), 0 0 20px rgba(119, 184, 65, 0.15);
+  box-shadow: 0 8px 24px rgba(60, 50, 35, 0.08), 0 0 20px rgba(119, 184, 65, 0.16);
 }
 
 [data-theme="light"] .point-card .point-hours {
@@ -2740,7 +2761,7 @@ p {
 
 /* Footer soigné en mode clair pâte à papier / lin */
 [data-theme="light"] .footer {
-  background: #ede7db;
+  background: #ded6c4;
   color: #5d6a5c;
   border-top: 1px solid rgba(185, 175, 155, 0.45);
 }
