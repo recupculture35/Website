@@ -893,8 +893,9 @@
           });
         });
 
-        // Enrichissement dynamique du JSON-LD Schema.org pour Google
-        updateSchemaOrgFaq(c.faq.items);
+          // Enrichissement dynamique du JSON-LD Schema.org pour Google
+          updateSchemaOrgFaq(c.faq.items);
+        }
       }
     }
 

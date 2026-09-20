@@ -356,22 +356,23 @@ p {
 }
 
 .nav-container {
-  max-width: 1240px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 20px;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 28px;
+  gap: 16px;
 }
 
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   text-decoration: none;
   transition: transform 0.3s ease;
+  flex-shrink: 0;
 }
 
 .nav-logo:hover {
@@ -380,7 +381,7 @@ p {
 
 /* Logo nettement plus grand dans la navbar */
 .nav-logo-img {
-  height: 54px;
+  height: 52px;
   width: auto;
   object-fit: contain;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
@@ -394,17 +395,27 @@ p {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
+  flex-wrap: nowrap;
+  flex-shrink: 1;
+  list-style: none;
+}
+
+.nav-links li {
+  list-style: none;
+  display: flex;
+  align-items: center;
 }
 
 .nav-links a {
   font-family: var(--font-heading);
   font-weight: 500;
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   color: var(--text-secondary);
-  padding: 8px 14px;
+  padding: 6px 11px;
   border-radius: var(--radius-sm);
   transition: var(--transition);
+  white-space: nowrap;
 }
 
 .nav-links a:hover {
@@ -416,10 +427,15 @@ p {
   background: var(--brand-gradient);
   color: #ffffff !important;
   font-weight: 600;
-  padding: 10px 22px;
+  padding: 8px 18px;
   border-radius: var(--radius-pill);
-  margin-left: 10px;
+  margin-left: 6px;
   box-shadow: 0 4px 18px rgba(119, 184, 65, 0.3);
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav-links .nav-cta:hover {
@@ -432,6 +448,7 @@ p {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 /* Bouton Sélecteur de Thème (Switch Fluide Clair / Sombre) */
@@ -2727,9 +2744,32 @@ p {
   .hero-stats { grid-template-columns: 1fr; max-width: 420px; }
 }
 
-@media (max-width: 768px) {
+/* Navbar adaptative pour écrans intermédiaires (1081px - 1240px) */
+@media (max-width: 1240px) and (min-width: 1081px) {
+  .nav-container {
+    padding: 0 14px;
+    gap: 8px;
+  }
+  .nav-logo-img {
+    height: 44px;
+  }
+  .nav-links {
+    gap: 2px;
+  }
+  .nav-links a {
+    font-size: 0.82rem;
+    padding: 5px 8px;
+  }
+  .nav-links .nav-cta {
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    margin-left: 4px;
+  }
+}
+
+/* Menu mobile & tablette compact (jusqu'à 1080px) pour éviter tout chevauchement */
+@media (max-width: 1080px) {
   :root { --nav-height: 68px; }
-  .section { padding: 76px 0; }
 
   .nav-logo-img { height: 46px; }
 
@@ -2758,8 +2798,12 @@ p {
     from { opacity: 0; transform: translateY(-10px) scale(0.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
   }
+  .nav-links li {
+    width: 100%;
+    display: block;
+  }
   .nav-links a {
-    font-size: 1.05rem;
+    font-size: 1.02rem;
     padding: 12px 18px;
     color: var(--text-white) !important;
     border-radius: var(--radius-sm);
@@ -2774,10 +2818,12 @@ p {
     color: var(--logo-green-bright) !important;
   }
   .nav-links .nav-cta {
+    width: 100%;
     margin-left: 0;
     margin-top: 10px;
     text-align: center;
     justify-content: center;
+    display: flex;
   }
   .nav-toggle { display: flex; }
 
@@ -2797,6 +2843,10 @@ p {
   [data-theme="light"] .nav-toggle span {
     background: #0f172a;
   }
+}
+
+@media (max-width: 768px) {
+  .section { padding: 76px 0; }
 
   .mission-steps { grid-template-columns: 1fr; gap: 24px; }
   .impact-grid { grid-template-columns: 1fr; gap: 24px; }
