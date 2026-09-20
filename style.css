@@ -1,55 +1,60 @@
 /* =========================================================
-   RECUP CULTURE – Design System & Styles (Dark Mode Pop)
-   Couleurs du logo : Vert (#77b841) & Bleu (#1e88e5)
+   RECUP CULTURE – Design System & Styles
+   Palette officielle issue des flyers associatifs :
+   - Thème Foncé : Ardoise encrée & vélin doux (Flyer n°2)
+   - Thème Clair : Crème parchemin, lin chaud & bleu royal (Flyers n°1 & 3)
    ========================================================= */
 
-/* --- Variables CSS globales --- */
+/* --- Variables CSS globales (Mode Foncé Ardoise Encrée - Flyer n°2) --- */
 :root {
-  /* Couleurs de marque du logo */
-  --logo-green: #77b841;
-  --logo-green-bright: #8ce44c;
-  --logo-green-glow: rgba(119, 184, 65, 0.45);
-  --logo-green-tint: rgba(119, 184, 65, 0.12);
+  /* Couleurs de marque officielles du logo et flyers */
+  --logo-green: #67b342;          /* Vert feuille naturel du logo RECUP */
+  --logo-green-bright: #7ece4c;   /* Vert éclatant pour badges et survols */
+  --logo-green-glow: rgba(103, 179, 66, 0.45);
+  --logo-green-tint: rgba(103, 179, 66, 0.12);
 
-  --logo-blue: #1e88e5;
-  --logo-blue-bright: #38bdf8;
-  --logo-blue-glow: rgba(30, 136, 229, 0.45);
-  --logo-blue-tint: rgba(30, 136, 229, 0.12);
+  --logo-blue: #163f7a;           /* Bleu royal officiel des bannières et titres */
+  --logo-blue-bright: #3b82f6;    /* Bleu vif d'action */
+  --logo-blue-glow: rgba(59, 130, 246, 0.45);
+  --logo-blue-tint: rgba(59, 130, 246, 0.12);
 
-  --accent-amber: #f59e0b;
+  /* Accents complémentaires issus des flyers */
+  --accent-amber: #f5ba24;        /* Jaune solaire "Solidaire" / dates / badges */
+  --accent-blue-soft: #9bcdfa;    /* Bleu pastel côtier encadré horaires */
+  --accent-coral: #e8685a;        /* Terracotta / corail des parutions */
   --accent-red: #ef4444;
 
   /* Dégradés signature */
-  --brand-gradient: linear-gradient(135deg, #77b841 0%, #1e88e5 100%);
-  --brand-gradient-hover: linear-gradient(135deg, #8ce44c 0%, #38bdf8 100%);
-  --green-gradient: linear-gradient(135deg, #77b841 0%, #43a047 100%);
-  --blue-gradient: linear-gradient(135deg, #1e88e5 0%, #0d47a1 100%);
+  --brand-gradient: linear-gradient(135deg, #67b342 0%, #163f7a 100%);
+  --brand-gradient-hover: linear-gradient(135deg, #7ece4c 0%, #3b82f6 100%);
+  --green-gradient: linear-gradient(135deg, #67b342 0%, #4a8c2c 100%);
+  --blue-gradient: linear-gradient(135deg, #163f7a 0%, #0d2850 100%);
 
-  /* Palette Sombre Moderne */
-  --bg-root: #070b12;
-  --bg-surface-1: #0b121e;
-  --bg-surface-2: #0f1826;
-  --bg-surface-card: rgba(15, 24, 38, 0.72);
-  --bg-surface-card-hover: rgba(20, 32, 51, 0.9);
-  --bg-surface-elevated: #152236;
+  /* Palette Sombre Ardoise Encrée (Flyer n°2) */
+  --bg-root: #161d27;             /* Fond ardoise encrée minérale et douce */
+  --bg-surface-1: #1a232f;        /* Surface 1 : ardoise profonde */
+  --bg-surface-2: #212c3b;        /* Surface 2 : ardoise structurée */
+  --bg-surface-card: rgba(26, 35, 47, 0.82);
+  --bg-surface-card-hover: rgba(33, 44, 59, 0.95);
+  --bg-surface-elevated: #212c3b;
 
   /* Bordures & Ombres */
   --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-highlight: rgba(255, 255, 255, 0.16);
-  --border-green: rgba(119, 184, 65, 0.4);
-  --border-blue: rgba(30, 136, 229, 0.4);
+  --border-highlight: rgba(155, 205, 218, 0.22);
+  --border-green: rgba(103, 179, 66, 0.4);
+  --border-blue: rgba(59, 130, 246, 0.4);
 
   --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.6);
-  --shadow-green-glow: 0 0 35px rgba(119, 184, 65, 0.35);
-  --shadow-blue-glow: 0 0 35px rgba(30, 136, 229, 0.35);
-  --shadow-brand-glow: 0 0 40px rgba(119, 184, 65, 0.3), 0 0 60px rgba(30, 136, 229, 0.25);
+  --shadow-green-glow: 0 0 35px rgba(103, 179, 66, 0.35);
+  --shadow-blue-glow: 0 0 35px rgba(59, 130, 246, 0.35);
+  --shadow-brand-glow: 0 0 40px rgba(103, 179, 66, 0.3), 0 0 60px rgba(22, 63, 122, 0.25);
 
-  /* Typographie & Textes */
-  --text-white: #ffffff;
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
+  /* Typographie & Textes (Tons crème et vélin doux sur fond sombre) */
+  --text-white: #f7efe2;          /* Crème papier vélin du flyer pour titrage doux */
+  --text-primary: #e8ecf1;        /* Texte clair haute lisibilité */
+  --text-secondary: #cbd5e1;      /* Texte secondaire */
   --text-muted: #94a3b8;
   --text-dim: #64748b;
 
@@ -68,81 +73,77 @@
 }
 
 /* =========================================================
-   THÈME CLAIR (TEST : PÂTE À PAPIER RECYCLÉ & BLANC CASSÉ)
-   Palette chaude lin, vélin ivoire & fibres naturelles.
-   Pour ROLLBACK immédiat vers le blanc froid classique,
-   inverser les deux blocs ci-dessous.
+   THÈME CLAIR (PALETTE OFFICIELLE FLYERS 1 & 3)
+   Tons crème parchemin chaud (#f7efe2), lin doux (#ede2d1),
+   titres en bleu royal (#163f7a) et accents dorés (#f5ba24).
    ========================================================= */
-
-/* --- VARIATION ACTIVE : Pâte à papier & fibres naturelles --- */
 [data-theme="light"] {
-  /* Palette Pâte à Papier Recyclé (Tons lin, ivoire doux et blanc cassé naturel) */
-  --bg-root: #f4eee3;              /* Fond général : blanc cassé lin naturel / pâte à papier */
-  --bg-surface-1: #f4eee3;          /* Blanc cassé chaud lin & vélin pour sections & conteneurs */
-  --bg-surface-2: #ebe4d6;          /* Teinte pulpe de papier recyclé doux (contraste adouci) */
-  --bg-surface-card: #fbf9f4;       /* Papier vélin ivoire doux pour cartes */
+  /* Palette Pâte à Papier / Crème Parchemin Flyer */
+  --bg-root: #f7efe2;              /* Fond général : crème chaud lin/parchemin exact du flyer */
+  --bg-surface-1: #f7efe2;          /* Crème naturel pour sections et conteneurs */
+  --bg-surface-2: #ede2d1;          /* Sable lin chaud pour alternance de sections */
+  --bg-surface-card: #fcf8f2;       /* Papier vélin ivoire doux pour cartes */
   --bg-surface-card-hover: #ffffff;
-  --bg-surface-elevated: #fbf9f4;
+  --bg-surface-elevated: #fcf8f2;
 
-  /* Typographie Encre Végétale Haute Lisibilité */
-  --text-white: #1a251b;            /* Titres : noir végétal profond à nuance forêt */
-  --text-primary: #253326;          /* Encre naturelle sombre */
-  --text-secondary: #3d4a3e;        /* Gris minéral végétal équilibré */
-  --text-muted: #667567;            /* Teinte pierre / sauge */
-  --text-dim: #8b998a;              /* Gris lin discret */
+  /* Typographie Encre & Titres Bleu Royal Flyer */
+  --text-white: #163f7a;            /* Titres h1, h2, h3 : bleu royal emblématique du flyer */
+  --text-primary: #192433;          /* Corps de texte : encre sombre haute lisibilité */
+  --text-secondary: #3d4a59;        /* Texte secondaire équilibré */
+  --text-muted: #64748b;            /* Teinte pierre ardoise douce */
+  --text-dim: #8c9ba8;              /* Gris lin discret */
 
-  /* Couleurs de marque Recup Culture (Vert #77b841 & Bleu #1e88e5) */
-  --logo-green-bright: #4e8c1e;     /* Vert feuille dense pour contraste optimal */
-  --logo-green-glow: rgba(119, 184, 65, 0.28);
-  --logo-green-tint: rgba(119, 184, 65, 0.12);
+  /* Couleurs de marque Recup Culture & Flyer */
+  --logo-green: #67b342;            /* Vert feuille logo RECUP */
+  --logo-green-bright: #529430;     /* Vert dense végétal pour contraste sur fond clair */
+  --logo-green-glow: rgba(103, 179, 66, 0.25);
+  --logo-green-tint: rgba(103, 179, 66, 0.12);
 
-  --logo-blue-bright: #0284c7;      /* Bleu cyan profond encre artisanale */
-  --logo-blue-glow: rgba(30, 136, 229, 0.28);
-  --logo-blue-tint: rgba(30, 136, 229, 0.12);
+  --logo-blue: #163f7a;             /* Bleu royal officiel */
+  --logo-blue-bright: #1e60ad;      /* Bleu d'accent lumineux pour liens et survols */
+  --logo-blue-glow: rgba(22, 63, 122, 0.22);
+  --logo-blue-tint: rgba(22, 63, 122, 0.1);
+
+  /* Accents des flyers */
+  --accent-amber: #f5ba24;          /* Jaune solaire "Solidaire" / dates / badges */
+  --accent-blue-soft: #9bcdfa;      /* Bleu ciel pastel boîte horaires */
+  --accent-coral: #e8685a;          /* Terracotta flyer */
+
+  /* Dégradés signature */
+  --brand-gradient: linear-gradient(135deg, #67b342 0%, #163f7a 100%);
+  --brand-gradient-hover: linear-gradient(135deg, #7ece4c 0%, #1e60ad 100%);
+  --green-gradient: linear-gradient(135deg, #67b342 0%, #4a8c2c 100%);
+  --blue-gradient: linear-gradient(135deg, #163f7a 0%, #0d2850 100%);
 
   /* Bordures douces papier & reliure artisanale */
-  --border-subtle: rgba(185, 175, 155, 0.35);
-  --border-highlight: rgba(165, 155, 135, 0.52);
-  --border-green: rgba(119, 184, 65, 0.5);
-  --border-blue: rgba(30, 136, 229, 0.5);
+  --border-subtle: rgba(185, 175, 155, 0.38);
+  --border-highlight: rgba(165, 155, 135, 0.55);
+  --border-green: rgba(103, 179, 66, 0.45);
+  --border-blue: rgba(22, 63, 122, 0.4);
 
-  /* Ombres chaudes et diffuses (teinte sépia/kraft légère) */
-  --shadow-sm: 0 3px 12px rgba(60, 50, 35, 0.05);
-  --shadow-md: 0 8px 24px rgba(60, 50, 35, 0.07);
-  --shadow-lg: 0 16px 42px rgba(60, 50, 35, 0.09);
-  --shadow-green-glow: 0 6px 25px rgba(119, 184, 65, 0.2);
-  --shadow-blue-glow: 0 6px 25px rgba(30, 136, 229, 0.2);
-  --shadow-brand-glow: 0 8px 30px rgba(119, 184, 65, 0.18), 0 8px 30px rgba(30, 136, 229, 0.15);
+  /* Ombres chaudes et diffuses */
+  --shadow-sm: 0 3px 12px rgba(50, 40, 30, 0.05);
+  --shadow-md: 0 8px 24px rgba(50, 40, 30, 0.07);
+  --shadow-lg: 0 16px 42px rgba(50, 40, 30, 0.09);
+  --shadow-green-glow: 0 6px 25px rgba(103, 179, 66, 0.2);
+  --shadow-blue-glow: 0 6px 25px rgba(22, 63, 122, 0.18);
+  --shadow-brand-glow: 0 8px 30px rgba(103, 179, 66, 0.18), 0 8px 30px rgba(22, 63, 122, 0.15);
 }
 
-/* --- OPTION ROLLBACK : Thème clair froid standard (conservé pour bascule rapide) ---
-[data-theme="light-classic"] {
-  --bg-root: #f8fafc;
-  --bg-surface-1: #ffffff;
-  --bg-surface-2: #f1f5f9;
-  --bg-surface-card: #ffffff;
-  --bg-surface-card-hover: #f8fafc;
-  --bg-surface-elevated: #ffffff;
-  --text-white: #0f172a;
-  --text-primary: #1e293b;
-  --text-secondary: #334155;
-  --text-muted: #64748b;
-  --text-dim: #94a3b8;
-  --logo-green-bright: #4e8c1e;
-  --logo-green-glow: rgba(119, 184, 65, 0.25);
-  --logo-green-tint: rgba(119, 184, 65, 0.1);
-  --logo-blue-bright: #0284c7;
-  --logo-blue-glow: rgba(30, 136, 229, 0.25);
-  --logo-blue-tint: rgba(30, 136, 229, 0.1);
-  --border-subtle: #e2e8f0;
-  --border-highlight: #cbd5e1;
-  --border-green: rgba(119, 184, 65, 0.45);
-  --border-blue: rgba(30, 136, 229, 0.45);
-  --shadow-sm: 0 4px 16px rgba(15, 23, 42, 0.05);
-  --shadow-md: 0 10px 28px rgba(15, 23, 42, 0.07);
-  --shadow-lg: 0 20px 45px rgba(15, 23, 42, 0.1);
-}
-*/
+/* =============================================================================
+   ROLLBACK RAPIDE : PALETTES PRÉCÉDENTES (SAUVEGARDE PRÊTE À L'EMPLOI)
+   Si vous souhaitez revenir à la version précédente à tout moment,
+   remplacez :root ou [data-theme="light"] par l'un des blocs ci-dessous.
+   =============================================================================
+   ANCIEN :ROOT (NOIR PROFOND) :
+   --bg-root: #070b12; --bg-surface-1: #0b121e; --bg-surface-2: #0f1826;
+   --bg-surface-card: rgba(15, 24, 38, 0.72); --bg-surface-card-hover: rgba(20, 32, 51, 0.9);
+   --logo-green: #77b841; --logo-blue: #1e88e5; --text-white: #ffffff;
+
+   ANCIEN [data-theme="light"] (PÂTE À PAPIER V1) :
+   --bg-root: #f4eee3; --bg-surface-1: #f4eee3; --bg-surface-2: #ebe4d6;
+   --bg-surface-card: #fbf9f4; --text-white: #1a251b; --text-primary: #253326;
+   ============================================================================= */
 
 /* =========================================================
    Reset & Base
@@ -2428,7 +2429,7 @@ p {
    FOOTER
    ========================================================= */
 .footer {
-  background: #04070c;
+  background: #101621;
   color: var(--text-muted);
   padding: 70px 0 32px;
   border-top: 1px solid var(--border-subtle);
@@ -2534,43 +2535,44 @@ p {
 }
 
 /* =========================================================
-   RÈGLES DU THÈME CLAIR (TEST : PÂTE À PAPIER RECYCLÉ & LIN NATUREL)
-   Tons blanc cassé lin, papier vélin ivoire & accents Vert/Bleu Recup Culture
+   RÈGLES DU THÈME CLAIR (PALETTE OFFICIELLE FLYERS)
+   Tons crème lin parchemin (#f7efe2), titres bleu royal (#163f7a)
+   & accents vert feuille (#67b342 / #529430) et or (#f5ba24)
    ========================================================= */
 
 /* Texture micro-grain papier recyclé & pâte à papier (100% vectoriel, 0 latence) */
 [data-theme="light"] body {
   background-color: var(--bg-root);
   background-image:
-    radial-gradient(ellipse 1300px 800px at 15% 10%, rgba(119, 184, 65, 0.035) 0%, transparent 60%),
-    radial-gradient(ellipse 1100px 700px at 85% 55%, rgba(30, 136, 229, 0.035) 0%, transparent 60%),
+    radial-gradient(ellipse 1300px 800px at 15% 10%, rgba(103, 179, 66, 0.035) 0%, transparent 60%),
+    radial-gradient(ellipse 1100px 700px at 85% 55%, rgba(22, 63, 122, 0.03) 0%, transparent 60%),
     url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.3 0 0 0 0  0 0.28 0 0 0  0 0 0.25 0 0  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperGrain)'/%3E%3C/svg%3E");
   background-attachment: fixed;
 }
 
 /* Typographie & accents */
 [data-theme="light"] .highlight-green {
-  color: #4e8c1e;
+  color: #529430;
   text-shadow: none;
 }
 
 [data-theme="light"] .highlight-blue {
-  color: #0284c7;
+  color: #163f7a;
   text-shadow: none;
 }
 
 [data-theme="light"] .section-tag {
-  background: rgba(119, 184, 65, 0.12);
-  color: #4e8c1e;
-  border-color: rgba(119, 184, 65, 0.4);
-  box-shadow: 0 0 14px rgba(119, 184, 65, 0.1);
+  background: rgba(103, 179, 66, 0.12);
+  color: #529430;
+  border-color: rgba(103, 179, 66, 0.4);
+  box-shadow: 0 0 14px rgba(103, 179, 66, 0.1);
 }
 
 [data-theme="light"] .section-tag.blue {
-  background: rgba(30, 136, 229, 0.12);
-  color: #0284c7;
-  border-color: rgba(30, 136, 229, 0.4);
-  box-shadow: 0 0 14px rgba(30, 136, 229, 0.1);
+  background: rgba(22, 63, 122, 0.1);
+  color: #163f7a;
+  border-color: rgba(22, 63, 122, 0.35);
+  box-shadow: 0 0 14px rgba(22, 63, 122, 0.1);
 }
 
 /* Bouton secondaire en papier vélin naturel */
@@ -2578,27 +2580,27 @@ p {
   background: var(--bg-surface-1);
   color: var(--text-white);
   border: 1px solid rgba(185, 175, 155, 0.5);
-  box-shadow: 0 2px 8px rgba(60, 50, 35, 0.05);
+  box-shadow: 0 2px 8px rgba(50, 40, 30, 0.05);
 }
 
 [data-theme="light"] .btn-secondary:hover {
   background: #ffffff;
   border-color: var(--logo-blue-bright);
   color: var(--logo-blue-bright);
-  box-shadow: 0 6px 20px rgba(30, 136, 229, 0.18);
+  box-shadow: 0 6px 20px rgba(22, 63, 122, 0.18);
 }
 
-/* Navigation principale en blanc cassé lin semi-translucide */
+/* Navigation principale en crème parchemin semi-translucide */
 [data-theme="light"] #navbar {
-  background: rgba(244, 238, 227, 0.88);
+  background: rgba(247, 239, 226, 0.92);
   border-bottom: 1px solid rgba(185, 175, 155, 0.38);
-  box-shadow: 0 2px 14px rgba(60, 50, 35, 0.04);
+  box-shadow: 0 2px 14px rgba(50, 40, 30, 0.04);
 }
 
 [data-theme="light"] #navbar.scrolled {
-  background: rgba(244, 238, 227, 0.97);
+  background: rgba(247, 239, 226, 0.98);
   border-bottom: 1px solid rgba(165, 155, 135, 0.48);
-  box-shadow: 0 8px 30px rgba(60, 50, 35, 0.08);
+  box-shadow: 0 8px 30px rgba(50, 40, 30, 0.08);
 }
 
 [data-theme="light"] .nav-links a {
@@ -2607,12 +2609,12 @@ p {
 
 [data-theme="light"] .nav-links a:hover {
   color: var(--text-white);
-  background: rgba(60, 50, 35, 0.06);
+  background: rgba(50, 40, 30, 0.06);
 }
 
-/* Hero section au dégradé doux lin et fibres végétales */
+/* Hero section au dégradé doux crème lin */
 [data-theme="light"] #hero {
-  background: radial-gradient(ellipse 1150px 700px at 50% 18%, #fbf8f0 0%, #edf2e7 45%, var(--bg-root) 85%);
+  background: radial-gradient(ellipse 1150px 700px at 50% 18%, #fcf8f2 0%, #ede2d1 45%, var(--bg-root) 85%);
 }
 
 [data-theme="light"] .hero-bg::before {
@@ -2621,17 +2623,17 @@ p {
 
 [data-theme="light"] .hero-bg::after {
   background-image:
-    radial-gradient(circle 1.5px at 15% 20%, rgba(60, 50, 35, 0.06) 0%, transparent 100%),
-    radial-gradient(circle 1.5px at 85% 15%, rgba(60, 50, 35, 0.06) 0%, transparent 100%),
-    radial-gradient(circle 1px at 45% 75%, rgba(60, 50, 35, 0.06) 0%, transparent 100%),
-    radial-gradient(circle 1.5px at 75% 80%, rgba(60, 50, 35, 0.06) 0%, transparent 100%);
+    radial-gradient(circle 1.5px at 15% 20%, rgba(50, 40, 30, 0.06) 0%, transparent 100%),
+    radial-gradient(circle 1.5px at 85% 15%, rgba(50, 40, 30, 0.06) 0%, transparent 100%),
+    radial-gradient(circle 1px at 45% 75%, rgba(50, 40, 30, 0.06) 0%, transparent 100%),
+    radial-gradient(circle 1.5px at 75% 80%, rgba(50, 40, 30, 0.06) 0%, transparent 100%);
 }
 
 [data-theme="light"] .hero-badge {
-  background: rgba(251, 249, 244, 0.95);
-  border-color: rgba(119, 184, 65, 0.4);
+  background: rgba(252, 248, 242, 0.95);
+  border-color: rgba(103, 179, 66, 0.4);
   color: var(--text-primary);
-  box-shadow: 0 4px 18px rgba(60, 50, 35, 0.07);
+  box-shadow: 0 4px 18px rgba(50, 40, 30, 0.07);
 }
 
 [data-theme="light"] .hero-title {
@@ -2644,43 +2646,43 @@ p {
 }
 
 [data-theme="light"] .hero-logo {
-  filter: drop-shadow(0 12px 30px rgba(60, 50, 35, 0.1))
-         drop-shadow(0 0 25px rgba(119, 184, 65, 0.2))
-         drop-shadow(0 0 35px rgba(30, 136, 229, 0.2));
+  filter: drop-shadow(0 12px 30px rgba(50, 40, 30, 0.1))
+         drop-shadow(0 0 25px rgba(103, 179, 66, 0.2))
+         drop-shadow(0 0 35px rgba(22, 63, 122, 0.2));
 }
 
 [data-theme="light"] .hero-stat-card {
   background: var(--bg-surface-1);
   border-color: var(--border-subtle);
-  box-shadow: 0 4px 16px rgba(60, 50, 35, 0.05);
+  box-shadow: 0 4px 16px rgba(50, 40, 30, 0.05);
 }
 
 [data-theme="light"] .hero-stat-card:hover {
   background: #ffffff;
   border-color: var(--border-highlight);
-  box-shadow: 0 8px 24px rgba(60, 50, 35, 0.08);
+  box-shadow: 0 8px 24px rgba(50, 40, 30, 0.08);
 }
 
 [data-theme="light"] .hero-stat-icon.green {
-  background: rgba(119, 184, 65, 0.12);
-  color: #4e8c1e;
-  border-color: rgba(119, 184, 65, 0.35);
+  background: rgba(103, 179, 66, 0.12);
+  color: #529430;
+  border-color: rgba(103, 179, 66, 0.35);
 }
 
 [data-theme="light"] .hero-stat-icon.blue {
-  background: rgba(30, 136, 229, 0.12);
-  color: #0284c7;
-  border-color: rgba(30, 136, 229, 0.35);
+  background: rgba(22, 63, 122, 0.1);
+  color: #163f7a;
+  border-color: rgba(22, 63, 122, 0.3);
 }
 
 [data-theme="light"] .scroll-arrow {
-  border-right-color: rgba(60, 50, 35, 0.4);
-  border-bottom-color: rgba(60, 50, 35, 0.4);
+  border-right-color: rgba(50, 40, 30, 0.4);
+  border-bottom-color: rgba(50, 40, 30, 0.4);
 }
 
 /* Sections en mode clair : contrastes doux, harmonieux et transitions élégantes */
 [data-theme="light"] .section-dark {
-  background: linear-gradient(180deg, #ebe4d6 0%, #ded6c4 100%);
+  background: linear-gradient(180deg, #ede2d1 0%, #ded2be 100%);
   border-top: 1px solid rgba(185, 175, 155, 0.35);
   border-bottom: 1px solid rgba(185, 175, 155, 0.45);
 }
@@ -2693,13 +2695,13 @@ p {
 [data-theme="light"] .section-esat {
   background-color: var(--bg-surface-1);
   background-image:
-    radial-gradient(circle at 10% 20%, rgba(30, 136, 229, 0.08) 0%, transparent 50%),
-    radial-gradient(circle at 90% 80%, rgba(119, 184, 65, 0.08) 0%, transparent 50%);
+    radial-gradient(circle at 10% 20%, rgba(22, 63, 122, 0.07) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(103, 179, 66, 0.07) 0%, transparent 50%);
   border-top: 1px solid rgba(185, 175, 155, 0.28);
   border-bottom: 1px solid rgba(185, 175, 155, 0.28);
 }
 
-/* Page Dépôts : fond blanc cassé doux harmonisé */
+/* Page Dépôts : fond blanc cassé lin harmonisé */
 [data-theme="light"] #points-depot {
   background-color: var(--bg-surface-1);
 }
@@ -2726,35 +2728,35 @@ p {
 [data-theme="light"] .point-card {
   background: var(--bg-surface-card);
   border: 1px solid rgba(185, 175, 155, 0.45);
-  box-shadow: 0 4px 14px rgba(60, 50, 35, 0.05);
+  box-shadow: 0 4px 14px rgba(50, 40, 30, 0.05);
 }
 
 [data-theme="light"] .point-card:hover,
 [data-theme="light"] .point-card.active {
   background: #ffffff;
-  border-color: #4e8c1e;
-  box-shadow: 0 8px 24px rgba(60, 50, 35, 0.08), 0 0 20px rgba(119, 184, 65, 0.16);
+  border-color: #529430;
+  box-shadow: 0 8px 24px rgba(50, 40, 30, 0.08), 0 0 20px rgba(103, 179, 66, 0.18);
 }
 
 [data-theme="light"] .point-card .point-hours {
-  color: #4e8c1e;
+  color: #529430;
 }
 
 /* Popup Leaflet en mode clair */
 [data-theme="light"] .leaflet-popup-content-wrapper {
-  background: #fbf9f4 !important;
-  color: #1a251b !important;
+  background: #fcf8f2 !important;
+  color: #192433 !important;
   border: 1px solid rgba(185, 175, 155, 0.45) !important;
-  box-shadow: 0 10px 30px rgba(60, 50, 35, 0.12), 0 0 20px rgba(30, 136, 229, 0.15) !important;
+  box-shadow: 0 10px 30px rgba(50, 40, 30, 0.12), 0 0 20px rgba(22, 63, 122, 0.15) !important;
 }
 
 [data-theme="light"] .leaflet-popup-tip {
-  background: #fbf9f4 !important;
+  background: #fcf8f2 !important;
 }
 
 [data-theme="light"] .leaflet-popup-close-button {
   background: rgba(255, 255, 255, 0.85) !important;
-  color: #1a251b !important;
+  color: #192433 !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
 }
 
@@ -2764,33 +2766,33 @@ p {
 }
 
 [data-theme="light"] .map-popup-title {
-  color: #1a251b !important;
+  color: #163f7a !important;
 }
 
 [data-theme="light"] .map-popup-address {
-  color: #3d4a3e !important;
+  color: #3d4a59 !important;
 }
 
 [data-theme="light"] .map-popup-desc {
-  color: #667567 !important;
+  color: #64748b !important;
 }
 
 [data-theme="light"] .map-popup-hours {
-  color: #3b7414 !important;
-  background: rgba(119, 184, 65, 0.14) !important;
+  color: #529430 !important;
+  background: rgba(103, 179, 66, 0.14) !important;
 }
 
 [data-theme="light"] .point-card.hover-highlight {
   background: #ffffff !important;
-  border-color: #4e8c1e !important;
-  box-shadow: 0 6px 20px rgba(60, 50, 35, 0.08), 0 0 20px rgba(119, 184, 65, 0.16) !important;
+  border-color: #529430 !important;
+  box-shadow: 0 6px 20px rgba(50, 40, 30, 0.08), 0 0 20px rgba(103, 179, 66, 0.18) !important;
 }
 
 /* Formulaire de contact */
 [data-theme="light"] .contact-form {
   background: var(--bg-surface-1);
   border-color: var(--border-subtle);
-  box-shadow: 0 15px 45px rgba(60, 50, 35, 0.07);
+  box-shadow: 0 15px 45px rgba(50, 40, 30, 0.07);
 }
 
 [data-theme="light"] .form-group label {
@@ -2800,48 +2802,48 @@ p {
 [data-theme="light"] .form-group input,
 [data-theme="light"] .form-group select,
 [data-theme="light"] .form-group textarea {
-  background: #f6f3eb;
+  background: #fdfbf7;
   border: 1px solid rgba(185, 175, 155, 0.5);
-  color: var(--text-white);
+  color: var(--text-primary);
 }
 
 [data-theme="light"] .form-group input::placeholder,
 [data-theme="light"] .form-group textarea::placeholder {
-  color: #8b998a;
+  color: #8c9ba8;
 }
 
 [data-theme="light"] .form-group input:focus,
 [data-theme="light"] .form-group select:focus,
 [data-theme="light"] .form-group textarea:focus {
-  border-color: #4e8c1e;
+  border-color: #529430;
   background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(119, 184, 65, 0.2);
+  box-shadow: 0 0 0 3px rgba(103, 179, 66, 0.2);
 }
 
 [data-theme="light"] .form-group select option {
-  background: #fbf9f4;
-  color: #1a251b;
+  background: #fcf8f2;
+  color: #192433;
 }
 
 /* Carte visuelle Boutique (La Halle aux Artistes) en mode clair */
 [data-theme="light"] .boutique-card-visual {
-  background: linear-gradient(135deg, #fbf9f4 0%, #edf4e8 45%, #e8f0f8 100%);
+  background: linear-gradient(135deg, #fcf8f2 0%, #edf4e8 45%, #e6eff8 100%);
   border: 1px solid rgba(185, 175, 155, 0.45);
   color: var(--text-white);
-  box-shadow: 0 14px 40px rgba(60, 50, 35, 0.07), 0 0 35px rgba(119, 184, 65, 0.12);
+  box-shadow: 0 14px 40px rgba(50, 40, 30, 0.07), 0 0 35px rgba(103, 179, 66, 0.12);
 }
 
 [data-theme="light"] .boutique-card-visual::before {
-  background: radial-gradient(circle, rgba(119, 184, 65, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(103, 179, 66, 0.2) 0%, transparent 70%);
 }
 
 [data-theme="light"] .boutique-card-visual::after {
-  background: radial-gradient(circle, rgba(30, 136, 229, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(22, 63, 122, 0.18) 0%, transparent 70%);
 }
 
 [data-theme="light"] .boutique-card-visual i {
-  color: #4e8c1e;
-  filter: drop-shadow(0 6px 16px rgba(119, 184, 65, 0.35));
+  color: #529430;
+  filter: drop-shadow(0 6px 16px rgba(103, 179, 66, 0.35));
 }
 
 [data-theme="light"] .boutique-card-visual p {
@@ -2854,16 +2856,16 @@ p {
 
 /* Carte visuelle Partenariat ESAT (fallback) en mode clair */
 [data-theme="light"] .esat-photo-fallback {
-  background: linear-gradient(135deg, #fbf9f4 0%, #edf4f8 45%, #edf4e8 100%);
+  background: linear-gradient(135deg, #fcf8f2 0%, #e8f0f8 45%, #eef5ea 100%);
   border: 1px solid rgba(185, 175, 155, 0.45);
   color: var(--text-white);
-  box-shadow: inset 0 0 20px rgba(60, 50, 35, 0.02), 0 10px 30px rgba(60, 50, 35, 0.06);
+  box-shadow: inset 0 0 20px rgba(50, 40, 30, 0.02), 0 10px 30px rgba(50, 40, 30, 0.06);
 }
 
 [data-theme="light"] .esat-fallback-icon {
   background: var(--brand-gradient);
   color: #ffffff;
-  box-shadow: 0 8px 24px rgba(119, 184, 65, 0.35);
+  box-shadow: 0 8px 24px rgba(103, 179, 66, 0.35);
 }
 
 [data-theme="light"] .esat-photo-fallback h4 {
@@ -2875,17 +2877,17 @@ p {
 }
 
 [data-theme="light"] .esat-fallback-tag {
-  background: rgba(119, 184, 65, 0.12);
-  border: 1px solid rgba(119, 184, 65, 0.4);
-  color: #4e8c1e;
+  background: rgba(103, 179, 66, 0.12);
+  border: 1px solid rgba(103, 179, 66, 0.4);
+  color: #529430;
   font-weight: 600;
 }
 
 /* Bannière d'appel ESAT en mode clair */
 [data-theme="light"] .esat-join-banner {
-  background: linear-gradient(135deg, rgba(239, 247, 235, 0.95) 0%, rgba(233, 243, 251, 0.95) 100%);
+  background: linear-gradient(135deg, rgba(244, 249, 241, 0.95) 0%, rgba(236, 243, 250, 0.95) 100%);
   border: 1px solid rgba(185, 175, 155, 0.45);
-  box-shadow: 0 8px 30px rgba(60, 50, 35, 0.06);
+  box-shadow: 0 8px 30px rgba(50, 40, 30, 0.06);
 }
 
 [data-theme="light"] .esat-join-icon {
@@ -2901,45 +2903,45 @@ p {
   color: var(--text-secondary);
 }
 
-/* Footer soigné en mode clair pâte à papier / lin */
+/* Footer soigné en mode clair : bandeau bleu royal officiel du flyer */
 [data-theme="light"] .footer {
-  background: #ded6c4;
-  color: #5d6a5c;
-  border-top: 1px solid rgba(185, 175, 155, 0.45);
+  background: #163f7a;
+  color: #d1dced;
+  border-top: 1px solid rgba(22, 63, 122, 0.4);
 }
 
 [data-theme="light"] .footer::before {
-  background: linear-gradient(90deg, transparent, var(--logo-green-bright), var(--logo-blue-bright), transparent);
+  background: linear-gradient(90deg, transparent, #7ece4c, #f5ba24, transparent);
 }
 
 [data-theme="light"] .footer-brand p {
-  color: #5d6a5c;
+  color: #cbd5e1;
 }
 
 [data-theme="light"] .footer-links h4,
 [data-theme="light"] .footer-social h4 {
-  color: var(--text-white);
+  color: #f7efe2;
 }
 
 [data-theme="light"] .footer-links a {
-  color: #5d6a5c;
+  color: #cbd5e1;
 }
 
 [data-theme="light"] .footer-links a:hover {
-  color: #4e8c1e;
+  color: #f5ba24;
 }
 
 [data-theme="light"] .footer-social a {
-  color: #5d6a5c;
+  color: #cbd5e1;
 }
 
 [data-theme="light"] .footer-social a:hover {
-  color: #0284c7;
+  color: #f5ba24;
 }
 
 [data-theme="light"] .footer-bottom {
-  border-top-color: rgba(185, 175, 155, 0.4);
-  color: #8b998a;
+  border-top-color: rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
 }
 
 /* =========================================================
