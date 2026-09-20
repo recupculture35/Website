@@ -12,9 +12,34 @@ const crypto = require('crypto');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Emplacements des données (support des volumes Railway via RAILWAY_VOLUME_MOUNT_PATH ou DATA_DIR)
-const VOLUME_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH || process.env.DATA_DIR;
-const DATA_DIR = VOLUME_DIR || path.join(__dirname, 'data');
+// Emplacements des données (support des volumes Railway via auto-détection, RAILWAY_VOLUME_MOUNT_PATH ou DATA_DIR)
+function resolveDataDir() {
+  if (process.env.RAILWAY_VOLUME_MOUNT_PATH && fs.existsSync(process.env.RAILWAY_VOLUME_MOUNT_PATH)) {
+    console.log(`[STORAGE] Volume détecté via RAILWAY_VOLUME_MOUNT_PATH : ${process.env.RAILWAY_VOLUME_MOUNT_PATH}`);
+    return process.env.RAILWAY_VOLUME_MOUNT_PATH;
+  }
+  if (process.env.DATA_DIR && fs.existsSync(process.env.DATA_DIR)) {
+    console.log(`[STORAGE] Volume détecté via DATA_DIR : ${process.env.DATA_DIR}`);
+    return process.env.DATA_DIR;
+  }
+  // Détection automatique du volume Railway / Docker monté sur /data (Linux)
+  if (process.platform !== 'win32') {
+    try {
+      if (fs.existsSync('/data')) {
+        fs.accessSync('/data', fs.constants.W_OK);
+        console.log(`[STORAGE] Volume persistant Linux /data auto-détecté et accessible en écriture.`);
+        return '/data';
+      }
+    } catch (e) {
+      console.warn(`[STORAGE] /data existe mais n'est pas accessible en écriture: ${e.message}`);
+    }
+  }
+  const localData = path.join(__dirname, 'data');
+  console.log(`[STORAGE] Utilisation du dossier local : ${localData}`);
+  return localData;
+}
+
+const DATA_DIR = resolveDataDir();
 const UPLOADS_DIR = process.env.UPLOADS_DIR || path.join(DATA_DIR, 'uploads');
 const CONFIG_FILE = path.join(DATA_DIR, 'config.json');
 const CREDS_FILE = path.join(DATA_DIR, 'credentials.json');
@@ -89,21 +114,32 @@ function readJson(filePath, fallback = {}) {
 }
 
 function writeJson(filePath, data) {
+  let success = false;
   try {
     const tmp = `${filePath}.tmp`;
     fs.writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf8');
     fs.renameSync(tmp, filePath);
-    return true;
+    success = true;
   } catch (err) {
     console.warn(`[WARN] renameSync a échoué pour ${filePath} (${err.message}), tentative d'écriture directe...`);
     try {
       fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
-      return true;
+      success = true;
     } catch (err2) {
       console.error(`[ERROR] Erreur écriture directe ${filePath}:`, err2.message);
       return false;
     }
   }
+
+  // Si écriture dans un volume externe, répliquer aussi dans BUNDLED_CONFIG si distinct
+  if (success && filePath === CONFIG_FILE && path.resolve(DATA_DIR) !== path.resolve(BUNDLED_DATA_DIR)) {
+    try {
+      if (fs.existsSync(BUNDLED_DATA_DIR)) {
+        fs.writeFileSync(BUNDLED_CONFIG, JSON.stringify(data, null, 2), 'utf8');
+      }
+    } catch (_) {}
+  }
+  return success;
 }
 
 // ─── Initialisation robuste des données au démarrage ───
@@ -252,6 +288,8 @@ app.use(express.urlencoded({ extended: true, limit: '30mb' }));
 // Servir le dossier uploads pour les images publiques (volume persistant en priorité, puis uploads bundled)
 app.use('/uploads', express.static(UPLOADS_DIR));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(DATA_DIR, 'uploads')));
+app.use('/uploads', express.static(path.join(BUNDLED_DATA_DIR, 'uploads')));
 
 // ─── API PUBLIQUE : Données du site ──────────────────
 app.get('/api/health', (req, res) => {
@@ -259,6 +297,10 @@ app.get('/api/health', (req, res) => {
 });
 
 app.get('/api/data', (req, res) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+
   let config = readJson(CONFIG_FILE, null);
   const bundled = readJson(BUNDLED_CONFIG, { siteContent: {}, collectPoints: [], news: [] });
   let needsSave = false;
@@ -337,12 +379,27 @@ app.post('/api/upload', requireAuth, (req, res) => {
       return res.status(400).json({ error: 'Fichier trop volumineux (maximum 15 Mo).' });
     }
 
+    if (!fs.existsSync(UPLOADS_DIR)) {
+      fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+    }
+
     const safeBase = rawFilename ? path.parse(rawFilename).name.replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 30) : 'photo';
     const uniqueName = `${safeBase}-${Date.now()}-${crypto.randomBytes(4).toString('hex')}${ext}`;
     const destPath = path.join(UPLOADS_DIR, uniqueName);
 
     fs.writeFileSync(destPath, buffer);
+
+    // Si UPLOADS_DIR est dans un volume externe, répliquer aussi vers bundled uploads pour secours
+    const bundledUploadsDir = path.join(__dirname, 'uploads');
+    if (path.resolve(UPLOADS_DIR) !== path.resolve(bundledUploadsDir)) {
+      try {
+        if (!fs.existsSync(bundledUploadsDir)) fs.mkdirSync(bundledUploadsDir, { recursive: true });
+        fs.writeFileSync(path.join(bundledUploadsDir, uniqueName), buffer);
+      } catch (_) {}
+    }
+
     const publicUrl = `/uploads/${uniqueName}`;
+    console.log(`[UPLOAD] Image enregistrée : ${destPath} -> ${publicUrl}`);
 
     return res.json({ success: true, url: publicUrl, filename: uniqueName, size: buffer.length });
   } catch (err) {
@@ -400,8 +457,10 @@ app.put('/api/content', requireAuth, (req, res) => {
   config.siteContent = { ...config.siteContent, ...siteContent };
 
   if (writeJson(CONFIG_FILE, config)) {
+    console.log(`[CONTENT] siteContent sauvegardé avec succès sur ${CONFIG_FILE}`);
     res.json({ success: true, siteContent: config.siteContent });
   } else {
+    console.error(`[CONTENT ERROR] Impossible d'écrire sur ${CONFIG_FILE}`);
     res.status(500).json({ error: 'Erreur lors de la sauvegarde sur le serveur.' });
   }
 });

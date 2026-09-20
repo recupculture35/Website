@@ -79,7 +79,9 @@
         description: "Deux passionnés engagés pour une culture accessible et un monde plus solidaire.",
         members: [
           { name: "Fabien Lemoine", role: "Co-fondateur", bio: "15 ans d'expérience dans le domaine du patrimoine culturel. Passionné par la préservation et le partage de la culture sous toutes ses formes.", photo: "" },
-          { name: "François-Xavier Mahoïc", role: "Co-fondateur", bio: "Plus de 15 ans d'expérience dans l'accompagnement des ESAT et du handicap psychique. Convaincu que l'inclusion sociale est un levier de transformation.", photo: "" }
+          { name: "François-Xavier Mahoïc", role: "Co-fondateur", bio: "Plus de 15 ans d'expérience dans l'accompagnement des ESAT et du handicap psychique. Convaincu que l'inclusion sociale est un levier de transformation.", photo: "" },
+          { name: "Sophie Martin", role: "Responsable logistique & dons", bio: "", photo: "" },
+          { name: "Camille Dubois", role: "Bénévole engagée", bio: "Animation des ateliers lecture et tri solidaire.", photo: "" }
         ]
       },
       contact: {
@@ -158,7 +160,7 @@
     let dataLoaded = false;
     // 1. Essayer l'API backend (/api/data) en premier si servi par le serveur Node.js / Railway
     try {
-      const res = await fetch('/api/data', { cache: 'no-cache' });
+      const res = await fetch(`/api/data?_t=${Date.now()}`, { cache: 'no-store' });
       if (res.ok) {
         const json = await res.json();
         if (json && (Array.isArray(json.collectPoints) || json.siteContent || Array.isArray(json.news))) {

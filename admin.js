@@ -125,7 +125,9 @@
         description: "Deux passionnés engagés pour une culture accessible et un monde plus solidaire.",
         members: [
           { name: "Fabien Lemoine", role: "Co-fondateur", bio: "15 ans d'expérience dans le domaine du patrimoine culturel. Passionné par la préservation et le partage de la culture sous toutes ses formes.", photo: "" },
-          { name: "François-Xavier Mahoïc", role: "Co-fondateur", bio: "Plus de 15 ans d'expérience dans l'accompagnement des ESAT et du handicap psychique. Convaincu que l'inclusion sociale est un levier de transformation.", photo: "" }
+          { name: "François-Xavier Mahoïc", role: "Co-fondateur", bio: "Plus de 15 ans d'expérience dans l'accompagnement des ESAT et du handicap psychique. Convaincu que l'inclusion sociale est un levier de transformation.", photo: "" },
+          { name: "Sophie Martin", role: "Responsable logistique & dons", bio: "", photo: "" },
+          { name: "Camille Dubois", role: "Bénévole engagée", bio: "Animation des ateliers lecture et tri solidaire.", photo: "" }
         ]
       },
       contact: {
@@ -184,10 +186,10 @@
   let credentials = JSON.parse(JSON.stringify(DEFAULT_CREDS));
 
   async function loadData() {
-    // 1. Tenter l'API backend (/api/data)
+    // 1. Tenter l'API backend (/api/data) avec busting de cache strict
     let dataLoaded = false;
     try {
-      const res = await fetch('/api/data', { cache: 'no-cache' });
+      const res = await fetch(`/api/data?_t=${Date.now()}`, { cache: 'no-store' });
       if (res.ok) {
         const json = await res.json();
         if (json && (Array.isArray(json.collectPoints) || json.siteContent || Array.isArray(json.news))) {
@@ -310,7 +312,40 @@
   }
 
   // ─── AUTH ─────────────────────────────────────────────
+  async function verifyServerSession() {
+    const token = getAuthToken();
+    const isHttp = (window.location.protocol === 'http:' || window.location.protocol === 'https:');
+    if (isHttp) {
+      if (!token) {
+        clearAuthToken();
+        localStorage.removeItem(LS_SESSION);
+        sessionStorage.removeItem(LS_SESSION);
+        return null;
+      }
+      try {
+        const res = await fetch('/api/auth/me', {
+          headers: { 'Authorization': `Bearer ${token}` },
+          cache: 'no-store'
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.user) return json.user;
+        }
+      } catch (err) {
+        console.warn('Erreur vérification session serveur:', err);
+      }
+      // Token invalide ou rejeté par le serveur
+      clearAuthToken();
+      localStorage.removeItem(LS_SESSION);
+      sessionStorage.removeItem(LS_SESSION);
+      return null;
+    }
+    // Hors-ligne (file://)
+    return getSession();
+  }
+
   async function tryLogin(username, password) {
+    const isHttp = (window.location.protocol === 'http:' || window.location.protocol === 'https:');
     // 1. Tenter l'API backend (/api/auth/login)
     try {
       const res = await fetch('/api/auth/login', {
@@ -324,18 +359,27 @@
           setAuthToken(json.token);
           return json.user;
         }
+      } else if (isHttp) {
+        // En HTTP/HTTPS, si rejeté par le serveur, ne pas basculer sur un compte local sans token
+        return null;
       }
-    } catch (_) {
-      // Backend non accessible -> fallback local
+    } catch (err) {
+      console.warn('Backend login injoignable:', err);
+      if (isHttp) {
+        return null;
+      }
     }
 
-    // 2. Fallback local avec Web Crypto SHA-256
-    const hash = await sha256(password);
-    const user = credentials.users.find(u => 
-      u.username.toLowerCase() === username.toLowerCase() && 
-      (u.passwordHash === hash || u.passwordHash === password)
-    );
-    return user || null;
+    // 2. Fallback local avec Web Crypto SHA-256 (uniquement en mode fichier file://)
+    if (!isHttp) {
+      const hash = await sha256(password);
+      const user = credentials.users.find(u => 
+        u.username.toLowerCase() === username.toLowerCase() && 
+        (u.passwordHash === hash || u.passwordHash === password)
+      );
+      return user || null;
+    }
+    return null;
   }
 
   function showLoginScreen() {
@@ -349,17 +393,21 @@
     $('#adminAvatar').innerHTML = `<i class="fas fa-user" aria-hidden="true"></i>`;
   }
 
-  function initAuth() {
+  async function initAuth() {
     const form = $('#loginForm');
     const err  = $('#loginError');
     const msg  = $('#loginErrorMsg');
     const btn  = $('#loginBtn');
 
-    // Check existing session
-    const session = getSession();
-    if (session) {
-      const user = credentials.users.find(u => u.username === session.username) || session;
-      if (user) { currentUser = user; showAdminPanel(user); initAdmin(); return; }
+    // Vérifier la validité réelle de la session auprès du serveur
+    const validUser = await verifyServerSession();
+    if (validUser) {
+      currentUser = validUser;
+      showAdminPanel(validUser);
+      initAdmin();
+      return;
+    } else {
+      showLoginScreen();
     }
 
     form.addEventListener('submit', async e => {
@@ -559,11 +607,19 @@
   // ─── GESTION DES UPLOADS D'IMAGES ─────────────────────
   async function uploadImageFile(file) {
     if (!file) return null;
+    const token = getAuthToken();
+    const isHttp = (window.location.protocol === 'http:' || window.location.protocol === 'https:');
+
+    if (isHttp && !token) {
+      toast('Session non authentifiée. Veuillez vous reconnecter.', true);
+      showLoginScreen();
+      throw new Error('Authentification requise pour téléverser une photo.');
+    }
+
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = async (e) => {
         const dataUrl = e.target.result;
-        const token = getAuthToken();
         if (token) {
           try {
             const res = await fetch('/api/upload', {
@@ -583,15 +639,23 @@
               }
             } else {
               const errJson = await res.json().catch(() => ({}));
-              console.warn('API Upload refusé:', errJson.error || res.status);
-              toast(errJson.error || 'Erreur lors de l\'enregistrement de la photo sur le serveur.', true);
+              const msg = errJson.error || `Erreur serveur (${res.status})`;
+              console.warn('API Upload refusé:', msg);
+              toast(msg, true);
+              return reject(new Error(msg));
             }
           } catch (err) {
             console.warn('API Upload inaccessible:', err);
             toast('Impossible de joindre le serveur pour enregistrer la photo.', true);
+            return reject(err);
           }
         }
-        resolve(dataUrl);
+        // Hors-ligne uniquement (file://)
+        if (!isHttp) {
+          resolve(dataUrl);
+        } else {
+          reject(new Error('Erreur upload serveur'));
+        }
       };
       reader.onerror = () => reject(new Error('Erreur de lecture du fichier image'));
       reader.readAsDataURL(file);
@@ -783,12 +847,15 @@
   let currentTeamMembers = [];
 
   function syncTeamMembersFromDom() {
-    currentTeamMembers = currentTeamMembers.map((m, idx) => ({
-      name: $(`#teamMemberName_${idx}`) ? $(`#teamMemberName_${idx}`).value.trim() : (m.name || ''),
-      role: $(`#teamMemberRole_${idx}`) ? $(`#teamMemberRole_${idx}`).value.trim() : (m.role || ''),
-      bio: $(`#teamMemberBio_${idx}`) ? $(`#teamMemberBio_${idx}`).value.trim() : (m.bio || ''),
-      photo: m.photo || ''
-    }));
+    currentTeamMembers = currentTeamMembers.map((m, idx) => {
+      const photoInput = $(`#teamMemberPhoto_${idx}`);
+      return {
+        name: $(`#teamMemberName_${idx}`) ? $(`#teamMemberName_${idx}`).value.trim() : (m.name || ''),
+        role: $(`#teamMemberRole_${idx}`) ? $(`#teamMemberRole_${idx}`).value.trim() : (m.role || ''),
+        bio: $(`#teamMemberBio_${idx}`) ? $(`#teamMemberBio_${idx}`).value.trim() : (m.bio || ''),
+        photo: photoInput ? photoInput.value.trim() : (m.photo || '')
+      };
+    });
   }
 
   function renderTeamMembersAdmin() {
@@ -818,6 +885,7 @@
           </button>
         </div>
         <div class="photo-upload-row" style="margin-bottom:14px">
+          <input type="hidden" id="teamMemberPhoto_${index}" value="${escapeHtml(member.photo || '')}">
           <div class="photo-preview-box round" id="memberPreview_${index}">
             ${avatarContent}
           </div>
@@ -873,13 +941,17 @@
             btnUpload.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Upload…';
             const url = await uploadImageFile(file);
             member.photo = url;
+            const photoInput = $(`#teamMemberPhoto_${index}`, card);
+            if (photoInput) photoInput.value = url;
             previewBox.innerHTML = `<img src="${escapeHtml(url)}" alt="${escapeHtml(member.name || 'Membre')}">`;
             btnRemove.style.display = 'inline-flex';
             syncTeamMembersFromDom();
-            await saveContentForm(false);
-            toast('Photo du membre ajoutée et enregistrée.');
+            const res = await saveContentForm(false);
+            if (res && res.serverOk) {
+              toast('Photo du membre ajoutée et enregistrée sur le serveur.');
+            }
           } catch (err) {
-            toast('Échec de l\'envoi de la photo.', true);
+            toast('Échec de l\'envoi de la photo : ' + (err.message || 'Erreur'), true);
           } finally {
             btnUpload.disabled = false;
             btnUpload.innerHTML = '<i class="fas fa-upload"></i> Photo';
@@ -891,11 +963,15 @@
       if (btnRemove) {
         btnRemove.addEventListener('click', async () => {
           member.photo = '';
+          const photoInput = $(`#teamMemberPhoto_${index}`, card);
+          if (photoInput) photoInput.value = '';
           previewBox.innerHTML = '<i class="fas fa-user"></i>';
           btnRemove.style.display = 'none';
           syncTeamMembersFromDom();
-          await saveContentForm(false);
-          toast('Photo retirée et enregistrée.');
+          const res = await saveContentForm(false);
+          if (res && res.serverOk) {
+            toast('Photo retirée et enregistrée sur le serveur.');
+          }
         });
       }
 
@@ -907,8 +983,10 @@
             syncTeamMembersFromDom();
             currentTeamMembers.splice(index, 1);
             renderTeamMembersAdmin();
-            await saveContentForm(false);
-            toast('Membre supprimé et enregistré !');
+            const res = await saveContentForm(false);
+            if (res && res.serverOk) {
+              toast('Membre supprimé et enregistré sur le serveur !');
+            }
           }
         });
       }
@@ -1109,12 +1187,15 @@
         tag: $('#contentEquipeTag').value.trim(),
         title: $('#contentEquipeTitle').value.trim(),
         description: $('#contentEquipeDesc').value.trim(),
-        members: currentTeamMembers.map((m, idx) => ({
-          name: $(`#teamMemberName_${idx}`) ? $(`#teamMemberName_${idx}`).value.trim() : (m.name || ''),
-          role: $(`#teamMemberRole_${idx}`) ? $(`#teamMemberRole_${idx}`).value.trim() : (m.role || ''),
-          bio: $(`#teamMemberBio_${idx}`) ? $(`#teamMemberBio_${idx}`).value.trim() : (m.bio || ''),
-          photo: m.photo || ''
-        }))
+        members: currentTeamMembers.map((m, idx) => {
+          const photoInput = $(`#teamMemberPhoto_${idx}`);
+          return {
+            name: $(`#teamMemberName_${idx}`) ? $(`#teamMemberName_${idx}`).value.trim() : (m.name || ''),
+            role: $(`#teamMemberRole_${idx}`) ? $(`#teamMemberRole_${idx}`).value.trim() : (m.role || ''),
+            bio: $(`#teamMemberBio_${idx}`) ? $(`#teamMemberBio_${idx}`).value.trim() : (m.bio || ''),
+            photo: photoInput ? photoInput.value.trim() : (m.photo || '')
+          };
+        })
       },
       contact: {
         tag: $('#contentContactTag').value.trim(),
@@ -1128,7 +1209,14 @@
       }
     };
     const token = getAuthToken();
+    const isHttp = (window.location.protocol === 'http:' || window.location.protocol === 'https:');
     let serverOk = false;
+
+    if (isHttp && !token) {
+      toast('Session expirée ou non authentifiée. Veuillez vous reconnecter.', true);
+      showLoginScreen();
+      return { success: false, serverOk: false };
+    }
 
     if (token) {
       try {
@@ -1144,27 +1232,32 @@
         } else if (res.status === 401) {
           console.warn('Session serveur expirée (401)');
           toast('Session expirée : reconnexion requise.', true);
+          clearAuthToken();
+          showLoginScreen();
+          return { success: false, serverOk: false };
         } else {
           const errJson = await res.json().catch(() => ({}));
           console.warn(`Erreur serveur (${res.status}):`, errJson.error);
           toast(errJson.error || 'Erreur lors de la sauvegarde sur le serveur.', true);
+          return { success: false, serverOk: false };
         }
       } catch (err) {
         console.warn('Sauvegarde serveur échouée:', err);
         toast('Impossible de joindre le serveur pour enregistrer les modifications.', true);
+        return { success: false, serverOk: false };
       }
     }
 
-    appData.siteContent = newSiteContent;
-    saveData();
-    if (showToast) {
-      if (serverOk) {
+    if (serverOk || !isHttp) {
+      appData.siteContent = newSiteContent;
+      saveData();
+      if (showToast) {
         toast('Contenus du site enregistrés avec succès !');
-      } else if (!token) {
-        toast('Modifications enregistrées localement (mode hors-ligne).');
       }
+      return { success: true, serverOk: true };
     }
-    return { success: true, serverOk };
+
+    return { success: false, serverOk: false };
   }
 
   function initContentSection() {
@@ -1299,8 +1392,10 @@
         const newIndex = currentImpactItems.length - 1;
         const titleField = $(`#impactTitle_${newIndex}`);
         if (titleField) titleField.focus();
-        await saveContentForm(false);
-        toast('Nouvelle part ajoutée et enregistrée.');
+        const res = await saveContentForm(false);
+        if (res && res.serverOk) {
+          toast('Nouvelle part ajoutée et enregistrée sur le serveur.');
+        }
       });
     }
 
@@ -1319,8 +1414,10 @@
         const newIndex = currentTeamMembers.length - 1;
         const nameField = $(`#teamMemberName_${newIndex}`);
         if (nameField) nameField.focus();
-        await saveContentForm(false);
-        toast('Nouveau membre ajouté et enregistré.');
+        const res = await saveContentForm(false);
+        if (res && res.serverOk) {
+          toast('Nouveau membre ajouté et enregistré sur le serveur.');
+        }
       });
     }
 
@@ -2003,7 +2100,7 @@
   // ─── BOOT ────────────────────────────────────────────
   async function boot() {
     await loadData();
-    initAuth();
+    await initAuth();
   }
 
   if (document.readyState === 'loading') {
