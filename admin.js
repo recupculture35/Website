@@ -157,8 +157,15 @@
         id: 1,
         username: "admin",
         passwordHash: "759ba3c7dd186752103946686a029b63f146d55073ccc2f9f3aa9c11d5393d03",
-        role: "admin",
-        createdAt: "2025-01-01T00:00:00.000Z"
+        role: "superadmin",
+        displayName: "Administrateur"
+      },
+      {
+        id: 2,
+        username: "admin@recupculture.fr",
+        passwordHash: "aebc7c19bdc2aa84991dad7067e89d4aa78de2df5a9d612e4571a90a82609cef",
+        role: "superadmin",
+        displayName: "Administrateur Général"
       }
     ]
   };
