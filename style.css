@@ -73,61 +73,61 @@
 }
 
 /* =========================================================
-   THÈME CLAIR (PALETTE OFFICIELLE FLYERS 1 & 3)
-   Tons crème parchemin chaud (#f7efe2), lin doux (#ede2d1),
-   titres en bleu royal (#163f7a) et accents dorés (#f5ba24).
+   THÈME CLAIR (PALETTE OFFICIELLE FLYERS 1 & 3 - HAUT CONTRASTE)
+   Fond lin/parchemin (#f7efe2), cartes blanc pur (#ffffff),
+   titres bleu royal dense (#0f274a) et encre noire (#0a0f18).
    ========================================================= */
 [data-theme="light"] {
-  /* Palette Pâte à Papier / Crème Parchemin Flyer */
-  --bg-root: #f7efe2;              /* Fond général : crème chaud lin/parchemin exact du flyer */
-  --bg-surface-1: #f7efe2;          /* Crème naturel pour sections et conteneurs */
-  --bg-surface-2: #ede2d1;          /* Sable lin chaud pour alternance de sections */
-  --bg-surface-card: #fcf8f2;       /* Papier vélin ivoire doux pour cartes */
+  /* Palette Fond & Surfaces */
+  --bg-root: #f7efe2;              /* Fond général : crème lin/parchemin chaud du flyer */
+  --bg-surface-1: #f7efe2;          /* Crème naturel pour sections */
+  --bg-surface-2: #ede2d1;          /* Teinte sable lin pour alternance de sections */
+  --bg-surface-card: #ffffff;       /* Cartes blanc pur éclatant : détachement net du fond */
   --bg-surface-card-hover: #ffffff;
-  --bg-surface-elevated: #fcf8f2;
+  --bg-surface-elevated: #ffffff;
 
-  /* Typographie Encre & Titres Bleu Royal Flyer */
-  --text-white: #163f7a;            /* Titres h1, h2, h3 : bleu royal emblématique du flyer */
-  --text-primary: #192433;          /* Corps de texte : encre sombre haute lisibilité */
-  --text-secondary: #3d4a59;        /* Texte secondaire équilibré */
-  --text-muted: #64748b;            /* Teinte pierre ardoise douce */
-  --text-dim: #8c9ba8;              /* Gris lin discret */
+  /* Typographie Encre Haute Lisibilité (WCAG AAA) */
+  --text-white: #0f274a;            /* Titres h1, h2, h3 : bleu royal très dense, contraste maximal */
+  --text-primary: #0a0f18;          /* Corps de texte : encre noire/ardoise profonde très nette */
+  --text-secondary: #1e293b;        /* Texte secondaire : ardoise dense haute lisibilité */
+  --text-muted: #334155;            /* Libellés & métadonnées : gris ardoise soutenu */
+  --text-dim: #475569;              /* Éléments discrets mais parfaitement lisibles */
 
   /* Couleurs de marque Recup Culture & Flyer */
-  --logo-green: #67b342;            /* Vert feuille logo RECUP */
-  --logo-green-bright: #529430;     /* Vert dense végétal pour contraste sur fond clair */
-  --logo-green-glow: rgba(103, 179, 66, 0.25);
-  --logo-green-tint: rgba(103, 179, 66, 0.12);
+  --logo-green: #448924;            /* Vert feuille dense pour contraste optimal sur fond clair */
+  --logo-green-bright: #2e6314;     /* Vert d'accent soutenu pour badges et textes */
+  --logo-green-glow: rgba(46, 99, 20, 0.25);
+  --logo-green-tint: rgba(68, 137, 36, 0.14);
 
-  --logo-blue: #163f7a;             /* Bleu royal officiel */
-  --logo-blue-bright: #1e60ad;      /* Bleu d'accent lumineux pour liens et survols */
-  --logo-blue-glow: rgba(22, 63, 122, 0.22);
-  --logo-blue-tint: rgba(22, 63, 122, 0.1);
+  --logo-blue: #0f274a;             /* Bleu royal officiel profond */
+  --logo-blue-bright: #124d9c;      /* Bleu d'action vif et très contrasté */
+  --logo-blue-glow: rgba(18, 77, 156, 0.25);
+  --logo-blue-tint: rgba(18, 77, 156, 0.12);
 
   /* Accents des flyers */
-  --accent-amber: #f5ba24;          /* Jaune solaire "Solidaire" / dates / badges */
-  --accent-blue-soft: #9bcdfa;      /* Bleu ciel pastel boîte horaires */
-  --accent-coral: #e8685a;          /* Terracotta flyer */
+  --accent-amber: #b47804;          /* Or ambré dense (lisibilité garantie sur fond clair) */
+  --accent-blue-soft: #166ba6;      /* Bleu océan soutenu */
+  --accent-coral: #cf3d2d;          /* Terracotta chaud dense */
 
   /* Dégradés signature */
-  --brand-gradient: linear-gradient(135deg, #67b342 0%, #163f7a 100%);
-  --brand-gradient-hover: linear-gradient(135deg, #7ece4c 0%, #1e60ad 100%);
-  --green-gradient: linear-gradient(135deg, #67b342 0%, #4a8c2c 100%);
-  --blue-gradient: linear-gradient(135deg, #163f7a 0%, #0d2850 100%);
+  --brand-gradient: linear-gradient(135deg, #36721b 0%, #0f274a 100%);
+  --brand-gradient-hover: linear-gradient(135deg, #448924 0%, #163f7a 100%);
+  --green-gradient: linear-gradient(135deg, #36721b 0%, #265912 100%);
+  --blue-gradient: linear-gradient(135deg, #0f274a 0%, #07152b 100%);
 
-  /* Bordures douces papier & reliure artisanale */
-  --border-subtle: rgba(185, 175, 155, 0.38);
-  --border-highlight: rgba(165, 155, 135, 0.55);
-  --border-green: rgba(103, 179, 66, 0.45);
-  --border-blue: rgba(22, 63, 122, 0.4);
+  /* Bordures nettes et bien contrastées */
+  --border-subtle: rgba(15, 39, 74, 0.14);
+  --border-highlight: rgba(15, 39, 74, 0.28);
+  --border-green: rgba(46, 99, 20, 0.5);
+  --border-blue: rgba(15, 39, 74, 0.45);
 
-  /* Ombres chaudes et diffuses */
-  --shadow-sm: 0 3px 12px rgba(50, 40, 30, 0.05);
-  --shadow-md: 0 8px 24px rgba(50, 40, 30, 0.07);
-  --shadow-lg: 0 16px 42px rgba(50, 40, 30, 0.09);
-  --shadow-green-glow: 0 6px 25px rgba(103, 179, 66, 0.2);
-  --shadow-blue-glow: 0 6px 25px rgba(22, 63, 122, 0.18);
-  --shadow-brand-glow: 0 8px 30px rgba(103, 179, 66, 0.18), 0 8px 30px rgba(22, 63, 122, 0.15);
+  /* Ombres avec présence nette pour détacher les cartes */
+  --shadow-sm: 0 4px 14px rgba(15, 39, 74, 0.08);
+  --shadow-md: 0 8px 26px rgba(15, 39, 74, 0.11);
+  --shadow-lg: 0 18px 45px rgba(15, 39, 74, 0.14);
+  --shadow-green-glow: 0 6px 25px rgba(46, 99, 20, 0.22);
+  --shadow-blue-glow: 0 6px 25px rgba(15, 39, 74, 0.22);
+  --shadow-brand-glow: 0 8px 30px rgba(46, 99, 20, 0.2), 0 8px 30px rgba(15, 39, 74, 0.18);
 }
 
 /* =============================================================================
@@ -940,7 +940,7 @@ p {
   justify-content: center;
   margin: 0 auto 24px;
   font-size: 2rem;
-  color: var(--text-white);
+  color: #ffffff;
   position: relative;
   z-index: 1;
   transition: transform 0.3s;
@@ -1779,7 +1779,7 @@ p {
 
 .esat-card:hover .esat-icon {
   background: var(--blue-gradient);
-  color: var(--text-white);
+  color: #ffffff;
   transform: scale(1.1);
   box-shadow: 0 0 25px rgba(30, 136, 229, 0.5);
 }
@@ -2215,46 +2215,48 @@ p {
   font-size: 1rem;
 }
 
-/* Thème clair FAQ - Harmonisé Pâte à Papier */
+/* Thème clair FAQ - Haut Contraste */
 [data-theme="light"] .section-faq {
   background: var(--bg-surface-2);
 }
 
 [data-theme="light"] .faq-item {
-  background: var(--bg-surface-1);
-  border-color: var(--border-subtle);
-  box-shadow: 0 3px 12px rgba(60, 50, 35, 0.04);
+  background: #ffffff;
+  border: 1.5px solid rgba(15, 39, 74, 0.14);
+  box-shadow: 0 4px 14px rgba(15, 39, 74, 0.06);
 }
 
 [data-theme="light"] .faq-question {
-  color: var(--text-white);
+  color: #0f274a;
+  font-weight: 700;
 }
 
 [data-theme="light"] .faq-item:hover .faq-question,
 [data-theme="light"] .faq-item.active .faq-question {
-  color: var(--logo-green-bright);
+  color: #124d9c;
 }
 
 [data-theme="light"] .faq-item.active {
   background: #ffffff;
-  border-color: var(--logo-green-bright);
-  box-shadow: 0 8px 24px rgba(119, 184, 65, 0.14), 0 2px 8px rgba(60, 50, 35, 0.04);
+  border-color: #0f274a;
+  box-shadow: 0 8px 24px rgba(15, 39, 74, 0.12);
 }
 
 [data-theme="light"] .faq-answer {
-  color: var(--text-secondary);
+  color: #1e293b;
+  font-size: 0.95rem;
 }
 
 [data-theme="light"] .faq-icon {
-  background: #f6f3eb;
-  border-color: rgba(185, 175, 155, 0.45);
-  color: var(--text-muted);
+  background: #f0f4f9;
+  border-color: rgba(15, 39, 74, 0.2);
+  color: #0f274a;
 }
 
 [data-theme="light"] .faq-item.active .faq-icon {
-  background: rgba(119, 184, 65, 0.14);
-  border-color: var(--logo-green-bright);
-  color: var(--logo-green-bright);
+  background: #0f274a;
+  border-color: #0f274a;
+  color: #ffffff;
 }
 
 /* =========================================================
@@ -2535,86 +2537,104 @@ p {
 }
 
 /* =========================================================
-   RÈGLES DU THÈME CLAIR (PALETTE OFFICIELLE FLYERS)
-   Tons crème lin parchemin (#f7efe2), titres bleu royal (#163f7a)
-   & accents vert feuille (#67b342 / #529430) et or (#f5ba24)
+   RÈGLES DU THÈME CLAIR (PALETTE OFFICIELLE FLYERS - HAUT CONTRASTE)
+   Fond crème lin parchemin (#f7efe2), cartes blanc pur (#ffffff),
+   titres bleu royal dense (#0f274a), corps d'encre ardoise (#0a0f18 / #1e293b)
    ========================================================= */
 
 /* Texture micro-grain papier recyclé & pâte à papier (100% vectoriel, 0 latence) */
 [data-theme="light"] body {
   background-color: var(--bg-root);
   background-image:
-    radial-gradient(ellipse 1300px 800px at 15% 10%, rgba(103, 179, 66, 0.035) 0%, transparent 60%),
-    radial-gradient(ellipse 1100px 700px at 85% 55%, rgba(22, 63, 122, 0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 1300px 800px at 15% 10%, rgba(68, 137, 36, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 1100px 700px at 85% 55%, rgba(15, 39, 74, 0.035) 0%, transparent 60%),
     url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='paperGrain'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.3 0 0 0 0  0 0.28 0 0 0  0 0 0.25 0 0  0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paperGrain)'/%3E%3C/svg%3E");
   background-attachment: fixed;
 }
 
 /* Typographie & accents */
 [data-theme="light"] .highlight-green {
-  color: #529430;
+  color: #2e6314;
+  font-weight: 700;
   text-shadow: none;
 }
 
 [data-theme="light"] .highlight-blue {
-  color: #163f7a;
+  color: #0f274a;
+  font-weight: 700;
   text-shadow: none;
 }
 
 [data-theme="light"] .section-tag {
-  background: rgba(103, 179, 66, 0.12);
-  color: #529430;
-  border-color: rgba(103, 179, 66, 0.4);
-  box-shadow: 0 0 14px rgba(103, 179, 66, 0.1);
+  background: #eaf5e4;
+  color: #265912;
+  border: 1.5px solid #448924;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(38, 89, 18, 0.12);
 }
 
 [data-theme="light"] .section-tag.blue {
-  background: rgba(22, 63, 122, 0.1);
-  color: #163f7a;
-  border-color: rgba(22, 63, 122, 0.35);
-  box-shadow: 0 0 14px rgba(22, 63, 122, 0.1);
+  background: #e6eef8;
+  color: #0f274a;
+  border: 1.5px solid #0f274a;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(15, 39, 74, 0.12);
 }
 
-/* Bouton secondaire en papier vélin naturel */
+/* Boutons en mode clair : contrastes nets et percutants */
+[data-theme="light"] .btn-primary {
+  background: linear-gradient(135deg, #36721b 0%, #0f274a 100%);
+  color: #ffffff;
+  box-shadow: 0 6px 22px rgba(15, 39, 74, 0.25), 0 2px 10px rgba(54, 114, 27, 0.3);
+  font-weight: 700;
+}
+
+[data-theme="light"] .btn-primary:hover {
+  background: linear-gradient(135deg, #448924 0%, #163f7a 100%);
+  box-shadow: 0 10px 30px rgba(15, 39, 74, 0.35);
+}
+
 [data-theme="light"] .btn-secondary {
-  background: var(--bg-surface-1);
-  color: var(--text-white);
-  border: 1px solid rgba(185, 175, 155, 0.5);
-  box-shadow: 0 2px 8px rgba(50, 40, 30, 0.05);
+  background: #ffffff;
+  color: #0f274a;
+  border: 2px solid #0f274a;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(15, 39, 74, 0.08);
 }
 
 [data-theme="light"] .btn-secondary:hover {
-  background: #ffffff;
-  border-color: var(--logo-blue-bright);
-  color: var(--logo-blue-bright);
-  box-shadow: 0 6px 20px rgba(22, 63, 122, 0.18);
+  background: #0f274a;
+  border-color: #0f274a;
+  color: #ffffff;
+  box-shadow: 0 8px 24px rgba(15, 39, 74, 0.22);
 }
 
-/* Navigation principale en crème parchemin semi-translucide */
+/* Navigation principale en crème parchemin */
 [data-theme="light"] #navbar {
-  background: rgba(247, 239, 226, 0.92);
-  border-bottom: 1px solid rgba(185, 175, 155, 0.38);
-  box-shadow: 0 2px 14px rgba(50, 40, 30, 0.04);
+  background: rgba(247, 239, 226, 0.96);
+  border-bottom: 1px solid rgba(15, 39, 74, 0.15);
+  box-shadow: 0 4px 20px rgba(15, 39, 74, 0.06);
 }
 
 [data-theme="light"] #navbar.scrolled {
-  background: rgba(247, 239, 226, 0.98);
-  border-bottom: 1px solid rgba(165, 155, 135, 0.48);
-  box-shadow: 0 8px 30px rgba(50, 40, 30, 0.08);
+  background: rgba(247, 239, 226, 0.99);
+  border-bottom: 1px solid rgba(15, 39, 74, 0.22);
+  box-shadow: 0 8px 30px rgba(15, 39, 74, 0.1);
 }
 
 [data-theme="light"] .nav-links a {
-  color: var(--text-secondary);
+  color: #0a0f18;
+  font-weight: 600;
 }
 
 [data-theme="light"] .nav-links a:hover {
-  color: var(--text-white);
-  background: rgba(50, 40, 30, 0.06);
+  color: #0f274a;
+  background: rgba(15, 39, 74, 0.08);
 }
 
 /* Hero section au dégradé doux crème lin */
 [data-theme="light"] #hero {
-  background: radial-gradient(ellipse 1150px 700px at 50% 18%, #fcf8f2 0%, #ede2d1 45%, var(--bg-root) 85%);
+  background: radial-gradient(ellipse 1150px 700px at 50% 18%, #ffffff 0%, #f4ede1 45%, var(--bg-root) 85%);
 }
 
 [data-theme="light"] .hero-bg::before {
@@ -2623,82 +2643,99 @@ p {
 
 [data-theme="light"] .hero-bg::after {
   background-image:
-    radial-gradient(circle 1.5px at 15% 20%, rgba(50, 40, 30, 0.06) 0%, transparent 100%),
-    radial-gradient(circle 1.5px at 85% 15%, rgba(50, 40, 30, 0.06) 0%, transparent 100%),
-    radial-gradient(circle 1px at 45% 75%, rgba(50, 40, 30, 0.06) 0%, transparent 100%),
-    radial-gradient(circle 1.5px at 75% 80%, rgba(50, 40, 30, 0.06) 0%, transparent 100%);
+    radial-gradient(circle 1.5px at 15% 20%, rgba(15, 39, 74, 0.08) 0%, transparent 100%),
+    radial-gradient(circle 1.5px at 85% 15%, rgba(15, 39, 74, 0.08) 0%, transparent 100%),
+    radial-gradient(circle 1px at 45% 75%, rgba(15, 39, 74, 0.08) 0%, transparent 100%),
+    radial-gradient(circle 1.5px at 75% 80%, rgba(15, 39, 74, 0.08) 0%, transparent 100%);
 }
 
 [data-theme="light"] .hero-badge {
-  background: rgba(252, 248, 242, 0.95);
-  border-color: rgba(103, 179, 66, 0.4);
-  color: var(--text-primary);
-  box-shadow: 0 4px 18px rgba(50, 40, 30, 0.07);
+  background: #ffffff;
+  border: 1.5px solid #448924;
+  color: #0f274a;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(15, 39, 74, 0.08);
 }
 
 [data-theme="light"] .hero-title {
-  color: var(--text-white);
+  color: #0f274a;
   text-shadow: none;
 }
 
+[data-theme="light"] .hero-subtitle {
+  color: #1e293b;
+  font-weight: 500;
+}
+
 [data-theme="light"] .hero-subtitle strong {
-  color: var(--text-white);
+  color: #0f274a;
+  font-weight: 700;
 }
 
 [data-theme="light"] .hero-logo {
-  filter: drop-shadow(0 12px 30px rgba(50, 40, 30, 0.1))
-         drop-shadow(0 0 25px rgba(103, 179, 66, 0.2))
-         drop-shadow(0 0 35px rgba(22, 63, 122, 0.2));
+  filter: drop-shadow(0 12px 30px rgba(15, 39, 74, 0.12))
+         drop-shadow(0 0 25px rgba(68, 137, 36, 0.2))
+         drop-shadow(0 0 35px rgba(15, 39, 74, 0.2));
 }
 
 [data-theme="light"] .hero-stat-card {
-  background: var(--bg-surface-1);
-  border-color: var(--border-subtle);
-  box-shadow: 0 4px 16px rgba(50, 40, 30, 0.05);
+  background: #ffffff;
+  border: 1.5px solid rgba(15, 39, 74, 0.14);
+  box-shadow: 0 6px 20px rgba(15, 39, 74, 0.08);
 }
 
 [data-theme="light"] .hero-stat-card:hover {
   background: #ffffff;
-  border-color: var(--border-highlight);
-  box-shadow: 0 8px 24px rgba(50, 40, 30, 0.08);
+  border-color: #0f274a;
+  box-shadow: 0 10px 28px rgba(15, 39, 74, 0.14);
+}
+
+[data-theme="light"] .hero-stat-num {
+  color: #0f274a;
+  font-weight: 800;
+}
+
+[data-theme="light"] .hero-stat-label {
+  color: #1e293b;
+  font-weight: 600;
 }
 
 [data-theme="light"] .hero-stat-icon.green {
-  background: rgba(103, 179, 66, 0.12);
-  color: #529430;
-  border-color: rgba(103, 179, 66, 0.35);
+  background: #eaf5e4;
+  color: #265912;
+  border: 1.5px solid #448924;
 }
 
 [data-theme="light"] .hero-stat-icon.blue {
-  background: rgba(22, 63, 122, 0.1);
-  color: #163f7a;
-  border-color: rgba(22, 63, 122, 0.3);
+  background: #e6eef8;
+  color: #0f274a;
+  border: 1.5px solid #0f274a;
 }
 
 [data-theme="light"] .scroll-arrow {
-  border-right-color: rgba(50, 40, 30, 0.4);
-  border-bottom-color: rgba(50, 40, 30, 0.4);
+  border-right-color: rgba(15, 39, 74, 0.6);
+  border-bottom-color: rgba(15, 39, 74, 0.6);
 }
 
 /* Sections en mode clair : contrastes doux, harmonieux et transitions élégantes */
 [data-theme="light"] .section-dark {
-  background: linear-gradient(180deg, #ede2d1 0%, #ded2be 100%);
-  border-top: 1px solid rgba(185, 175, 155, 0.35);
-  border-bottom: 1px solid rgba(185, 175, 155, 0.45);
+  background: linear-gradient(180deg, #ede2d1 0%, #dfd4c2 100%);
+  border-top: 1px solid rgba(15, 39, 74, 0.15);
+  border-bottom: 1px solid rgba(15, 39, 74, 0.2);
 }
 
 [data-theme="light"] .section-alt {
-  border-top: 1px solid rgba(185, 175, 155, 0.28);
-  border-bottom: 1px solid rgba(185, 175, 155, 0.28);
+  border-top: 1px solid rgba(15, 39, 74, 0.12);
+  border-bottom: 1px solid rgba(15, 39, 74, 0.12);
 }
 
 [data-theme="light"] .section-esat {
   background-color: var(--bg-surface-1);
   background-image:
-    radial-gradient(circle at 10% 20%, rgba(22, 63, 122, 0.07) 0%, transparent 50%),
-    radial-gradient(circle at 90% 80%, rgba(103, 179, 66, 0.07) 0%, transparent 50%);
-  border-top: 1px solid rgba(185, 175, 155, 0.28);
-  border-bottom: 1px solid rgba(185, 175, 155, 0.28);
+    radial-gradient(circle at 10% 20%, rgba(15, 39, 74, 0.06) 0%, transparent 50%),
+    radial-gradient(circle at 90% 80%, rgba(68, 137, 36, 0.06) 0%, transparent 50%);
+  border-top: 1px solid rgba(15, 39, 74, 0.12);
+  border-bottom: 1px solid rgba(15, 39, 74, 0.12);
 }
 
 /* Page Dépôts : fond blanc cassé lin harmonisé */
@@ -2706,7 +2743,51 @@ p {
   background-color: var(--bg-surface-1);
 }
 
-/* Impact Rings */
+/* Cartes Collecte, Mission, ESAT, Team, News : Blanc pur éclatant avec bordure nette */
+[data-theme="light"] .collect-card,
+[data-theme="light"] .mission-step,
+[data-theme="light"] .team-card,
+[data-theme="light"] .esat-card,
+[data-theme="light"] .news-card {
+  background: #ffffff;
+  border: 1.5px solid rgba(15, 39, 74, 0.14);
+  box-shadow: 0 6px 20px rgba(15, 39, 74, 0.07);
+}
+
+[data-theme="light"] .collect-card:hover,
+[data-theme="light"] .mission-step:hover,
+[data-theme="light"] .team-card:hover,
+[data-theme="light"] .esat-card:hover,
+[data-theme="light"] .news-card:hover {
+  background: #ffffff;
+  border-color: #0f274a;
+  box-shadow: 0 12px 32px rgba(15, 39, 74, 0.14), 0 0 20px rgba(68, 137, 36, 0.15);
+}
+
+[data-theme="light"] .collect-icon {
+  background: #eaf5e4;
+  color: #265912;
+  border: 1.5px solid #448924;
+}
+
+[data-theme="light"] .collect-card:nth-child(even) .collect-icon {
+  background: #e6eef8;
+  color: #0f274a;
+  border: 1.5px solid #0f274a;
+}
+
+[data-theme="light"] .team-role {
+  color: #265912;
+  font-weight: 700;
+}
+
+/* Impact Rings & Cartes Impact */
+[data-theme="light"] .impact-card {
+  background: #ffffff;
+  border: 1.5px solid rgba(15, 39, 74, 0.14);
+  box-shadow: 0 6px 20px rgba(15, 39, 74, 0.07);
+}
+
 .impact-unit {
   font-family: var(--font-heading);
   font-size: 1.2rem;
@@ -2721,173 +2802,197 @@ p {
 }
 
 [data-theme="light"] .ring-bg {
-  stroke: rgba(185, 175, 155, 0.35);
+  stroke: rgba(15, 39, 74, 0.14);
 }
 
-/* Points de collecte : cartes en papier vélin ivoire doux */
+[data-theme="light"] .ring-progress {
+  filter: none;
+}
+
+[data-theme="light"] .impact-card:nth-child(1) .ring-progress { stroke: #36721b; }
+[data-theme="light"] .impact-card:nth-child(2) .ring-progress { stroke: #124d9c; }
+[data-theme="light"] .impact-card:nth-child(3) .ring-progress { stroke: #b47804; }
+
+/* Points de collecte : cartes blanches bien contrastées */
 [data-theme="light"] .point-card {
-  background: var(--bg-surface-card);
-  border: 1px solid rgba(185, 175, 155, 0.45);
-  box-shadow: 0 4px 14px rgba(50, 40, 30, 0.05);
+  background: #ffffff;
+  border: 1.5px solid rgba(15, 39, 74, 0.16);
+  box-shadow: 0 4px 14px rgba(15, 39, 74, 0.06);
 }
 
 [data-theme="light"] .point-card:hover,
 [data-theme="light"] .point-card.active {
   background: #ffffff;
-  border-color: #529430;
-  box-shadow: 0 8px 24px rgba(50, 40, 30, 0.08), 0 0 20px rgba(103, 179, 66, 0.18);
+  border-color: #2e6314;
+  box-shadow: 0 8px 24px rgba(15, 39, 74, 0.12), 0 0 20px rgba(46, 99, 20, 0.2);
+}
+
+[data-theme="light"] .point-card .point-name {
+  color: #0f274a;
+  font-weight: 700;
+}
+
+[data-theme="light"] .point-card .point-address {
+  color: #1e293b;
 }
 
 [data-theme="light"] .point-card .point-hours {
-  color: #529430;
+  color: #265912;
+  font-weight: 700;
 }
 
 /* Popup Leaflet en mode clair */
 [data-theme="light"] .leaflet-popup-content-wrapper {
-  background: #fcf8f2 !important;
-  color: #192433 !important;
-  border: 1px solid rgba(185, 175, 155, 0.45) !important;
-  box-shadow: 0 10px 30px rgba(50, 40, 30, 0.12), 0 0 20px rgba(22, 63, 122, 0.15) !important;
+  background: #ffffff !important;
+  color: #0a0f18 !important;
+  border: 1.5px solid rgba(15, 39, 74, 0.22) !important;
+  box-shadow: 0 12px 36px rgba(15, 39, 74, 0.18) !important;
 }
 
 [data-theme="light"] .leaflet-popup-tip {
-  background: #fcf8f2 !important;
+  background: #ffffff !important;
 }
 
 [data-theme="light"] .leaflet-popup-close-button {
-  background: rgba(255, 255, 255, 0.85) !important;
-  color: #192433 !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #0f274a !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
 }
 
 [data-theme="light"] .leaflet-popup-close-button:hover {
-  background: #ffffff !important;
-  color: #000000 !important;
+  background: #0f274a !important;
+  color: #ffffff !important;
 }
 
 [data-theme="light"] .map-popup-title {
-  color: #163f7a !important;
+  color: #0f274a !important;
+  font-weight: 800 !important;
 }
 
 [data-theme="light"] .map-popup-address {
-  color: #3d4a59 !important;
+  color: #1e293b !important;
+  font-weight: 500 !important;
 }
 
 [data-theme="light"] .map-popup-desc {
-  color: #64748b !important;
+  color: #334155 !important;
 }
 
 [data-theme="light"] .map-popup-hours {
-  color: #529430 !important;
-  background: rgba(103, 179, 66, 0.14) !important;
+  color: #265912 !important;
+  background: #e8f5e1 !important;
+  font-weight: 700 !important;
 }
 
 [data-theme="light"] .point-card.hover-highlight {
   background: #ffffff !important;
-  border-color: #529430 !important;
-  box-shadow: 0 6px 20px rgba(50, 40, 30, 0.08), 0 0 20px rgba(103, 179, 66, 0.18) !important;
+  border-color: #2e6314 !important;
+  box-shadow: 0 6px 20px rgba(15, 39, 74, 0.12), 0 0 20px rgba(46, 99, 20, 0.2) !important;
 }
 
 /* Formulaire de contact */
 [data-theme="light"] .contact-form {
-  background: var(--bg-surface-1);
-  border-color: var(--border-subtle);
-  box-shadow: 0 15px 45px rgba(50, 40, 30, 0.07);
+  background: #ffffff;
+  border: 1.5px solid rgba(15, 39, 74, 0.16);
+  box-shadow: 0 15px 45px rgba(15, 39, 74, 0.1);
 }
 
 [data-theme="light"] .form-group label {
-  color: var(--text-white);
+  color: #0f274a;
+  font-weight: 700;
 }
 
 [data-theme="light"] .form-group input,
 [data-theme="light"] .form-group select,
 [data-theme="light"] .form-group textarea {
-  background: #fdfbf7;
-  border: 1px solid rgba(185, 175, 155, 0.5);
-  color: var(--text-primary);
+  background: #ffffff;
+  border: 1.5px solid rgba(15, 39, 74, 0.22);
+  color: #0a0f18;
+  font-weight: 500;
 }
 
 [data-theme="light"] .form-group input::placeholder,
 [data-theme="light"] .form-group textarea::placeholder {
-  color: #8c9ba8;
+  color: #64748b;
 }
 
 [data-theme="light"] .form-group input:focus,
 [data-theme="light"] .form-group select:focus,
 [data-theme="light"] .form-group textarea:focus {
-  border-color: #529430;
+  border-color: #0f274a;
   background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(103, 179, 66, 0.2);
+  box-shadow: 0 0 0 3px rgba(15, 39, 74, 0.15);
 }
 
 [data-theme="light"] .form-group select option {
-  background: #fcf8f2;
-  color: #192433;
+  background: #ffffff;
+  color: #0a0f18;
 }
 
 /* Carte visuelle Boutique (La Halle aux Artistes) en mode clair */
 [data-theme="light"] .boutique-card-visual {
-  background: linear-gradient(135deg, #fcf8f2 0%, #edf4e8 45%, #e6eff8 100%);
-  border: 1px solid rgba(185, 175, 155, 0.45);
+  background: linear-gradient(135deg, #ffffff 0%, #edf6e9 45%, #e6effa 100%);
+  border: 1.5px solid rgba(15, 39, 74, 0.16);
   color: var(--text-white);
-  box-shadow: 0 14px 40px rgba(50, 40, 30, 0.07), 0 0 35px rgba(103, 179, 66, 0.12);
+  box-shadow: 0 14px 40px rgba(15, 39, 74, 0.1), 0 0 35px rgba(68, 137, 36, 0.15);
 }
 
 [data-theme="light"] .boutique-card-visual::before {
-  background: radial-gradient(circle, rgba(103, 179, 66, 0.2) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(68, 137, 36, 0.2) 0%, transparent 70%);
 }
 
 [data-theme="light"] .boutique-card-visual::after {
-  background: radial-gradient(circle, rgba(22, 63, 122, 0.18) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(15, 39, 74, 0.18) 0%, transparent 70%);
 }
 
 [data-theme="light"] .boutique-card-visual i {
-  color: #529430;
-  filter: drop-shadow(0 6px 16px rgba(103, 179, 66, 0.35));
+  color: #265912;
+  filter: drop-shadow(0 6px 16px rgba(46, 99, 20, 0.35));
 }
 
 [data-theme="light"] .boutique-card-visual p {
-  color: var(--text-white);
+  color: #0f274a;
 }
 
 [data-theme="light"] .boutique-card-visual span {
-  color: var(--text-secondary);
+  color: #1e293b;
+  font-weight: 500;
 }
 
 /* Carte visuelle Partenariat ESAT (fallback) en mode clair */
 [data-theme="light"] .esat-photo-fallback {
-  background: linear-gradient(135deg, #fcf8f2 0%, #e8f0f8 45%, #eef5ea 100%);
-  border: 1px solid rgba(185, 175, 155, 0.45);
+  background: linear-gradient(135deg, #ffffff 0%, #e6effa 45%, #edf6e9 100%);
+  border: 1.5px solid rgba(15, 39, 74, 0.16);
   color: var(--text-white);
-  box-shadow: inset 0 0 20px rgba(50, 40, 30, 0.02), 0 10px 30px rgba(50, 40, 30, 0.06);
+  box-shadow: inset 0 0 20px rgba(15, 39, 74, 0.02), 0 10px 30px rgba(15, 39, 74, 0.08);
 }
 
 [data-theme="light"] .esat-fallback-icon {
   background: var(--brand-gradient);
   color: #ffffff;
-  box-shadow: 0 8px 24px rgba(103, 179, 66, 0.35);
+  box-shadow: 0 8px 24px rgba(46, 99, 20, 0.35);
 }
 
 [data-theme="light"] .esat-photo-fallback h4 {
-  color: var(--text-white);
+  color: #0f274a;
 }
 
 [data-theme="light"] .esat-photo-fallback p {
-  color: var(--text-secondary);
+  color: #1e293b;
 }
 
 [data-theme="light"] .esat-fallback-tag {
-  background: rgba(103, 179, 66, 0.12);
-  border: 1px solid rgba(103, 179, 66, 0.4);
-  color: #529430;
-  font-weight: 600;
+  background: #eaf5e4;
+  border: 1.5px solid #448924;
+  color: #265912;
+  font-weight: 700;
 }
 
 /* Bannière d'appel ESAT en mode clair */
 [data-theme="light"] .esat-join-banner {
-  background: linear-gradient(135deg, rgba(244, 249, 241, 0.95) 0%, rgba(236, 243, 250, 0.95) 100%);
-  border: 1px solid rgba(185, 175, 155, 0.45);
-  box-shadow: 0 8px 30px rgba(50, 40, 30, 0.06);
+  background: linear-gradient(135deg, rgba(235, 246, 230, 0.98) 0%, rgba(228, 239, 252, 0.98) 100%);
+  border: 1.5px solid rgba(15, 39, 74, 0.18);
+  box-shadow: 0 8px 30px rgba(15, 39, 74, 0.08);
 }
 
 [data-theme="light"] .esat-join-icon {
@@ -2896,18 +3001,19 @@ p {
 }
 
 [data-theme="light"] .esat-join-content h4 {
-  color: var(--text-white);
+  color: #0f274a;
+  font-weight: 700;
 }
 
 [data-theme="light"] .esat-join-content p {
-  color: var(--text-secondary);
+  color: #1e293b;
 }
 
 /* Footer soigné en mode clair : bandeau bleu royal officiel du flyer */
 [data-theme="light"] .footer {
-  background: #163f7a;
+  background: #0f274a;
   color: #d1dced;
-  border-top: 1px solid rgba(22, 63, 122, 0.4);
+  border-top: 1px solid rgba(15, 39, 74, 0.5);
 }
 
 [data-theme="light"] .footer::before {
