@@ -144,12 +144,8 @@
         }
         output[key] = deepMerge(output[key] || {}, source[key]);
       } else if (Array.isArray(source[key])) {
-        // Ne pas écraser un tableau par défaut par un tableau vide
-        if (source[key].length === 0 && Array.isArray(output[key]) && output[key].length > 0) {
-          continue;
-        }
         output[key] = source[key];
-      } else if (source[key] !== undefined && source[key] !== null && source[key] !== '') {
+      } else if (source[key] !== undefined && source[key] !== null) {
         output[key] = source[key];
       }
     }

@@ -283,16 +283,16 @@ app.get('/api/data', (req, res) => {
     }
   }
 
-  // Vérifier collectPoints
-  if (!Array.isArray(config.collectPoints) || config.collectPoints.length === 0) {
+  // Vérifier collectPoints (uniquement si absent ou corrompu)
+  if (!Array.isArray(config.collectPoints)) {
     config.collectPoints = (Array.isArray(bundled.collectPoints) && bundled.collectPoints.length > 0)
       ? bundled.collectPoints
       : JSON.parse(JSON.stringify(DEFAULT_COLLECT_POINTS));
     needsSave = true;
   }
 
-  // Vérifier news
-  if (!Array.isArray(config.news) || config.news.length === 0) {
+  // Vérifier news (uniquement si absent ou corrompu)
+  if (!Array.isArray(config.news)) {
     config.news = (Array.isArray(bundled.news) && bundled.news.length > 0)
       ? bundled.news
       : JSON.parse(JSON.stringify(DEFAULT_NEWS));
@@ -403,6 +403,30 @@ app.put('/api/content', requireAuth, (req, res) => {
     res.json({ success: true, siteContent: config.siteContent });
   } else {
     res.status(500).json({ error: 'Erreur lors de la sauvegarde sur le serveur.' });
+  }
+});
+
+app.post('/api/config', requireAuth, (req, res) => {
+  const data = req.body;
+  if (!data || typeof data !== 'object') {
+    return res.status(400).json({ error: 'Données de configuration invalides.' });
+  }
+
+  const current = readJson(CONFIG_FILE, { siteContent: {}, collectPoints: [], news: [] });
+  if (data.siteContent && typeof data.siteContent === 'object') {
+    current.siteContent = { ...current.siteContent, ...data.siteContent };
+  }
+  if (Array.isArray(data.collectPoints)) {
+    current.collectPoints = data.collectPoints;
+  }
+  if (Array.isArray(data.news)) {
+    current.news = data.news;
+  }
+
+  if (writeJson(CONFIG_FILE, current)) {
+    res.json({ success: true, config: current });
+  } else {
+    res.status(500).json({ error: 'Erreur lors de l\'enregistrement de la configuration sur le serveur.' });
   }
 });
 

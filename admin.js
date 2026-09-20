@@ -172,12 +172,8 @@
         }
         output[key] = deepMerge(output[key] || {}, source[key]);
       } else if (Array.isArray(source[key])) {
-        // Si le tableau source est vide mais que la cible a des éléments par défaut, ne pas écraser
-        if (source[key].length === 0 && Array.isArray(output[key]) && output[key].length > 0) {
-          continue;
-        }
         output[key] = source[key];
-      } else if (source[key] !== undefined && source[key] !== null && source[key] !== '') {
+      } else if (source[key] !== undefined && source[key] !== null) {
         output[key] = source[key];
       }
     }
@@ -1147,13 +1143,15 @@
           serverOk = true;
         } else if (res.status === 401) {
           console.warn('Session serveur expirée (401)');
-          toast('Session serveur expirée : reconnexion conseillée via Déconnexion.', true);
+          toast('Session expirée : reconnexion requise.', true);
         } else {
-          console.warn(`Erreur serveur (${res.status})`);
-          toast('Erreur lors de la sauvegarde sur le serveur.', true);
+          const errJson = await res.json().catch(() => ({}));
+          console.warn(`Erreur serveur (${res.status}):`, errJson.error);
+          toast(errJson.error || 'Erreur lors de la sauvegarde sur le serveur.', true);
         }
       } catch (err) {
         console.warn('Sauvegarde serveur échouée:', err);
+        toast('Impossible de joindre le serveur pour enregistrer les modifications.', true);
       }
     }
 
@@ -1162,10 +1160,11 @@
     if (showToast) {
       if (serverOk) {
         toast('Contenus du site enregistrés avec succès !');
-      } else {
-        toast('Modifications enregistrées localement.');
+      } else if (!token) {
+        toast('Modifications enregistrées localement (mode hors-ligne).');
       }
     }
+    return { success: true, serverOk };
   }
 
   function initContentSection() {
@@ -1186,6 +1185,11 @@
     const btnTop = $('#btnSaveContentTop');
     if (btnTop) btnTop.addEventListener('click', () => saveContentForm());
 
+    // Boutons "Enregistrer cette rubrique" présents au bas de chaque onglet
+    $$('.btn-save-cms-pane').forEach(btn => {
+      btn.addEventListener('click', () => saveContentForm());
+    });
+
     // Upload photo Boutique
     const btnUploadBoutique = $('#btnUploadBoutiquePhoto');
     const inputBoutiquePhoto = $('#contentBoutiquePhotoInput');
@@ -1202,8 +1206,12 @@
           if ($('#contentBoutiquePhoto')) $('#contentBoutiquePhoto').value = url;
           updatePhotoPreviewBox($('#boutiquePhotoPreview'), url);
           if (btnRemoveBoutique) btnRemoveBoutique.style.display = 'inline-flex';
-          await saveContentForm(false);
-          toast('Photo de la boutique ajoutée et enregistrée.');
+          const res = await saveContentForm(false);
+          if (res && res.serverOk) {
+            toast('Photo de la boutique ajoutée et enregistrée sur le serveur.');
+          } else if (!getAuthToken()) {
+            toast('Photo de la boutique enregistrée localement.');
+          }
         } catch (err) {
           toast('Échec de l\'envoi de la photo.', true);
         } finally {
@@ -1218,8 +1226,12 @@
         if ($('#contentBoutiquePhoto')) $('#contentBoutiquePhoto').value = '';
         updatePhotoPreviewBox($('#boutiquePhotoPreview'), '');
         btnRemoveBoutique.style.display = 'none';
-        await saveContentForm(false);
-        toast('Photo de la boutique retirée et enregistrée.');
+        const res = await saveContentForm(false);
+        if (res && res.serverOk) {
+          toast('Photo de la boutique retirée et enregistrée sur le serveur.');
+        } else if (!getAuthToken()) {
+          toast('Photo de la boutique retirée localement.');
+        }
       });
     }
 
@@ -1239,8 +1251,12 @@
           if ($('#contentEsatPhoto')) $('#contentEsatPhoto').value = url;
           updatePhotoPreviewBox($('#esatPhotoPreview'), url);
           if (btnRemoveEsat) btnRemoveEsat.style.display = 'inline-flex';
-          await saveContentForm(false);
-          toast('Photo de l\'ESAT ajoutée et enregistrée.');
+          const res = await saveContentForm(false);
+          if (res && res.serverOk) {
+            toast('Photo de l\'ESAT ajoutée et enregistrée sur le serveur.');
+          } else if (!getAuthToken()) {
+            toast('Photo de l\'ESAT enregistrée localement.');
+          }
         } catch (err) {
           toast('Échec de l\'envoi de la photo.', true);
         } finally {
@@ -1255,8 +1271,12 @@
         if ($('#contentEsatPhoto')) $('#contentEsatPhoto').value = '';
         updatePhotoPreviewBox($('#esatPhotoPreview'), '');
         btnRemoveEsat.style.display = 'none';
-        await saveContentForm(false);
-        toast('Photo de l\'ESAT retirée et enregistrée.');
+        const res = await saveContentForm(false);
+        if (res && res.serverOk) {
+          toast('Photo de l\'ESAT retirée et enregistrée sur le serveur.');
+        } else if (!getAuthToken()) {
+          toast('Photo de l\'ESAT retirée localement.');
+        }
       });
     }
 
@@ -1362,8 +1382,16 @@
 
       if (!title || !date) { toast('Veuillez remplir les champs obligatoires.', true); return; }
 
+      const submitBtn = $('#newsForm').querySelector('[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement…';
+      }
+
       const id = parseInt($('#newsId').value) || null;
       const token = getAuthToken();
+      let serverOk = false;
+
       if (token) {
         try {
           const res = await fetch('/api/news', {
@@ -1374,8 +1402,18 @@
           if (res.ok) {
             const json = await res.json();
             if (json.news) appData.news = json.news;
+            serverOk = true;
+          } else {
+            const errJson = await res.json().catch(() => ({}));
+            toast(errJson.error || 'Erreur lors de l\'enregistrement de l\'article sur le serveur.', true);
+            if (res.status === 401) {
+              toast('Session expirée. Veuillez vous reconnecter.', true);
+            }
           }
-        } catch (_) {}
+        } catch (err) {
+          console.warn('Erreur réseau /api/news:', err);
+          toast('Impossible de joindre le serveur pour enregistrer l\'article.', true);
+        }
       }
 
       if (!token) {
@@ -1387,12 +1425,20 @@
           const newId = Date.now();
           appData.news.unshift({ id:newId, title, category:cat, date, content, image });
         }
+        serverOk = true;
       }
 
-      saveData();
-      renderNewsTable();
-      closeNewsModal();
-      toast(id ? 'Article modifié avec succès.' : 'Article créé avec succès.');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-save" aria-hidden="true"></i> Enregistrer';
+      }
+
+      if (serverOk) {
+        saveData();
+        renderNewsTable();
+        closeNewsModal();
+        toast(id ? 'Article modifié avec succès.' : 'Article créé avec succès.');
+      }
     });
   }
 
@@ -1547,8 +1593,16 @@
       if (!name) { toast('Le nom du lieu est obligatoire.', true); return; }
       if (isNaN(lat) || isNaN(lng)) { toast('Coordonnées GPS invalides.', true); return; }
 
+      const submitBtn = $('#pointForm').querySelector('[type="submit"]');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement…';
+      }
+
       const id = parseInt($('#pointId').value) || null;
       const token = getAuthToken();
+      let serverOk = false;
+
       if (token) {
         try {
           const res = await fetch('/api/points', {
@@ -1559,8 +1613,18 @@
           if (res.ok) {
             const json = await res.json();
             if (json.collectPoints) appData.collectPoints = json.collectPoints;
+            serverOk = true;
+          } else {
+            const errJson = await res.json().catch(() => ({}));
+            toast(errJson.error || 'Erreur lors de l\'enregistrement du point de collecte sur le serveur.', true);
+            if (res.status === 401) {
+              toast('Session expirée. Veuillez vous reconnecter.', true);
+            }
           }
-        } catch (_) {}
+        } catch (err) {
+          console.warn('Erreur réseau /api/points:', err);
+          toast('Impossible de joindre le serveur pour enregistrer le point.', true);
+        }
       }
 
       if (!token) {
@@ -1572,13 +1636,21 @@
           if (!appData.collectPoints) appData.collectPoints = [];
           appData.collectPoints.push(pt);
         }
+        serverOk = true;
       }
 
-      saveData();
-      if (pendingClick) { adminMap && adminMap.removeLayer(pendingClick); pendingClick = null; }
-      renderAdminMapPoints();
-      closePointModal();
-      toast(id ? 'Point modifié.' : 'Point ajouté.');
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-save" aria-hidden="true"></i> Enregistrer';
+      }
+
+      if (serverOk) {
+        saveData();
+        if (pendingClick) { adminMap && adminMap.removeLayer(pendingClick); pendingClick = null; }
+        renderAdminMapPoints();
+        closePointModal();
+        toast(id ? 'Point de collecte modifié avec succès.' : 'Point de collecte ajouté avec succès.');
+      }
     });
   }
 
@@ -1671,6 +1743,8 @@
       submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement…';
 
       const token = getAuthToken();
+      let serverOk = false;
+
       if (token) {
         try {
           const res = await fetch('/api/users', {
@@ -1681,8 +1755,18 @@
           if (res.ok) {
             const json = await res.json();
             if (json.users) credentials.users = json.users;
+            serverOk = true;
+          } else {
+            const errJson = await res.json().catch(() => ({}));
+            toast(errJson.error || 'Erreur lors de l\'enregistrement de l\'utilisateur sur le serveur.', true);
+            if (res.status === 401) {
+              toast('Session expirée. Veuillez vous reconnecter.', true);
+            }
           }
-        } catch (_) {}
+        } catch (err) {
+          console.warn('Erreur réseau /api/users:', err);
+          toast('Impossible de joindre le serveur pour enregistrer l\'utilisateur.', true);
+        }
       }
 
       if (!token) {
@@ -1698,14 +1782,18 @@
         } else {
           credentials.users.push({ id: Date.now(), username, displayName, passwordHash: hash, role });
         }
+        serverOk = true;
       }
 
-      saveCredentials();
-      renderUsersTable();
-      closeUserModal();
-      toast(id ? 'Utilisateur modifié.' : 'Utilisateur créé.');
       submitBtn.disabled = false;
       submitBtn.innerHTML = '<i class="fas fa-save"></i> Enregistrer';
+
+      if (serverOk) {
+        saveCredentials();
+        renderUsersTable();
+        closeUserModal();
+        toast(id ? 'Utilisateur modifié avec succès.' : 'Utilisateur créé avec succès.');
+      }
     });
   }
 
@@ -1731,16 +1819,43 @@
       const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = ev => {
+      reader.onload = async ev => {
         try {
           const data = JSON.parse(ev.target.result);
-          if (!data.collectPoints && !data.news) throw new Error('Format invalide');
+          if (!data.collectPoints && !data.news && !data.siteContent) throw new Error('Format invalide');
           if (!confirm('Importer ces données ? Cela remplacera les données actuelles.')) return;
-          appData = data;
+
+          const token = getAuthToken();
+          let synced = false;
+          if (token) {
+            try {
+              const res = await fetch('/api/config', {
+                method: 'POST',
+                headers: getAuthHeaders(),
+                body: JSON.stringify(data)
+              });
+              if (res.ok) {
+                const json = await res.json();
+                if (json.config) appData = json.config;
+                synced = true;
+              } else {
+                const errJson = await res.json().catch(() => ({}));
+                toast(errJson.error || 'Erreur lors de la synchronisation avec le serveur.', true);
+              }
+            } catch (err) {
+              toast('Impossible de joindre le serveur pour synchroniser l\'import.', true);
+            }
+          }
+
+          if (!synced) {
+            appData = data;
+          }
+
           saveData();
+          populateContentForm();
           renderNewsTable();
           renderAdminMapPoints();
-          toast('Données importées avec succès.');
+          toast(synced ? 'Données importées et synchronisées sur le serveur avec succès.' : 'Données importées localement.');
         } catch (err) {
           toast('Fichier JSON invalide : ' + err.message, true);
         }
@@ -1766,21 +1881,31 @@
     async deleteNews(id) {
       if (!confirm('Supprimer cet article ?')) return;
       const token = getAuthToken();
+      let success = false;
       if (token) {
         try {
           const res = await fetch(`/api/news/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
           if (res.ok) {
             const json = await res.json();
             if (json.news) appData.news = json.news;
+            success = true;
+          } else {
+            const errJson = await res.json().catch(() => ({}));
+            toast(errJson.error || 'Erreur lors de la suppression de l\'article sur le serveur.', true);
           }
-        } catch (_) {}
-      }
-      if (!token) {
+        } catch (err) {
+          toast('Impossible de joindre le serveur pour supprimer l\'article.', true);
+        }
+      } else {
         appData.news = (appData.news||[]).filter(n => n.id!==id);
+        success = true;
       }
-      saveData();
-      renderNewsTable();
-      toast('Article supprimé.');
+
+      if (success) {
+        saveData();
+        renderNewsTable();
+        toast('Article supprimé avec succès.');
+      }
     },
     editPoint(id) {
       const pt = (appData.collectPoints||[]).find(p => p.id===id);
@@ -1792,21 +1917,31 @@
     async deletePoint(id) {
       if (!confirm('Supprimer ce point de collecte ?')) return;
       const token = getAuthToken();
+      let success = false;
       if (token) {
         try {
           const res = await fetch(`/api/points/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
           if (res.ok) {
             const json = await res.json();
             if (json.collectPoints) appData.collectPoints = json.collectPoints;
+            success = true;
+          } else {
+            const errJson = await res.json().catch(() => ({}));
+            toast(errJson.error || 'Erreur lors de la suppression du point sur le serveur.', true);
           }
-        } catch (_) {}
-      }
-      if (!token) {
+        } catch (err) {
+          toast('Impossible de joindre le serveur pour supprimer le point.', true);
+        }
+      } else {
         appData.collectPoints = (appData.collectPoints||[]).filter(p => p.id!==id);
+        success = true;
       }
-      saveData();
-      renderAdminMapPoints();
-      toast('Point supprimé.');
+
+      if (success) {
+        saveData();
+        renderAdminMapPoints();
+        toast('Point de collecte supprimé avec succès.');
+      }
     },
     editUser(id) {
       const u = (credentials.users||[]).find(u => u.id===id);
@@ -1817,23 +1952,31 @@
       if (!confirm('Supprimer cet utilisateur ?')) return;
 
       const token = getAuthToken();
+      let success = false;
       if (token) {
         try {
           const res = await fetch(`/api/users/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
           if (res.ok) {
             const json = await res.json();
             if (json.users) credentials.users = json.users;
+            success = true;
+          } else {
+            const errJson = await res.json().catch(() => ({}));
+            toast(errJson.error || 'Erreur lors de la suppression de l\'utilisateur sur le serveur.', true);
           }
-        } catch (_) {}
-      }
-
-      if (!token) {
+        } catch (err) {
+          toast('Impossible de joindre le serveur pour supprimer l\'utilisateur.', true);
+        }
+      } else {
         credentials.users = credentials.users.filter(u => u.id!==id);
+        success = true;
       }
 
-      saveCredentials();
-      renderUsersTable();
-      toast('Utilisateur supprimé.');
+      if (success) {
+        saveCredentials();
+        renderUsersTable();
+        toast('Utilisateur supprimé avec succès.');
+      }
     }
   };
 
