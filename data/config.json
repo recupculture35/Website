@@ -153,6 +153,37 @@
         }
       ]
     },
+    "faq": {
+      "tag": "Questions Fréquentes",
+      "title": "Tout ce que vous devez savoir",
+      "description": "Retrouvez les réponses aux questions les plus courantes sur nos collectes, nos dépôts et nos actions solidaires.",
+      "items": [
+        {
+          "question": "Quels types de livres et articles culturels sont acceptés ?",
+          "answer": "Nous acceptons tous types de livres (romans, BD, mangas, documentaires, livres jeunesse, beaux livres), ainsi que les CD musicaux, DVD & Blu-ray, et jeux vidéo toutes générations. Les articles doivent être en bon état d'usage."
+        },
+        {
+          "question": "Quels sont les articles refusés ?",
+          "answer": "Nous ne pouvons pas accepter les encyclopédies volumineuses obsolètes, les manuels scolaires périmés, les revues/magazines, ainsi que les livres ou boîtiers moisis, déchirés ou très abîmés."
+        },
+        {
+          "question": "Où et comment puis-je déposer mes dons ?",
+          "answer": "Vous pouvez déposer vos dons dans nos bacs de collecte partenaires situés à Saint-Malo, Dinard et Châteauneuf-d'Ille-et-Vilaine. Consultez la carte interactive des points de dépôt sur ce site pour retrouver adresses et horaires."
+        },
+        {
+          "question": "Que deviennent les articles collectés et quel est le rôle de l'ESAT ?",
+          "answer": "Vos dons sont acheminés vers l'ESAT de Châteauneuf-d'Ille-et-Vilaine où les travailleurs en situation de handicap réalisent le tri, le nettoyage et le reconditionnement. Environ 50% sont remis en circulation via notre boutique solidaire à prix modique, 30% sont recyclés en pâte à papier, et 20% sont donnés lors d'actions humanitaires."
+        },
+        {
+          "question": "Où et quand puis-je acheter des livres à la boutique solidaire ?",
+          "answer": "Notre boutique 'La Halle aux Artistes' située au 3 place du Martray à Châteauneuf-d'Ille-et-Vilaine ouvre chaque 2ème week-end du mois, avec des livres dès 0,50€, des CD dès 0,50€ et des DVD dès 1€."
+        },
+        {
+          "question": "Puis-je devenir bénévole ou proposer un partenariat ?",
+          "answer": "Avec grand plaisir ! Que vous soyez un particulier souhaitant donner un coup de main lors d'une collecte ou une entreprise/commerce désireux d'accueillir un bac de dépôt, écrivez-nous via le formulaire de contact ci-dessous ou directement à info@recupculture.fr."
+        }
+      ]
+    },
     "contact": {
       "tag": "Contact",
       "title": "Vous avez une question ?",

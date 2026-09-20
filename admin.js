@@ -130,6 +130,37 @@
           { name: "Camille Dubois", role: "Bénévole engagée", bio: "Animation des ateliers lecture et tri solidaire.", photo: "" }
         ]
       },
+      faq: {
+        tag: "Questions Fréquentes",
+        title: "Tout ce que vous devez savoir",
+        description: "Retrouvez les réponses aux questions les plus courantes sur nos collectes, nos dépôts et nos actions solidaires.",
+        items: [
+          {
+            question: "Quels types de livres et articles culturels sont acceptés ?",
+            answer: "Nous acceptons tous types de livres (romans, BD, mangas, documentaires, livres jeunesse, beaux livres), ainsi que les CD musicaux, DVD & Blu-ray, et jeux vidéo toutes générations. Les articles doivent être en bon état d'usage."
+          },
+          {
+            question: "Quels sont les articles refusés ?",
+            answer: "Nous ne pouvons pas accepter les encyclopédies volumineuses obsolètes, les manuels scolaires périmés, les revues/magazines, ainsi que les livres ou boîtiers moisis, déchirés ou très abîmés."
+          },
+          {
+            question: "Où et comment puis-je déposer mes dons ?",
+            answer: "Vous pouvez déposer vos dons dans nos bacs de collecte partenaires situés à Saint-Malo, Dinard et Châteauneuf-d'Ille-et-Vilaine. Consultez la carte interactive des points de dépôt sur ce site pour retrouver adresses et horaires."
+          },
+          {
+            question: "Que deviennent les articles collectés et quel est le rôle de l'ESAT ?",
+            answer: "Vos dons sont acheminés vers l'ESAT de Châteauneuf-d'Ille-et-Vilaine où les travailleurs en situation de handicap réalisent le tri, le nettoyage et le reconditionnement. Environ 50% sont remis en circulation via notre boutique solidaire à prix modique, 30% sont recyclés en pâte à papier, et 20% sont donnés lors d'actions humanitaires."
+          },
+          {
+            question: "Où et quand puis-je acheter des livres à la boutique solidaire ?",
+            answer: "Notre boutique 'La Halle aux Artistes' située au 3 place du Martray à Châteauneuf-d'Ille-et-Vilaine ouvre chaque 2ème week-end du mois, avec des livres dès 0,50€, des CD dès 0,50€ et des DVD dès 1€."
+          },
+          {
+            question: "Puis-je devenir bénévole ou proposer un partenariat ?",
+            answer: "Avec grand plaisir ! Que vous soyez un particulier souhaitant donner un coup de main lors d'une collecte ou une entreprise/commerce désireux d'accueillir un bac de dépôt, écrivez-nous via le formulaire de contact ci-dessous ou directement à info@recupculture.fr."
+          }
+        ]
+      },
       contact: {
         tag: "Contact",
         title: "Vous avez une question ?",
@@ -1000,6 +1031,98 @@
     });
   }
 
+  // ─── GESTION DES QUESTIONS FAQ (CMS) ─────────────────
+  let currentFaqItems = [];
+
+  function syncFaqItemsFromDom() {
+    currentFaqItems = currentFaqItems.map((item, idx) => {
+      const qInput = $(`#faqQuestion_${idx}`);
+      const aInput = $(`#faqAnswer_${idx}`);
+      return {
+        question: qInput ? qInput.value.trim() : (item.question || ''),
+        answer: aInput ? aInput.value.trim() : (item.answer || '')
+      };
+    });
+  }
+
+  function renderFaqItemsAdmin() {
+    const list = $('#faqItemsList');
+    if (!list) return;
+    list.innerHTML = '';
+
+    if (!currentFaqItems.length) {
+      list.innerHTML = '<div style="padding:24px;text-align:center;color:var(--gray-400);background:rgba(255,255,255,0.02);border-radius:8px;border:1px dashed var(--gray-700)">Aucune question dans la FAQ. Cliquez sur "Ajouter une question".</div>';
+      return;
+    }
+
+    currentFaqItems.forEach((item, index) => {
+      const card = document.createElement('div');
+      card.className = 'team-member-admin-card';
+      card.dataset.index = index;
+
+      card.innerHTML = `
+        <div class="team-member-header">
+          <span class="team-member-number"><i class="fas fa-question-circle"></i> Question #${index + 1}</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <button type="button" class="btn btn-secondary-admin btn-sm btn-move-up-faq" data-index="${index}" title="Monter" ${index === 0 ? 'disabled' : ''}>
+              <i class="fas fa-arrow-up"></i>
+            </button>
+            <button type="button" class="btn btn-secondary-admin btn-sm btn-move-down-faq" data-index="${index}" title="Descendre" ${index === currentFaqItems.length - 1 ? 'disabled' : ''}>
+              <i class="fas fa-arrow-down"></i>
+            </button>
+            <button type="button" class="btn btn-danger btn-sm btn-delete-faq" data-index="${index}" title="Supprimer">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+        <div class="form-group-admin" style="margin-bottom:12px">
+          <label for="faqQuestion_${index}">Question posée *</label>
+          <input type="text" id="faqQuestion_${index}" value="${escapeHtml(item.question || '')}" placeholder="Ex : Quels types de dons acceptez-vous ?">
+        </div>
+        <div class="form-group-admin" style="margin-bottom:0">
+          <label for="faqAnswer_${index}">Réponse détaillée *</label>
+          <textarea id="faqAnswer_${index}" rows="3" placeholder="Ex : Nous acceptons tous les livres en bon état...">${escapeHtml(item.answer || '')}</textarea>
+        </div>
+      `;
+
+      list.appendChild(card);
+
+      // Actions sur la carte FAQ
+      const btnUp = $('.btn-move-up-faq', card);
+      if (btnUp && index > 0) {
+        btnUp.addEventListener('click', () => {
+          syncFaqItemsFromDom();
+          const tmp = currentFaqItems[index];
+          currentFaqItems[index] = currentFaqItems[index - 1];
+          currentFaqItems[index - 1] = tmp;
+          renderFaqItemsAdmin();
+        });
+      }
+
+      const btnDown = $('.btn-move-down-faq', card);
+      if (btnDown && index < currentFaqItems.length - 1) {
+        btnDown.addEventListener('click', () => {
+          syncFaqItemsFromDom();
+          const tmp = currentFaqItems[index];
+          currentFaqItems[index] = currentFaqItems[index + 1];
+          currentFaqItems[index + 1] = tmp;
+          renderFaqItemsAdmin();
+        });
+      }
+
+      const btnDel = $('.btn-delete-faq', card);
+      if (btnDel) {
+        btnDel.addEventListener('click', () => {
+          if (confirm('Supprimer cette question de la FAQ ?')) {
+            syncFaqItemsFromDom();
+            currentFaqItems.splice(index, 1);
+            renderFaqItemsAdmin();
+          }
+        });
+      }
+    });
+  }
+
   // ─── CONTENUS DU SITE (CMS) ─────────────────────────
   function populateContentForm() {
     // S'assurer que appData.siteContent est fusionné avec les valeurs par défaut
@@ -1104,6 +1227,20 @@
     }
     renderTeamMembersAdmin();
 
+    // FAQ
+    const faq = c.faq || def.faq;
+    if ($('#contentFaqTag')) $('#contentFaqTag').value = faq?.tag || def.faq?.tag || 'Questions Fréquentes';
+    if ($('#contentFaqTitle')) $('#contentFaqTitle').value = faq?.title || def.faq?.title || 'Tout ce que vous devez savoir';
+    if ($('#contentFaqDesc')) $('#contentFaqDesc').value = faq?.description || def.faq?.description || '';
+    if (Array.isArray(faq?.items) && faq.items.length) {
+      currentFaqItems = JSON.parse(JSON.stringify(faq.items));
+    } else if (def.faq && Array.isArray(def.faq.items)) {
+      currentFaqItems = JSON.parse(JSON.stringify(def.faq.items));
+    } else {
+      currentFaqItems = [];
+    }
+    renderFaqItemsAdmin();
+
     // Contact
     const ct = c.contact || def.contact;
     if ($('#contentContactTag')) $('#contentContactTag').value = ct.tag || def.contact.tag;
@@ -1119,6 +1256,7 @@
   async function saveContentForm(showToast = true) {
     syncImpactItemsFromDom();
     syncTeamMembersFromDom();
+    syncFaqItemsFromDom();
 
     const newSiteContent = {
       hero: {
@@ -1203,6 +1341,15 @@
             photo: photoInput ? photoInput.value.trim() : (m.photo || '')
           };
         })
+      },
+      faq: {
+        tag: $('#contentFaqTag') ? $('#contentFaqTag').value.trim() : 'Questions Fréquentes',
+        title: $('#contentFaqTitle') ? $('#contentFaqTitle').value.trim() : 'Tout ce que vous devez savoir',
+        description: $('#contentFaqDesc') ? $('#contentFaqDesc').value.trim() : '',
+        items: currentFaqItems.map((item, idx) => ({
+          question: $(`#faqQuestion_${idx}`) ? $(`#faqQuestion_${idx}`).value.trim() : (item.question || ''),
+          answer: $(`#faqAnswer_${idx}`) ? $(`#faqAnswer_${idx}`).value.trim() : (item.answer || '')
+        })).filter(it => it.question.trim() || it.answer.trim())
       },
       contact: {
         tag: $('#contentContactTag').value.trim(),
@@ -1431,6 +1578,28 @@
     const btnSaveTeam = $('#btnSaveTeamTab');
     if (btnSaveTeam) {
       btnSaveTeam.addEventListener('click', () => saveContentForm());
+    }
+
+    // Bouton ajouter question FAQ
+    const btnAddFaq = $('#btnAddFaqItem');
+    if (btnAddFaq) {
+      btnAddFaq.addEventListener('click', async () => {
+        syncFaqItemsFromDom();
+        currentFaqItems.push({ question: '', answer: '' });
+        renderFaqItemsAdmin();
+        const newIndex = currentFaqItems.length - 1;
+        const qField = $(`#faqQuestion_${newIndex}`);
+        if (qField) qField.focus();
+        const res = await saveContentForm(false);
+        if (res && res.serverOk) {
+          toast('Nouvelle question ajoutée et enregistrée sur le serveur.');
+        }
+      });
+    }
+
+    const btnSaveFaq = $('#btnSaveFaqTab');
+    if (btnSaveFaq) {
+      btnSaveFaq.addEventListener('click', () => saveContentForm());
     }
 
     populateContentForm();

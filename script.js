@@ -84,6 +84,37 @@
           { name: "Camille Dubois", role: "Bénévole engagée", bio: "Animation des ateliers lecture et tri solidaire.", photo: "" }
         ]
       },
+      faq: {
+        tag: "Questions Fréquentes",
+        title: "Tout ce que vous devez savoir",
+        description: "Retrouvez les réponses aux questions les plus courantes sur nos collectes, nos dépôts et nos actions solidaires.",
+        items: [
+          {
+            question: "Quels types de livres et articles culturels sont acceptés ?",
+            answer: "Nous acceptons tous types de livres (romans, BD, mangas, documentaires, livres jeunesse, beaux livres), ainsi que les CD musicaux, DVD & Blu-ray, et jeux vidéo toutes générations. Les articles doivent être en bon état d'usage."
+          },
+          {
+            question: "Quels sont les articles refusés ?",
+            answer: "Nous ne pouvons pas accepter les encyclopédies volumineuses obsolètes, les manuels scolaires périmés, les revues/magazines, ainsi que les livres ou boîtiers moisis, déchirés ou très abîmés."
+          },
+          {
+            question: "Où et comment puis-je déposer mes dons ?",
+            answer: "Vous pouvez déposer vos dons dans nos bacs de collecte partenaires situés à Saint-Malo, Dinard et Châteauneuf-d'Ille-et-Vilaine. Consultez la carte interactive des points de dépôt sur ce site pour retrouver adresses et horaires."
+          },
+          {
+            question: "Que deviennent les articles collectés et quel est le rôle de l'ESAT ?",
+            answer: "Vos dons sont acheminés vers l'ESAT de Châteauneuf-d'Ille-et-Vilaine où les travailleurs en situation de handicap réalisent le tri, le nettoyage et le reconditionnement. Environ 50% sont remis en circulation via notre boutique solidaire à prix modique, 30% sont recyclés en pâte à papier, et 20% sont donnés lors d'actions humanitaires."
+          },
+          {
+            question: "Où et quand puis-je acheter des livres à la boutique solidaire ?",
+            answer: "Notre boutique 'La Halle aux Artistes' située au 3 place du Martray à Châteauneuf-d'Ille-et-Vilaine ouvre chaque 2ème week-end du mois, avec des livres dès 0,50€, des CD dès 0,50€ et des DVD dès 1€."
+          },
+          {
+            question: "Puis-je devenir bénévole ou proposer un partenariat ?",
+            answer: "Avec grand plaisir ! Que vous soyez un particulier souhaitant donner un coup de main lors d'une collecte ou une entreprise/commerce désireux d'accueillir un bac de dépôt, écrivez-nous via le formulaire de contact ci-dessous ou directement à info@recupculture.fr."
+          }
+        ]
+      },
       contact: {
         tag: "Contact",
         title: "Vous avez une question ?",
@@ -812,6 +843,56 @@
       }
     }
 
+    // FAQ
+    if (c.faq) {
+      if (c.faq.tag && $('#faqTag')) $('#faqTag').textContent = c.faq.tag;
+      if (c.faq.title && $('#faq-title')) $('#faq-title').textContent = c.faq.title;
+      if (c.faq.description && $('#faqDesc')) $('#faqDesc').textContent = c.faq.description;
+
+      const accordion = $('#faqAccordion');
+      if (accordion && Array.isArray(c.faq.items)) {
+        accordion.innerHTML = c.faq.items.map((item, idx) => `
+          <div class="faq-item reveal visible active" style="--delay: ${idx * 0.08}s">
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-ans-${idx}">
+              <span>${escapeHtml(item.question)}</span>
+              <span class="faq-icon" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+            </button>
+            <div class="faq-answer" id="faq-ans-${idx}" role="region">
+              <p>${escapeHtml(item.answer)}</p>
+            </div>
+          </div>
+        `).join('');
+
+        // Écouteurs d'ouverture / fermeture d'accordéon
+        const faqItems = accordion.querySelectorAll('.faq-item');
+        faqItems.forEach(item => {
+          const btn = item.querySelector('.faq-question');
+          if (!btn) return;
+          btn.addEventListener('click', () => {
+            const isOpen = item.classList.contains('active');
+            // Ferme les autres questions pour une lecture épurée
+            faqItems.forEach(other => {
+              if (other !== item) {
+                other.classList.remove('active');
+                const otherBtn = other.querySelector('.faq-question');
+                if (otherBtn) otherBtn.setAttribute('aria-expanded', 'false');
+              }
+            });
+            if (isOpen) {
+              item.classList.remove('active');
+              btn.setAttribute('aria-expanded', 'false');
+            } else {
+              item.classList.add('active');
+              btn.setAttribute('aria-expanded', 'true');
+            }
+          });
+        });
+
+        // Enrichissement dynamique du JSON-LD Schema.org pour Google
+        updateSchemaOrgFaq(c.faq.items);
+      }
+    }
+
     // Contact
     if (c.contact) {
       if (c.contact.tag && $('#contactTag')) $('#contactTag').textContent = c.contact.tag;
@@ -840,6 +921,31 @@
 
     // Réinitialiser les animations d'apparition pour les nouveaux éléments
     initReveal();
+  }
+
+  // ─── Mise à jour dynamique du schéma JSON-LD pour Google ───
+  function updateSchemaOrgFaq(items) {
+    if (!Array.isArray(items) || !items.length) return;
+    try {
+      const scriptEl = $('#schema-org-data');
+      if (!scriptEl) return;
+      const data = JSON.parse(scriptEl.textContent || '{}');
+      if (!Array.isArray(data['@graph'])) data['@graph'] = [];
+      data['@graph'] = data['@graph'].filter(node => node['@type'] !== 'FAQPage');
+      data['@graph'].push({
+        '@type': 'FAQPage',
+        '@id': 'https://recupculture.fr/#faq',
+        'mainEntity': items.map(it => ({
+          '@type': 'Question',
+          'name': it.question,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': it.answer
+          }
+        }))
+      });
+      scriptEl.textContent = JSON.stringify(data, null, 2);
+    } catch (_) {}
   }
 
   // ─── Gestion du Thème (Clair / Sombre) ───────────────

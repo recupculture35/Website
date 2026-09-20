@@ -160,6 +160,7 @@
               <button type="button" class="cms-tab" data-tab="boutique"><i class="fas fa-store"></i> Boutique</button>
               <button type="button" class="cms-tab" data-tab="esat"><i class="fas fa-hands-helping"></i> Partenariat ESAT</button>
               <button type="button" class="cms-tab" data-tab="equipe"><i class="fas fa-user-friends"></i> L'Équipe &amp; Photos</button>
+              <button type="button" class="cms-tab" data-tab="faq"><i class="fas fa-question-circle"></i> FAQ</button>
               <button type="button" class="cms-tab" data-tab="contact"><i class="fas fa-envelope"></i> Contact</button>
             </div>
 
@@ -602,6 +603,49 @@
                   </div>
                 </div>
                 <div class="cms-pane-actions">
+                  <button type="button" class="btn btn-primary-admin btn-sm btn-save-cms-pane">
+                    <i class="fas fa-save" aria-hidden="true"></i> Enregistrer cette rubrique
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab Pane 9: FAQ -->
+            <div class="cms-pane" id="pane-faq">
+              <div class="admin-card">
+                <div class="admin-card-header"><span class="admin-card-title"><i class="fas fa-question-circle"></i> Rubrique FAQ (Questions Fréquentes)</span></div>
+                <div class="form-row">
+                  <div class="form-group-admin">
+                    <label for="contentFaqTag">Tag / Surtitre</label>
+                    <input type="text" id="contentFaqTag" placeholder="Questions Fréquentes">
+                  </div>
+                  <div class="form-group-admin">
+                    <label for="contentFaqTitle">Titre principal</label>
+                    <input type="text" id="contentFaqTitle" placeholder="Tout ce que vous devez savoir">
+                  </div>
+                </div>
+                <div class="form-group-admin">
+                  <label for="contentFaqDesc">Description d'introduction</label>
+                  <textarea id="contentFaqDesc" rows="2" placeholder="Retrouvez les réponses aux questions les plus courantes..."></textarea>
+                </div>
+
+                <div style="display:flex;align-items:center;justify-content:space-between;margin:24px 0 14px;flex-wrap:wrap;gap:12px">
+                  <h4 style="color:var(--gray-300);font-size:0.95rem;margin:0"><i class="fas fa-list"></i> Liste des questions &amp; réponses</h4>
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                    <button type="button" class="btn btn-secondary-admin btn-sm" id="btnAddFaqItem">
+                      <i class="fas fa-plus"></i> Ajouter une question
+                    </button>
+                    <button type="button" class="btn btn-primary-admin btn-sm" id="btnSaveFaqTab">
+                      <i class="fas fa-save"></i> Enregistrer la FAQ
+                    </button>
+                  </div>
+                </div>
+
+                <div id="faqItemsList" style="display:flex;flex-direction:column;gap:14px">
+                  <!-- Injecté dynamiquement par admin.js -->
+                </div>
+
+                <div class="cms-pane-actions" style="margin-top:20px">
                   <button type="button" class="btn btn-primary-admin btn-sm btn-save-cms-pane">
                     <i class="fas fa-save" aria-hidden="true"></i> Enregistrer cette rubrique
                   </button>

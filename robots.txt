@@ -1,0 +1,15 @@
+# robots.txt pour RECUP CULTURE (https://recupculture.fr)
+User-agent: *
+Allow: /
+Allow: /assets/
+Allow: /style.css
+Allow: /script.js
+
+# Interdire l'accès à l'espace d'administration et aux routes techniques
+Disallow: /admin.html
+Disallow: /admin.js
+Disallow: /admin.css
+Disallow: /api/
+
+# Déclaration du sitemap officiel
+Sitemap: https://recupculture.fr/sitemap.xml
