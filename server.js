@@ -50,7 +50,10 @@ const BUNDLED_DATA_DIR = path.join(__dirname, 'data');
 const BUNDLED_CONFIG = path.join(BUNDLED_DATA_DIR, 'config.json');
 const BUNDLED_CREDS = path.join(BUNDLED_DATA_DIR, 'credentials.json');
 
-// ─── Configuration SMTP (Relais OVH) ─────────────────
+// ─── Configuration E-mail (Resend API HTTPS ou Relais SMTP OVH) ─────
+const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
+const RESEND_FROM = process.env.RESEND_FROM || 'RECUP CULTURE <onboarding@resend.dev>';
+
 const SMTP_HOST = process.env.SMTP_HOST || 'ssl0.ovh.net';
 const SMTP_PORT = parseInt(process.env.SMTP_PORT || '465', 10);
 const SMTP_SECURE = process.env.SMTP_SECURE !== 'false' && (SMTP_PORT === 465 || process.env.SMTP_SECURE === 'true');
@@ -58,6 +61,33 @@ const SMTP_USER = process.env.SMTP_USER || 'info@recupculture.fr';
 const SMTP_PASS = process.env.SMTP_PASS || '';
 const CONTACT_TO_EMAIL = process.env.CONTACT_TO_EMAIL || 'info@recupculture.fr';
 const SUPPORT_TO_EMAIL = process.env.SUPPORT_TO_EMAIL || 'support@recupculture.fr';
+
+async function sendResendMail({ to, replyTo, subject, text, html }) {
+  if (!RESEND_API_KEY) return null;
+
+  console.log(`[RESEND] Tentative d'envoi HTTPS via Resend API vers ${to} (from: ${RESEND_FROM})...`);
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${RESEND_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from: RESEND_FROM,
+      to: Array.isArray(to) ? to : [to],
+      reply_to: replyTo,
+      subject: subject,
+      text: text,
+      html: html
+    })
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.message || data.error?.message || `Erreur API Resend (${response.status})`);
+  }
+  return data;
+}
 
 function createMailTransporter() {
   if (!SMTP_PASS) {
@@ -542,15 +572,13 @@ Vous pouvez répondre directement à cet e-mail pour écrire à ${cleanName} (${
 </body>
 </html>`;
 
-    const transporter = createMailTransporter();
     let emailSent = false;
     let mailError = null;
 
-    if (transporter) {
+    // 1. Envoi prioritaire via l'API HTTPS Resend (port 443, non bloqué par Railway)
+    if (RESEND_API_KEY) {
       try {
-        console.log(`[MAIL] Tentative d'envoi SMTP vers ${SMTP_HOST}:${SMTP_PORT} (${SMTP_USER})...`);
-        await transporter.sendMail({
-          from: `"${cleanName} (via RECUP CULTURE)" <${SMTP_USER}>`,
+        const resendRes = await sendResendMail({
           to: recipient,
           replyTo: cleanEmail,
           subject: emailSubject,
@@ -558,14 +586,37 @@ Vous pouvez répondre directement à cet e-mail pour écrire à ${cleanName} (${
           html: htmlContent
         });
         emailSent = true;
-        console.log(`[MAIL] Message envoyé avec succès vers ${recipient} pour "${cleanName}" (${cleanEmail})`);
+        console.log(`[RESEND] E-mail envoyé avec succès (ID: ${resendRes?.id || 'OK'}) vers ${recipient} pour "${cleanName}" (${cleanEmail})`);
       } catch (err) {
         mailError = err.message;
-        console.error(`[MAIL ERROR] Échec lors de la transmission SMTP (${err.code || err.name}: ${err.message}).`);
-        console.warn(`[MAIL INFO] Note : Sur Railway (plans Hobby/Trial), les ports SMTP sortants 465 et 587 sont bloqués par le pare-feu. Le message a bien été persisté dans ${MESSAGES_FILE} et est accessible dans le panneau d'administration.`);
+        console.error(`[RESEND ERROR] Échec lors de la transmission via Resend: ${err.message}`);
       }
-    } else {
-      console.log(`[MAIL MOCK] SMTP_PASS non renseigné, message sauvegardé dans ${MESSAGES_FILE}`);
+    }
+
+    // 2. Si Resend n'est pas configuré, tentative via relais SMTP classique
+    if (!emailSent && !RESEND_API_KEY) {
+      const transporter = createMailTransporter();
+      if (transporter) {
+        try {
+          console.log(`[MAIL] Tentative d'envoi SMTP vers ${SMTP_HOST}:${SMTP_PORT} (${SMTP_USER})...`);
+          await transporter.sendMail({
+            from: `"${cleanName} (via RECUP CULTURE)" <${SMTP_USER}>`,
+            to: recipient,
+            replyTo: cleanEmail,
+            subject: emailSubject,
+            text: textContent,
+            html: htmlContent
+          });
+          emailSent = true;
+          console.log(`[MAIL] Message envoyé avec succès vers ${recipient} pour "${cleanName}" (${cleanEmail})`);
+        } catch (err) {
+          mailError = err.message;
+          console.error(`[MAIL ERROR] Échec lors de la transmission SMTP (${err.code || err.name}: ${err.message}).`);
+          console.warn(`[MAIL INFO] Note : Sur Railway (plans Hobby/Trial), les ports SMTP sortants 465 et 587 sont bloqués par le pare-feu. Le message a bien été persisté dans ${MESSAGES_FILE} et est accessible dans le panneau d'administration.`);
+        }
+      } else {
+        console.log(`[MAIL MOCK] Ni RESEND_API_KEY ni SMTP_PASS renseignés, message sauvegardé dans ${MESSAGES_FILE}`);
+      }
     }
 
     // Le message est 100% sécurisé et sauvegardé dans messages.json
