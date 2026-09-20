@@ -1289,30 +1289,145 @@ p {
   gap: 6px;
 }
 
-/* Customisation popup Leaflet */
+/* Customisation popup Leaflet avec photo */
 .leaflet-popup-content-wrapper {
   background: #0f1826 !important;
   color: #f1f5f9 !important;
   border-radius: var(--radius-md) !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(30, 136, 229, 0.3) !important;
   border: 1px solid var(--border-highlight) !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  line-height: 1.5 !important;
 }
 
 .leaflet-popup-tip {
   background: #0f1826 !important;
 }
 
-.leaflet-popup-content h4 {
+.leaflet-popup-close-button {
+  top: 8px !important;
+  right: 8px !important;
   color: #ffffff !important;
-  font-family: var(--font-heading) !important;
-  font-size: 1.05rem !important;
-  margin-bottom: 4px !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 10 !important;
+  backdrop-filter: blur(4px) !important;
+  transition: background 0.2s ease !important;
 }
 
-.leaflet-popup-content p {
-  color: #cbd5e1 !important;
-  font-size: 0.85rem !important;
-  margin: 4px 0 !important;
+.leaflet-popup-close-button:hover {
+  background: rgba(0, 0, 0, 0.8) !important;
+}
+
+.map-popup-card {
+  width: 100%;
+  overflow: hidden;
+}
+
+.map-popup-image-wrapper {
+  width: 100%;
+  height: 135px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.map-popup-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.map-popup-card:hover .map-popup-img {
+  transform: scale(1.05);
+}
+
+.map-popup-body {
+  padding: 14px 16px 16px;
+}
+
+.map-popup-title {
+  color: var(--text-white) !important;
+  font-family: var(--font-heading) !important;
+  font-size: 1.05rem !important;
+  margin: 0 0 4px 0 !important;
+  line-height: 1.3 !important;
+  font-weight: 700 !important;
+}
+
+.map-popup-address {
+  color: var(--text-secondary);
+  font-size: 0.83rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.map-popup-address i {
+  color: #4e8c1e;
+  font-size: 0.85rem;
+}
+
+.map-popup-desc {
+  color: var(--text-muted) !important;
+  font-size: 0.83rem !important;
+  margin: 6px 0 !important;
+  line-height: 1.45 !important;
+}
+
+.map-popup-hours {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #4caf50;
+  background: rgba(76, 175, 80, 0.12);
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-top: 6px;
+}
+
+.map-popup-hours i {
+  font-size: 0.75rem;
+}
+
+/* Vignette photo dans la carte latérale */
+.point-card-thumb {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid var(--border-subtle);
+  background: rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.point-card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.point-card.hover-highlight {
+  border-color: #4e8c1e !important;
+  transform: translateX(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08), 0 0 20px rgba(119, 184, 65, 0.18) !important;
 }
 
 /* =========================================================
@@ -2636,12 +2751,38 @@ p {
   background: #fbf9f4 !important;
 }
 
-[data-theme="light"] .leaflet-popup-content h4 {
+[data-theme="light"] .leaflet-popup-close-button {
+  background: rgba(255, 255, 255, 0.85) !important;
+  color: #1a251b !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-theme="light"] .leaflet-popup-close-button:hover {
+  background: #ffffff !important;
+  color: #000000 !important;
+}
+
+[data-theme="light"] .map-popup-title {
   color: #1a251b !important;
 }
 
-[data-theme="light"] .leaflet-popup-content p {
+[data-theme="light"] .map-popup-address {
   color: #3d4a3e !important;
+}
+
+[data-theme="light"] .map-popup-desc {
+  color: #667567 !important;
+}
+
+[data-theme="light"] .map-popup-hours {
+  color: #3b7414 !important;
+  background: rgba(119, 184, 65, 0.14) !important;
+}
+
+[data-theme="light"] .point-card.hover-highlight {
+  background: #ffffff !important;
+  border-color: #4e8c1e !important;
+  box-shadow: 0 6px 20px rgba(60, 50, 35, 0.08), 0 0 20px rgba(119, 184, 65, 0.16) !important;
 }
 
 /* Formulaire de contact */

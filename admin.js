@@ -1796,11 +1796,16 @@
     count.textContent = `${pts.length} point(s)`;
 
     if (!pts.length) {
-      tbody.innerHTML = `<tr><td colspan="4" class="table-empty"><i class="fas fa-map-marked-alt" aria-hidden="true"></i>Aucun point.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" class="table-empty"><i class="fas fa-map-marked-alt" aria-hidden="true"></i>Aucun point configuré.</td></tr>`;
       return;
     }
     tbody.innerHTML = pts.map(pt => `
       <tr>
+        <td>
+          <div style="width:52px;height:38px;border-radius:6px;overflow:hidden;background:var(--gray-100);display:flex;align-items:center;justify-content:center;border:1px solid var(--gray-200);flex-shrink:0">
+            ${pt.image ? `<img src="${escapeHtml(pt.image)}" alt="${escapeHtml(pt.name)}" style="width:100%;height:100%;object-fit:cover">` : `<i class="fas fa-image" style="color:var(--gray-400);font-size:0.9rem"></i>`}
+          </div>
+        </td>
         <td><strong>${escapeHtml(pt.name)}</strong></td>
         <td>${escapeHtml(pt.address||'')}</td>
         <td style="font-size:0.8rem;color:var(--gray-500)">${pt.lat?.toFixed?.(4)||''}  /  ${pt.lng?.toFixed?.(4)||''}</td>
@@ -1821,6 +1826,8 @@
   function openPointModal(pt = null, preLat = '', preLng = '') {
     const modal = $('#modalPoint');
     const title = $('#modalPointTitle');
+    const preview = $('#pointPhotoPreview');
+    const removeBtn = $('#btnRemovePointPhoto');
 
     if (pt) {
       title.textContent = 'Modifier le point';
@@ -1831,10 +1838,17 @@
       $('#pointHours').value = pt.hours || '';
       $('#pointLat').value = pt.lat || '';
       $('#pointLng').value = pt.lng || '';
+      const img = pt.image || '';
+      if ($('#pointImage')) $('#pointImage').value = img;
+      updatePhotoPreviewBox(preview, img);
+      if (removeBtn) removeBtn.style.display = img ? 'inline-flex' : 'none';
     } else {
       title.textContent = 'Nouveau point de collecte';
       $('#pointId').value = '';
       $('#pointForm').reset();
+      if ($('#pointImage')) $('#pointImage').value = '';
+      updatePhotoPreviewBox(preview, '');
+      if (removeBtn) removeBtn.style.display = 'none';
       if (preLat) $('#pointLat').value = preLat;
       if (preLng) $('#pointLng').value = preLng;
     }
@@ -1852,6 +1866,43 @@
     $('#modalPointClose').addEventListener('click', closePointModal);
     $('#modalPointCancelBtn').addEventListener('click', closePointModal);
     $('#modalPoint').addEventListener('click', e => { if(e.target===$('#modalPoint')) closePointModal(); });
+
+    // Upload & suppression photo point de collecte
+    const btnUploadPhoto = $('#btnUploadPointPhoto');
+    const inputPhoto = $('#pointPhotoInput');
+    const btnRemovePhoto = $('#btnRemovePointPhoto');
+
+    if (btnUploadPhoto && inputPhoto) {
+      btnUploadPhoto.addEventListener('click', () => inputPhoto.click());
+      inputPhoto.addEventListener('change', async () => {
+        const file = inputPhoto.files[0];
+        if (!file) return;
+        try {
+          btnUploadPhoto.disabled = true;
+          btnUploadPhoto.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Upload…';
+          const url = await uploadImageFile(file);
+          if ($('#pointImage')) $('#pointImage').value = url;
+          updatePhotoPreviewBox($('#pointPhotoPreview'), url);
+          if (btnRemovePhoto) btnRemovePhoto.style.display = 'inline-flex';
+          toast('Photo téléversée avec succès.');
+        } catch (err) {
+          toast('Échec du téléversement de la photo.', true);
+        } finally {
+          btnUploadPhoto.disabled = false;
+          btnUploadPhoto.innerHTML = '<i class="fas fa-upload"></i> Choisir une photo';
+          inputPhoto.value = '';
+        }
+      });
+    }
+
+    if (btnRemovePhoto) {
+      btnRemovePhoto.addEventListener('click', () => {
+        if ($('#pointImage')) $('#pointImage').value = '';
+        updatePhotoPreviewBox($('#pointPhotoPreview'), '');
+        btnRemovePhoto.style.display = 'none';
+        toast('Photo retirée.');
+      });
+    }
 
     // Sync coords → preview sur la carte au fil de la saisie
     ['pointLat','pointLng'].forEach(id => {
@@ -1874,6 +1925,7 @@
       const hours   = $('#pointHours').value.trim();
       const lat     = parseFloat($('#pointLat').value);
       const lng     = parseFloat($('#pointLng').value);
+      const image   = $('#pointImage') ? $('#pointImage').value.trim() : '';
 
       if (!name) { toast('Le nom du lieu est obligatoire.', true); return; }
       if (isNaN(lat) || isNaN(lng)) { toast('Coordonnées GPS invalides.', true); return; }
@@ -1893,7 +1945,7 @@
           const res = await fetch('/api/points', {
             method: 'POST',
             headers: getAuthHeaders(),
-            body: JSON.stringify({ id, name, address, description: desc, hours, lat, lng })
+            body: JSON.stringify({ id, name, address, description: desc, hours, lat, lng, image })
           });
           if (res.ok) {
             const json = await res.json();
@@ -1913,7 +1965,7 @@
       }
 
       if (!token) {
-        const pt = { id: id||Date.now(), name, address, description:desc, hours, lat, lng };
+        const pt = { id: id||Date.now(), name, address, description:desc, hours, lat, lng, image };
         if (id) {
           const idx = (appData.collectPoints||[]).findIndex(p => p.id===id);
           if (idx > -1) appData.collectPoints[idx] = pt;

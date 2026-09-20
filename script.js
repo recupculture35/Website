@@ -425,16 +425,60 @@
     points.forEach((pt, i) => {
       if (!pt.lat || !pt.lng) return;
 
+      const popupHtml = `
+        <div class="map-popup-card">
+          ${pt.image ? `
+            <div class="map-popup-image-wrapper">
+              <img src="${escapeHtml(pt.image)}" alt="${escapeHtml(pt.name)}" class="map-popup-img" loading="lazy">
+            </div>
+          ` : ''}
+          <div class="map-popup-body">
+            <h4 class="map-popup-title">${escapeHtml(pt.name)}</h4>
+            <div class="map-popup-address"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> <span>${escapeHtml(pt.address || '')}</span></div>
+            ${pt.description ? `<p class="map-popup-desc">${escapeHtml(pt.description)}</p>` : ''}
+            ${pt.hours ? `<div class="map-popup-hours"><i class="fas fa-clock" aria-hidden="true"></i> <span>${escapeHtml(pt.hours)}</span></div>` : ''}
+          </div>
+        </div>
+      `;
+
       const marker = L.marker([pt.lat, pt.lng], { icon: getCustomIcon() })
         .addTo(map)
-        .bindPopup(`
-          <div style="font-family:'Inter',sans-serif;min-width:180px">
-            <strong style="font-family:'Outfit',sans-serif;font-size:1rem">${escapeHtml(pt.name)}</strong><br>
-            <span style="color:#718096;font-size:0.85rem">${escapeHtml(pt.address)}</span>
-            ${pt.description ? `<p style="margin:8px 0 4px;font-size:0.85rem">${escapeHtml(pt.description)}</p>` : ''}
-            ${pt.hours ? `<span style="color:#2e7d32;font-size:0.82rem"><i class="fas fa-clock"></i> ${escapeHtml(pt.hours)}</span>` : ''}
-          </div>
-        `);
+        .bindPopup(popupHtml, {
+          maxWidth: 290,
+          minWidth: 230,
+          className: 'custom-leaflet-popup'
+        });
+
+      // Ouverture au survol de la souris sur le marqueur
+      marker.on('mouseover', function () {
+        this.openPopup();
+        if (listEl) {
+          const cards = listEl.querySelectorAll('.point-card');
+          cards.forEach((c, idx) => {
+            if (idx === i) c.classList.add('hover-highlight');
+            else c.classList.remove('hover-highlight');
+          });
+        }
+      });
+
+      marker.on('mouseout', function () {
+        if (listEl) {
+          listEl.querySelectorAll('.point-card').forEach(c => c.classList.remove('hover-highlight'));
+        }
+      });
+
+      // Synchronisation au clic sur le marqueur
+      marker.on('click', function () {
+        this.openPopup();
+        if (listEl) {
+          const cards = listEl.querySelectorAll('.point-card');
+          cards.forEach(c => c.classList.remove('active'));
+          if (cards[i]) {
+            cards[i].classList.add('active');
+            cards[i].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }
+      });
 
       markers.push(marker);
       bounds.push([pt.lat, pt.lng]);
@@ -448,10 +492,16 @@
         card.setAttribute('aria-label', `Point de collecte : ${pt.name}`);
         card.innerHTML = `
           <div class="point-card-header">
-            <div class="point-card-icon" aria-hidden="true"><i class="fas fa-map-marker-alt"></i></div>
+            ${pt.image ? `
+              <div class="point-card-thumb" aria-hidden="true">
+                <img src="${escapeHtml(pt.image)}" alt="${escapeHtml(pt.name)}" loading="lazy">
+              </div>
+            ` : `
+              <div class="point-card-icon" aria-hidden="true"><i class="fas fa-map-marker-alt"></i></div>
+            `}
             <div>
               <h4>${escapeHtml(pt.name)}</h4>
-              <span class="point-address">${escapeHtml(pt.address)}</span>
+              <span class="point-address">${escapeHtml(pt.address || '')}</span>
             </div>
           </div>
           ${pt.description ? `<p class="point-desc">${escapeHtml(pt.description)}</p>` : ''}
@@ -461,7 +511,7 @@
         const focusPoint = () => {
           map.setView([pt.lat, pt.lng], 15);
           marker.openPopup();
-          $$('.point-card').forEach(c => c.classList.remove('active'));
+          listEl.querySelectorAll('.point-card').forEach(c => c.classList.remove('active'));
           card.classList.add('active');
         };
 

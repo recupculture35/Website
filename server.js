@@ -894,7 +894,7 @@ app.delete('/api/news/:id', requireAuth, (req, res) => {
 
 // ─── API ADMIN : Points de collecte ──────────────────
 app.post('/api/points', requireAuth, (req, res) => {
-  const { id, name, address, description, hours, lat, lng } = req.body || {};
+  const { id, name, address, description, hours, lat, lng, image } = req.body || {};
   if (!name || isNaN(parseFloat(lat)) || isNaN(parseFloat(lng))) {
     return res.status(400).json({ error: 'Nom et coordonnées GPS valides requis.' });
   }
@@ -910,7 +910,8 @@ app.post('/api/points', requireAuth, (req, res) => {
     description: (description || '').trim(),
     hours: (hours || '').trim(),
     lat: parseFloat(lat),
-    lng: parseFloat(lng)
+    lng: parseFloat(lng),
+    image: (image || '').trim()
   };
 
   if (existingId) {
