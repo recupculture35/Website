@@ -52,20 +52,50 @@ const BUNDLED_CREDS = path.join(BUNDLED_DATA_DIR, 'credentials.json');
 
 // ─── Configuration E-mail (Resend API HTTPS ou Relais SMTP OVH) ─────
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
-const RESEND_FROM = process.env.RESEND_FROM || 'RECUP CULTURE <onboarding@resend.dev>';
+const RESEND_FROM = process.env.RESEND_FROM || 'onboarding@resend.dev';
+
+let ResendClass = null;
+try {
+  ResendClass = require('resend').Resend;
+} catch (_) {}
 
 const SMTP_HOST = process.env.SMTP_HOST || 'ssl0.ovh.net';
 const SMTP_PORT = parseInt(process.env.SMTP_PORT || '465', 10);
 const SMTP_SECURE = process.env.SMTP_SECURE !== 'false' && (SMTP_PORT === 465 || process.env.SMTP_SECURE === 'true');
 const SMTP_USER = process.env.SMTP_USER || 'info@recupculture.fr';
 const SMTP_PASS = process.env.SMTP_PASS || '';
-const CONTACT_TO_EMAIL = process.env.CONTACT_TO_EMAIL || 'info@recupculture.fr';
-const SUPPORT_TO_EMAIL = process.env.SUPPORT_TO_EMAIL || 'support@recupculture.fr';
+
+// Si Resend est en mode onboarding, Resend autorise uniquement l'envoi vers le compte créateur (recupculture35@gmail.com)
+const DEFAULT_CONTACT_EMAIL = (RESEND_API_KEY && RESEND_FROM.includes('onboarding@resend.dev'))
+  ? 'recupculture35@gmail.com'
+  : 'info@recupculture.fr';
+
+const CONTACT_TO_EMAIL = process.env.CONTACT_TO_EMAIL || DEFAULT_CONTACT_EMAIL;
+const SUPPORT_TO_EMAIL = process.env.SUPPORT_TO_EMAIL || (RESEND_API_KEY && RESEND_FROM.includes('onboarding@resend.dev') ? 'recupculture35@gmail.com' : 'support@recupculture.fr');
 
 async function sendResendMail({ to, replyTo, subject, text, html }) {
   if (!RESEND_API_KEY) return null;
 
-  console.log(`[RESEND] Tentative d'envoi HTTPS via Resend API vers ${to} (from: ${RESEND_FROM})...`);
+  console.log(`[RESEND] Tentative d'envoi HTTPS via Resend vers ${to} (from: ${RESEND_FROM})...`);
+
+  // Utilisation du SDK officiel Resend
+  if (ResendClass) {
+    const resend = new ResendClass(RESEND_API_KEY);
+    const { data, error } = await resend.emails.send({
+      from: RESEND_FROM,
+      to: Array.isArray(to) ? to : [to],
+      reply_to: replyTo,
+      subject: subject,
+      text: text,
+      html: html
+    });
+    if (error) {
+      throw new Error(error.message || JSON.stringify(error));
+    }
+    return data;
+  }
+
+  // Fallback direct REST API
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
