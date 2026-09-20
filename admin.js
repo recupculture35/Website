@@ -1090,33 +1090,45 @@
       // Actions sur la carte FAQ
       const btnUp = $('.btn-move-up-faq', card);
       if (btnUp && index > 0) {
-        btnUp.addEventListener('click', () => {
+        btnUp.addEventListener('click', async () => {
           syncFaqItemsFromDom();
           const tmp = currentFaqItems[index];
           currentFaqItems[index] = currentFaqItems[index - 1];
           currentFaqItems[index - 1] = tmp;
           renderFaqItemsAdmin();
+          const res = await saveContentForm(false);
+          if (res && res.serverOk) {
+            toast('Ordre des questions mis à jour et enregistré sur le serveur.');
+          }
         });
       }
 
       const btnDown = $('.btn-move-down-faq', card);
       if (btnDown && index < currentFaqItems.length - 1) {
-        btnDown.addEventListener('click', () => {
+        btnDown.addEventListener('click', async () => {
           syncFaqItemsFromDom();
           const tmp = currentFaqItems[index];
           currentFaqItems[index] = currentFaqItems[index + 1];
           currentFaqItems[index + 1] = tmp;
           renderFaqItemsAdmin();
+          const res = await saveContentForm(false);
+          if (res && res.serverOk) {
+            toast('Ordre des questions mis à jour et enregistré sur le serveur.');
+          }
         });
       }
 
       const btnDel = $('.btn-delete-faq', card);
       if (btnDel) {
-        btnDel.addEventListener('click', () => {
+        btnDel.addEventListener('click', async () => {
           if (confirm('Supprimer cette question de la FAQ ?')) {
             syncFaqItemsFromDom();
             currentFaqItems.splice(index, 1);
             renderFaqItemsAdmin();
+            const res = await saveContentForm(false);
+            if (res && res.serverOk) {
+              toast('Question supprimée et enregistrée sur le serveur !');
+            }
           }
         });
       }
@@ -1232,7 +1244,7 @@
     if ($('#contentFaqTag')) $('#contentFaqTag').value = faq?.tag || def.faq?.tag || 'Questions Fréquentes';
     if ($('#contentFaqTitle')) $('#contentFaqTitle').value = faq?.title || def.faq?.title || 'Tout ce que vous devez savoir';
     if ($('#contentFaqDesc')) $('#contentFaqDesc').value = faq?.description || def.faq?.description || '';
-    if (Array.isArray(faq?.items) && faq.items.length) {
+    if (faq && Array.isArray(faq.items)) {
       currentFaqItems = JSON.parse(JSON.stringify(faq.items));
     } else if (def.faq && Array.isArray(def.faq.items)) {
       currentFaqItems = JSON.parse(JSON.stringify(def.faq.items));

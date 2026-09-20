@@ -850,22 +850,27 @@
       if (c.faq.description && $('#faqDesc')) $('#faqDesc').textContent = c.faq.description;
 
       const accordion = $('#faqAccordion');
+      const faqSec = $('#faq');
       if (accordion && Array.isArray(c.faq.items)) {
-        accordion.innerHTML = c.faq.items.map((item, idx) => `
-          <div class="faq-item reveal visible active" style="--delay: ${idx * 0.08}s">
-            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-ans-${idx}">
-              <span>${escapeHtml(item.question)}</span>
-              <span class="faq-icon" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
-            </button>
-            <div class="faq-answer" id="faq-ans-${idx}" role="region">
-              <p>${escapeHtml(item.answer)}</p>
+        if (c.faq.items.length === 0) {
+          if (faqSec) faqSec.style.display = 'none';
+        } else {
+          if (faqSec) faqSec.style.display = '';
+          accordion.innerHTML = c.faq.items.map((item, idx) => `
+            <div class="faq-item reveal visible active" style="--delay: ${idx * 0.08}s">
+              <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-ans-${idx}">
+                <span>${escapeHtml(item.question)}</span>
+                <span class="faq-icon" aria-hidden="true"><i class="fas fa-chevron-down"></i></span>
+              </button>
+              <div class="faq-answer" id="faq-ans-${idx}" role="region">
+                <p>${escapeHtml(item.answer)}</p>
+              </div>
             </div>
-          </div>
-        `).join('');
+          `).join('');
 
-        // Écouteurs d'ouverture / fermeture d'accordéon
-        const faqItems = accordion.querySelectorAll('.faq-item');
-        faqItems.forEach(item => {
+          // Écouteurs d'ouverture / fermeture d'accordéon
+          const faqItems = accordion.querySelectorAll('.faq-item');
+          faqItems.forEach(item => {
           const btn = item.querySelector('.faq-question');
           if (!btn) return;
           btn.addEventListener('click', () => {
