@@ -224,6 +224,7 @@
           <p>Revente solidaire, recyclage papier ou don humanitaire — chaque objet trouve sa meilleure destination.</p>
         </div>
       </div>
+      <div id="missionGallery" class="section-photo-gallery"></div>
     </div>
   </section>
 
@@ -257,6 +258,7 @@
           <p>Toutes consoles et générations — vos aventures virtuelles attendent de nouveaux joueurs.</p>
         </div>
       </div>
+      <div id="collecteGallery" class="section-photo-gallery"></div>
     </div>
   </section>
 
@@ -324,6 +326,7 @@
           </div>
         </div>
       </div>
+      <div id="impactGallery" class="section-photo-gallery"></div>
     </div>
   </section>
 
@@ -384,6 +387,7 @@
           </div>
         </div>
       </div>
+      <div id="boutiqueGallery" class="section-photo-gallery"></div>
     </div>
   </section>
 
@@ -449,6 +453,7 @@
           <p>Ancrée dans le bassin de Saint-Malo, notre association soutient l'économie locale et crée des liens entre différents acteurs du territoire.</p>
         </div>
       </div>
+      <div id="esatGallery" class="section-photo-gallery"></div>
 
       <!-- Callout pour élargir les partenariats -->
       <div class="esat-join-banner reveal" style="--delay: 0.2s">
@@ -649,6 +654,28 @@
       </div>
     </div>
   </footer>
+
+  <!-- Lightbox Modal pour photos plein écran -->
+  <div class="site-lightbox-modal" id="siteLightboxModal" aria-hidden="true" role="dialog" aria-label="Agrandissement photo">
+    <button type="button" class="site-lightbox-close" id="siteLightboxClose" aria-label="Fermer la photo agrandie">
+      <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+    <div class="site-lightbox-content">
+      <img id="siteLightboxImg" src="" alt="Agrandissement">
+    </div>
+  </div>
+
+  <!-- Modale Lecture Article Actualités avec Galerie -->
+  <div class="site-modal-overlay" id="articleModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="articleModalTitle">
+    <div class="site-modal-card">
+      <button type="button" class="site-modal-close" id="articleModalClose" aria-label="Fermer l'article">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+      <div class="site-modal-body" id="articleModalBody">
+        <!-- Rendu dynamique par script.js -->
+      </div>
+    </div>
+  </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="script.js"></script>

@@ -552,6 +552,150 @@
     return tmp.textContent || tmp.innerText || '';
   }
 
+  // ─── GESTION DES GALERIES PHOTOS DE SECTIONS (1 À 4 PHOTOS) ───
+  function renderSectionGallery(containerId, photos) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    const list = Array.isArray(photos)
+      ? photos.filter(p => typeof p === 'string' && p.trim()).slice(0, 4)
+      : (typeof photos === 'string' && photos.trim() ? [photos.trim()] : []);
+
+    if (list.length === 0) {
+      container.innerHTML = '';
+      container.style.display = 'none';
+      return;
+    }
+
+    container.style.display = 'block';
+    container.innerHTML = `
+      <div class="gallery-grid reveal visible active" data-count="${list.length}">
+        ${list.map((src, idx) => `
+          <div class="gallery-item item-${idx + 1}" data-src="${escapeHtml(src)}" role="button" tabindex="0" aria-label="Agrandir la photo ${idx + 1}">
+            <img src="${escapeHtml(src)}" alt="Illustration photo ${idx + 1}" loading="lazy">
+            <div class="gallery-item-overlay" aria-hidden="true">
+              <i class="fas fa-search-plus"></i>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    container.querySelectorAll('.gallery-item').forEach(item => {
+      const open = () => openLightbox(item.dataset.src);
+      item.addEventListener('click', open);
+      item.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          open();
+        }
+      });
+    });
+  }
+
+  // ─── LIGHTBOX (AGRANDISSEMENT PHOTO EN PLEIN ÉCRAN) ───
+  function openLightbox(src) {
+    if (!src) return;
+    const modal = document.getElementById('siteLightboxModal');
+    const img = document.getElementById('siteLightboxImg');
+    if (!modal || !img) return;
+    img.src = src;
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    const modal = document.getElementById('siteLightboxModal');
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  // ─── MODALE LECTURE ARTICLE ACTUALITÉS ─────────────────
+  function openArticleModal(item) {
+    if (!item) return;
+    const modal = document.getElementById('articleModal');
+    const body = document.getElementById('articleModalBody');
+    if (!modal || !body) return;
+
+    const cat = CATEGORY_LABELS[item.category] || { label: item.category || 'Actualité', cls: 'actualite' };
+    const photos = Array.isArray(item.photos) && item.photos.length > 0
+      ? item.photos.filter(p => typeof p === 'string' && p.trim()).slice(0, 4)
+      : (item.image ? [item.image] : []);
+
+    let galleryHtml = '';
+    if (photos.length > 0) {
+      galleryHtml = `
+        <div class="article-modal-gallery">
+          <div class="gallery-grid" data-count="${photos.length}">
+            ${photos.map((src, idx) => `
+              <div class="gallery-item item-${idx + 1}" data-src="${escapeHtml(src)}" role="button" tabindex="0" aria-label="Agrandir la photo ${idx + 1}">
+                <img src="${escapeHtml(src)}" alt="${escapeHtml(item.title)} - ${idx + 1}" loading="lazy">
+                <div class="gallery-item-overlay" aria-hidden="true"><i class="fas fa-search-plus"></i></div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    body.innerHTML = `
+      <div class="article-modal-header">
+        <div class="article-modal-meta">
+          <span class="news-badge ${cat.cls}">${escapeHtml(cat.label)}</span>
+          <span class="news-date">${formatDate(item.date)}</span>
+        </div>
+        <h2 class="article-modal-title" id="articleModalTitle">${escapeHtml(item.title)}</h2>
+      </div>
+      ${galleryHtml}
+      <div class="article-modal-content ql-editor-content">
+        ${item.content || ''}
+      </div>
+    `;
+
+    body.querySelectorAll('.gallery-item').forEach(el => {
+      el.addEventListener('click', () => openLightbox(el.dataset.src));
+    });
+
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeArticleModal() {
+    const modal = document.getElementById('articleModal');
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  function initModals() {
+    const lbClose = document.getElementById('siteLightboxClose');
+    const lbModal = document.getElementById('siteLightboxModal');
+    if (lbClose) lbClose.addEventListener('click', closeLightbox);
+    if (lbModal) lbModal.addEventListener('click', e => {
+      if (e.target === lbModal || e.target.classList.contains('site-lightbox-content')) closeLightbox();
+    });
+
+    const artClose = document.getElementById('articleModalClose');
+    const artModal = document.getElementById('articleModal');
+    if (artClose) artClose.addEventListener('click', closeArticleModal);
+    if (artModal) artModal.addEventListener('click', e => {
+      if (e.target === artModal) closeArticleModal();
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        closeLightbox();
+        closeArticleModal();
+      }
+    });
+  }
+
+  // ─── AFFICHAGE DES ACTUALITÉS ─────────────────────────
   function renderNews() {
     const grid  = $('#newsGrid');
     const empty = $('#newsEmpty');
@@ -573,12 +717,34 @@
       const cat  = CATEGORY_LABELS[item.category] || { label: item.category, cls: 'actualite' };
       const card = document.createElement('article');
       card.className = 'news-card';
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('role', 'button');
+      card.setAttribute('aria-label', `Lire l'article : ${item.title}`);
+
       const excerpt = stripHtml(item.content || '').substring(0, 120) + (stripHtml(item.content || '').length > 120 ? '…' : '');
-      const mediaHtml = item.image ? `
-        <div class="news-card-media">
-          <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}">
-        </div>
-      ` : '';
+      const photos = Array.isArray(item.photos) && item.photos.length > 0
+        ? item.photos.filter(p => typeof p === 'string' && p.trim()).slice(0, 4)
+        : (item.image ? [item.image] : []);
+
+      let mediaHtml = '';
+      if (photos.length === 1) {
+        mediaHtml = `
+          <div class="news-card-media">
+            <img src="${escapeHtml(photos[0])}" alt="${escapeHtml(item.title)}">
+          </div>
+        `;
+      } else if (photos.length > 1) {
+        mediaHtml = `
+          <div class="news-media-grid" data-count="${photos.length}">
+            ${photos.map((src, i) => `
+              <div class="news-media-thumb">
+                <img src="${escapeHtml(src)}" alt="${escapeHtml(item.title)} - ${i + 1}">
+              </div>
+            `).join('')}
+            <span class="news-photos-badge"><i class="fas fa-camera"></i> ${photos.length} photos</span>
+          </div>
+        `;
+      }
 
       card.innerHTML = `
         ${mediaHtml}
@@ -591,6 +757,15 @@
           <p class="news-excerpt">${escapeHtml(excerpt)}</p>
         </div>
       `;
+
+      card.addEventListener('click', () => openArticleModal(item));
+      card.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openArticleModal(item);
+        }
+      });
+
       grid.insertBefore(card, empty);
     });
   }
@@ -741,6 +916,7 @@
           `).join('');
         }
       }
+      renderSectionGallery('missionGallery', c.mission.photos);
     }
 
     // Collecte
@@ -761,6 +937,7 @@
           `).join('');
         }
       }
+      renderSectionGallery('collecteGallery', c.collecte.photos);
     }
 
     // Impact
@@ -804,6 +981,7 @@
           initImpactCounters();
         }
       }
+      renderSectionGallery('impactGallery', c.impact.photos);
     }
 
     // Boutique
@@ -815,12 +993,17 @@
       if (c.boutique.hours && $('#boutiqueHours')) $('#boutiqueHours').textContent = c.boutique.hours;
       if (c.boutique.prices && $('#boutiquePrices')) $('#boutiquePrices').textContent = c.boutique.prices;
 
+      const bPhotos = (Array.isArray(c.boutique.photos) && c.boutique.photos.length) 
+        ? c.boutique.photos 
+        : (c.boutique.photo ? [c.boutique.photo] : []);
+      const primaryPhoto = bPhotos.length > 0 ? bPhotos[0] : (c.boutique.photo || '');
+
       const visualContainer = $('#boutiqueVisual');
       if (visualContainer) {
-        if (c.boutique.photo) {
+        if (primaryPhoto) {
           visualContainer.innerHTML = `
             <div class="boutique-photo-wrapper">
-              <img src="${escapeHtml(c.boutique.photo)}" alt="${escapeHtml(c.boutique.title || 'La Halle aux Artistes')}">
+              <img src="${escapeHtml(primaryPhoto)}" alt="${escapeHtml(c.boutique.title || 'La Halle aux Artistes')}">
             </div>
           `;
         } else {
@@ -833,6 +1016,12 @@
           `;
         }
       }
+
+      if (bPhotos.length > 1) {
+        renderSectionGallery('boutiqueGallery', bPhotos);
+      } else {
+        renderSectionGallery('boutiqueGallery', []);
+      }
     }
 
     // ESAT
@@ -843,12 +1032,17 @@
       if (c.esat.partnerName && $('#esatPartnerName')) $('#esatPartnerName').textContent = c.esat.partnerName;
       if (c.esat.partnerDesc && $('#esatPartnerDesc')) $('#esatPartnerDesc').textContent = c.esat.partnerDesc;
 
+      const esatPhotos = (Array.isArray(c.esat.photos) && c.esat.photos.length)
+        ? c.esat.photos
+        : (c.esat.photo ? [c.esat.photo] : []);
+      const primaryEsatPhoto = esatPhotos.length > 0 ? esatPhotos[0] : (c.esat.photo || '');
+
       const photoContainer = $('#esatPhotoContainer');
       if (photoContainer) {
-        if (c.esat.photo) {
+        if (primaryEsatPhoto) {
           photoContainer.innerHTML = `
             <div class="esat-photo-frame">
-              <img src="${escapeHtml(c.esat.photo)}" alt="${escapeHtml(c.esat.partnerName || 'Atelier de tri solidaire ESAT')}">
+              <img src="${escapeHtml(primaryEsatPhoto)}" alt="${escapeHtml(c.esat.partnerName || 'Atelier de tri solidaire ESAT')}">
             </div>
           `;
         } else {
@@ -875,6 +1069,12 @@
             </div>
           `).join('');
         }
+      }
+
+      if (esatPhotos.length > 1) {
+        renderSectionGallery('esatGallery', esatPhotos);
+      } else {
+        renderSectionGallery('esatGallery', []);
       }
     }
 
@@ -1092,6 +1292,7 @@
     initImpactCounters();
     initMap();
     renderNews();
+    initModals();
     initContactForm();
     listenForDataUpdates();
   }

@@ -847,7 +847,7 @@ app.post('/api/config', requireAuth, (req, res) => {
 
 // ─── API ADMIN : Actualités ──────────────────────────
 app.post('/api/news', requireAuth, (req, res) => {
-  const { id, title, category, date, content, image } = req.body || {};
+  const { id, title, category, date, content, image, photos } = req.body || {};
   if (!title || !date) {
     return res.status(400).json({ error: 'Titre et date requis.' });
   }
@@ -856,13 +856,19 @@ app.post('/api/news', requireAuth, (req, res) => {
   if (!Array.isArray(config.news)) config.news = [];
 
   const existingId = parseInt(id) || null;
+  const photosList = Array.isArray(photos)
+    ? photos.filter(p => typeof p === 'string' && p.trim()).slice(0, 4)
+    : [];
+  const primaryImage = photosList.length > 0 ? photosList[0] : (image || null);
+
   const item = {
     id: existingId || Date.now(),
     title: title.trim(),
     category: category || 'actualite',
     date,
     content: content || '',
-    image: image || null
+    image: primaryImage,
+    photos: photosList.length > 0 ? photosList : (primaryImage ? [primaryImage] : [])
   };
 
   if (existingId) {

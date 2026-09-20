@@ -621,10 +621,10 @@
       $('#newsCategory').value = item.category || 'actualite';
       $('#newsDate').value = item.date || '';
       quill.root.innerHTML = item.content || '';
-      const img = item.image || '';
-      if ($('#newsPhoto')) $('#newsPhoto').value = img;
-      updatePhotoPreviewBox($('#newsPhotoPreview'), img);
-      if ($('#btnRemoveNewsPhoto')) $('#btnRemoveNewsPhoto').style.display = img ? 'inline-flex' : 'none';
+      const itemPhotos = Array.isArray(item.photos) && item.photos.length > 0
+        ? item.photos
+        : (item.image ? [item.image] : []);
+      setMultiPhotos('news', itemPhotos);
     } else {
       title.textContent = 'Nouvel article';
       $('#newsId').value = '';
@@ -632,9 +632,7 @@
       quill.root.innerHTML = '';
       // Date par défaut = aujourd'hui
       $('#newsDate').value = new Date().toISOString().split('T')[0];
-      if ($('#newsPhoto')) $('#newsPhoto').value = '';
-      updatePhotoPreviewBox($('#newsPhotoPreview'), '');
-      if ($('#btnRemoveNewsPhoto')) $('#btnRemoveNewsPhoto').style.display = 'none';
+      setMultiPhotos('news', []);
     }
     modal.classList.add('open');
     $('#newsTitle').focus();
@@ -707,6 +705,112 @@
     } else {
       previewEl.innerHTML = `<i class="fas fa-image" style="font-size:1.6rem;margin-bottom:6px"></i><span>Aucune photo</span>`;
     }
+  }
+
+  // ─── GESTION MULTI-PHOTOS (JUSQU'À 4 PHOTOS PAR SECTION & ACTUALITÉS) ───
+  const multiPhotoState = {
+    mission: [],
+    collecte: [],
+    impact: [],
+    boutique: [],
+    esat: [],
+    news: []
+  };
+
+  function initMultiPhotoGroup(sectionKey) {
+    const group = document.querySelector(`.multi-photo-group[data-section="${sectionKey}"]`);
+    if (!group) return;
+    const grid = group.querySelector('.multi-photo-grid');
+    const countEl = group.querySelector('.multi-photo-counter .count');
+    const btnAdd = group.querySelector('.btn-add-multi-photo');
+    const fileInput = group.querySelector('.multi-photo-file-input');
+
+    function renderGrid() {
+      const list = multiPhotoState[sectionKey] || [];
+      if (countEl) countEl.textContent = list.length;
+      if (btnAdd) {
+        btnAdd.style.display = list.length >= 4 ? 'none' : 'inline-flex';
+      }
+
+      if (list.length === 0) {
+        grid.innerHTML = '<div class="multi-photo-empty-msg"><i class="fas fa-images"></i> Aucune photo pour le moment (optionnel)</div>';
+        return;
+      }
+
+      grid.innerHTML = list.map((url, idx) => `
+        <div class="multi-photo-item" data-index="${idx}">
+          <img src="${escapeHtml(url)}" alt="Photo ${idx + 1}">
+          <span class="multi-photo-badge">${idx + 1}</span>
+          <button type="button" class="btn-remove-photo" data-index="${idx}" title="Supprimer cette photo" aria-label="Supprimer la photo ${idx + 1}">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      `).join('');
+
+      grid.querySelectorAll('.btn-remove-photo').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const delIdx = parseInt(btn.dataset.index, 10);
+          multiPhotoState[sectionKey].splice(delIdx, 1);
+          renderGrid();
+        });
+      });
+    }
+
+    if (!group.dataset.initialized) {
+      group.dataset.initialized = 'true';
+      if (btnAdd && fileInput) {
+        btnAdd.addEventListener('click', () => {
+          const list = multiPhotoState[sectionKey] || [];
+          if (list.length >= 4) {
+            toast('Maximum 4 photos autorisées.', true);
+            return;
+          }
+          fileInput.click();
+        });
+
+        fileInput.addEventListener('change', async () => {
+          const file = fileInput.files[0];
+          if (!file) return;
+          try {
+            btnAdd.disabled = true;
+            btnAdd.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Upload…';
+            const url = await uploadImageFile(file);
+            if (url) {
+              if (!multiPhotoState[sectionKey]) multiPhotoState[sectionKey] = [];
+              if (multiPhotoState[sectionKey].length < 4) {
+                multiPhotoState[sectionKey].push(url);
+                renderGrid();
+                toast(`Photo ajoutée (${multiPhotoState[sectionKey].length}/4). Pensez à enregistrer.`);
+              }
+            }
+          } catch (err) {
+            toast('Échec du téléversement de la photo.', true);
+          } finally {
+            btnAdd.disabled = false;
+            btnAdd.innerHTML = '<i class="fas fa-plus"></i> Ajouter une photo';
+            fileInput.value = '';
+          }
+        });
+      }
+    }
+
+    renderGrid();
+  }
+
+  function setMultiPhotos(sectionKey, photos) {
+    let list = [];
+    if (Array.isArray(photos)) {
+      list = photos.filter(p => typeof p === 'string' && p.trim()).slice(0, 4);
+    } else if (typeof photos === 'string' && photos.trim()) {
+      list = [photos.trim()];
+    }
+    multiPhotoState[sectionKey] = list;
+    initMultiPhotoGroup(sectionKey);
+  }
+
+  function getMultiPhotos(sectionKey) {
+    return (multiPhotoState[sectionKey] || []).slice(0, 4);
   }
 
   // Équipe dynamique state
@@ -1166,6 +1270,7 @@
     if ($('#contentMissionStep2Desc')) $('#contentMissionStep2Desc').value = steps[1]?.desc || def.mission.steps[1].desc;
     if ($('#contentMissionStep3Title')) $('#contentMissionStep3Title').value = steps[2]?.title || def.mission.steps[2].title;
     if ($('#contentMissionStep3Desc')) $('#contentMissionStep3Desc').value = steps[2]?.desc || def.mission.steps[2].desc;
+    setMultiPhotos('mission', mission.photos || []);
 
     // Collecte
     const col = c.collecte || def.collecte;
@@ -1181,6 +1286,7 @@
     if ($('#contentCollecteItem3Desc')) $('#contentCollecteItem3Desc').value = cItems[2]?.desc || def.collecte.items[2].desc;
     if ($('#contentCollecteItem4Title')) $('#contentCollecteItem4Title').value = cItems[3]?.title || def.collecte.items[3].title;
     if ($('#contentCollecteItem4Desc')) $('#contentCollecteItem4Desc').value = cItems[3]?.desc || def.collecte.items[3].desc;
+    setMultiPhotos('collecte', col.photos || []);
 
     // Impact
     const impact = c.impact || def.impact;
@@ -1193,6 +1299,7 @@
       currentImpactItems = JSON.parse(JSON.stringify(def.impact.items));
     }
     renderImpactItemsAdmin();
+    setMultiPhotos('impact', impact.photos || []);
 
     // Boutique
     const b = c.boutique || def.boutique;
@@ -1202,10 +1309,8 @@
     if ($('#contentBoutiqueAddress')) $('#contentBoutiqueAddress').value = b.address || def.boutique.address;
     if ($('#contentBoutiqueHours')) $('#contentBoutiqueHours').value = b.hours || def.boutique.hours;
     if ($('#contentBoutiquePrices')) $('#contentBoutiquePrices').value = b.prices || def.boutique.prices;
-    const bPhoto = b.photo || '';
-    if ($('#contentBoutiquePhoto')) $('#contentBoutiquePhoto').value = bPhoto;
-    updatePhotoPreviewBox($('#boutiquePhotoPreview'), bPhoto);
-    if ($('#btnRemoveBoutiquePhoto')) $('#btnRemoveBoutiquePhoto').style.display = bPhoto ? 'inline-flex' : 'none';
+    const bPhotos = (Array.isArray(b.photos) && b.photos.length) ? b.photos : (b.photo ? [b.photo] : []);
+    setMultiPhotos('boutique', bPhotos);
 
     // ESAT
     const esat = c.esat || def.esat;
@@ -1214,10 +1319,8 @@
     if ($('#contentEsatDesc')) $('#contentEsatDesc').value = esat.description || def.esat.description;
     if ($('#contentEsatPartnerName')) $('#contentEsatPartnerName').value = esat.partnerName || def.esat.partnerName;
     if ($('#contentEsatPartnerDesc')) $('#contentEsatPartnerDesc').value = esat.partnerDesc || def.esat.partnerDesc;
-    const esatPhoto = esat.photo || '';
-    if ($('#contentEsatPhoto')) $('#contentEsatPhoto').value = esatPhoto;
-    updatePhotoPreviewBox($('#esatPhotoPreview'), esatPhoto);
-    if ($('#btnRemoveEsatPhoto')) $('#btnRemoveEsatPhoto').style.display = esatPhoto ? 'inline-flex' : 'none';
+    const esatPhotos = (Array.isArray(esat.photos) && esat.photos.length) ? esat.photos : (esat.photo ? [esat.photo] : []);
+    setMultiPhotos('esat', esatPhotos);
 
     const esatItems = (esat.items && esat.items.length) ? esat.items : def.esat.items;
     if ($('#contentEsatItem1Title')) $('#contentEsatItem1Title').value = esatItems[0]?.title || def.esat.items[0].title;
@@ -1284,6 +1387,7 @@
         tag: $('#contentMissionTag').value.trim(),
         title: $('#contentMissionTitle').value.trim(),
         description: $('#contentMissionDesc').value.trim(),
+        photos: getMultiPhotos('mission'),
         steps: [
           { title: $('#contentMissionStep1Title').value.trim(), desc: $('#contentMissionStep1Desc').value.trim() },
           { title: $('#contentMissionStep2Title').value.trim(), desc: $('#contentMissionStep2Desc').value.trim() },
@@ -1294,6 +1398,7 @@
         tag: $('#contentCollecteTag').value.trim(),
         title: $('#contentCollecteTitle').value.trim(),
         description: $('#contentCollecteDesc').value.trim(),
+        photos: getMultiPhotos('collecte'),
         items: [
           { title: $('#contentCollecteItem1Title').value.trim(), desc: $('#contentCollecteItem1Desc').value.trim() },
           { title: $('#contentCollecteItem2Title').value.trim(), desc: $('#contentCollecteItem2Desc').value.trim() },
@@ -1305,6 +1410,7 @@
         tag: $('#contentImpactTag').value.trim(),
         title: $('#contentImpactTitle').value.trim(),
         description: $('#contentImpactDesc').value.trim(),
+        photos: getMultiPhotos('impact'),
         items: currentImpactItems.map((it, idx) => {
           const pVal = $(`#impactPercent_${idx}`)?.value;
           const p = parseFloat(pVal);
@@ -1325,7 +1431,8 @@
         address: $('#contentBoutiqueAddress').value.trim(),
         hours: $('#contentBoutiqueHours').value.trim(),
         prices: $('#contentBoutiquePrices').value.trim(),
-        photo: $('#contentBoutiquePhoto') ? $('#contentBoutiquePhoto').value.trim() : ''
+        photo: getMultiPhotos('boutique')[0] || '',
+        photos: getMultiPhotos('boutique')
       },
       esat: {
         tag: $('#contentEsatTag').value.trim(),
@@ -1333,7 +1440,8 @@
         description: $('#contentEsatDesc').value.trim(),
         partnerName: $('#contentEsatPartnerName') ? $('#contentEsatPartnerName').value.trim() : 'ESAT de Châteauneuf-d\'Ille-et-Vilaine',
         partnerDesc: $('#contentEsatPartnerDesc') ? $('#contentEsatPartnerDesc').value.trim() : '',
-        photo: $('#contentEsatPhoto') ? $('#contentEsatPhoto').value.trim() : '',
+        photo: getMultiPhotos('esat')[0] || '',
+        photos: getMultiPhotos('esat'),
         items: [
           { title: $('#contentEsatItem1Title').value.trim(), desc: $('#contentEsatItem1Desc').value.trim() },
           { title: $('#contentEsatItem2Title').value.trim(), desc: $('#contentEsatItem2Desc').value.trim() },
@@ -1449,95 +1557,6 @@
       btn.addEventListener('click', () => saveContentForm());
     });
 
-    // Upload photo Boutique
-    const btnUploadBoutique = $('#btnUploadBoutiquePhoto');
-    const inputBoutiquePhoto = $('#contentBoutiquePhotoInput');
-    const btnRemoveBoutique = $('#btnRemoveBoutiquePhoto');
-    if (btnUploadBoutique && inputBoutiquePhoto) {
-      btnUploadBoutique.addEventListener('click', () => inputBoutiquePhoto.click());
-      inputBoutiquePhoto.addEventListener('change', async () => {
-        const file = inputBoutiquePhoto.files[0];
-        if (!file) return;
-        try {
-          btnUploadBoutique.disabled = true;
-          btnUploadBoutique.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Upload…';
-          const url = await uploadImageFile(file);
-          if ($('#contentBoutiquePhoto')) $('#contentBoutiquePhoto').value = url;
-          updatePhotoPreviewBox($('#boutiquePhotoPreview'), url);
-          if (btnRemoveBoutique) btnRemoveBoutique.style.display = 'inline-flex';
-          const res = await saveContentForm(false);
-          if (res && res.serverOk) {
-            toast('Photo de la boutique ajoutée et enregistrée sur le serveur.');
-          } else if (!getAuthToken()) {
-            toast('Photo de la boutique enregistrée localement.');
-          }
-        } catch (err) {
-          toast('Échec de l\'envoi de la photo.', true);
-        } finally {
-          btnUploadBoutique.disabled = false;
-          btnUploadBoutique.innerHTML = '<i class="fas fa-upload"></i> Choisir une photo';
-          inputBoutiquePhoto.value = '';
-        }
-      });
-    }
-    if (btnRemoveBoutique) {
-      btnRemoveBoutique.addEventListener('click', async () => {
-        if ($('#contentBoutiquePhoto')) $('#contentBoutiquePhoto').value = '';
-        updatePhotoPreviewBox($('#boutiquePhotoPreview'), '');
-        btnRemoveBoutique.style.display = 'none';
-        const res = await saveContentForm(false);
-        if (res && res.serverOk) {
-          toast('Photo de la boutique retirée et enregistrée sur le serveur.');
-        } else if (!getAuthToken()) {
-          toast('Photo de la boutique retirée localement.');
-        }
-      });
-    }
-
-    // Upload photo ESAT
-    const btnUploadEsat = $('#btnUploadEsatPhoto');
-    const inputEsatPhoto = $('#contentEsatPhotoInput');
-    const btnRemoveEsat = $('#btnRemoveEsatPhoto');
-    if (btnUploadEsat && inputEsatPhoto) {
-      btnUploadEsat.addEventListener('click', () => inputEsatPhoto.click());
-      inputEsatPhoto.addEventListener('change', async () => {
-        const file = inputEsatPhoto.files[0];
-        if (!file) return;
-        try {
-          btnUploadEsat.disabled = true;
-          btnUploadEsat.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Upload…';
-          const url = await uploadImageFile(file);
-          if ($('#contentEsatPhoto')) $('#contentEsatPhoto').value = url;
-          updatePhotoPreviewBox($('#esatPhotoPreview'), url);
-          if (btnRemoveEsat) btnRemoveEsat.style.display = 'inline-flex';
-          const res = await saveContentForm(false);
-          if (res && res.serverOk) {
-            toast('Photo de l\'ESAT ajoutée et enregistrée sur le serveur.');
-          } else if (!getAuthToken()) {
-            toast('Photo de l\'ESAT enregistrée localement.');
-          }
-        } catch (err) {
-          toast('Échec de l\'envoi de la photo.', true);
-        } finally {
-          btnUploadEsat.disabled = false;
-          btnUploadEsat.innerHTML = '<i class="fas fa-upload"></i> Choisir une photo';
-          inputEsatPhoto.value = '';
-        }
-      });
-    }
-    if (btnRemoveEsat) {
-      btnRemoveEsat.addEventListener('click', async () => {
-        if ($('#contentEsatPhoto')) $('#contentEsatPhoto').value = '';
-        updatePhotoPreviewBox($('#esatPhotoPreview'), '');
-        btnRemoveEsat.style.display = 'none';
-        const res = await saveContentForm(false);
-        if (res && res.serverOk) {
-          toast('Photo de l\'ESAT retirée et enregistrée sur le serveur.');
-        } else if (!getAuthToken()) {
-          toast('Photo de l\'ESAT retirée localement.');
-        }
-      });
-    }
 
     // Bouton ajouter part impact
     const btnAddImpact = $('#btnAddImpactItem');
@@ -1623,39 +1642,6 @@
     $('#modalNewsCancelBtn').addEventListener('click', closeNewsModal);
     $('#modalNews').addEventListener('click', e => { if(e.target===$('#modalNews')) closeNewsModal(); });
 
-    // Photo News Upload
-    const btnUploadNews = $('#btnUploadNewsPhoto');
-    const inputNewsPhoto = $('#newsPhotoInput');
-    const btnRemoveNews = $('#btnRemoveNewsPhoto');
-    if (btnUploadNews && inputNewsPhoto) {
-      btnUploadNews.addEventListener('click', () => inputNewsPhoto.click());
-      inputNewsPhoto.addEventListener('change', async () => {
-        const file = inputNewsPhoto.files[0];
-        if (!file) return;
-        try {
-          btnUploadNews.disabled = true;
-          btnUploadNews.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Upload…';
-          const url = await uploadImageFile(file);
-          if ($('#newsPhoto')) $('#newsPhoto').value = url;
-          updatePhotoPreviewBox($('#newsPhotoPreview'), url);
-          if (btnRemoveNews) btnRemoveNews.style.display = 'inline-flex';
-          toast('Image d\'illustration ajoutée.');
-        } catch (err) {
-          toast('Échec de l\'envoi de l\'image.', true);
-        } finally {
-          btnUploadNews.disabled = false;
-          btnUploadNews.innerHTML = '<i class="fas fa-upload"></i> Choisir une image';
-          inputNewsPhoto.value = '';
-        }
-      });
-    }
-    if (btnRemoveNews) {
-      btnRemoveNews.addEventListener('click', () => {
-        if ($('#newsPhoto')) $('#newsPhoto').value = '';
-        updatePhotoPreviewBox($('#newsPhotoPreview'), '');
-        btnRemoveNews.style.display = 'none';
-      });
-    }
 
     $('#newsForm').addEventListener('submit', async e => {
       e.preventDefault();
@@ -1663,7 +1649,8 @@
       const cat   = $('#newsCategory').value;
       const date  = $('#newsDate').value;
       const content = quill ? quill.root.innerHTML : '';
-      const image = $('#newsPhoto') ? $('#newsPhoto').value.trim() : '';
+      const photos = getMultiPhotos('news');
+      const image = photos.length > 0 ? photos[0] : '';
 
       if (!title || !date) { toast('Veuillez remplir les champs obligatoires.', true); return; }
 
@@ -1682,7 +1669,7 @@
           const res = await fetch('/api/news', {
             method: 'POST',
             headers: getAuthHeaders(),
-            body: JSON.stringify({ id, title, category: cat, date, content, image })
+            body: JSON.stringify({ id, title, category: cat, date, content, image, photos })
           });
           if (res.ok) {
             const json = await res.json();
@@ -1704,11 +1691,11 @@
       if (!token) {
         if (id) {
           const idx = (appData.news||[]).findIndex(n => n.id===id);
-          if (idx > -1) { appData.news[idx] = { id, title, category:cat, date, content, image }; }
+          if (idx > -1) { appData.news[idx] = { id, title, category:cat, date, content, image, photos }; }
         } else {
           if (!appData.news) appData.news = [];
           const newId = Date.now();
-          appData.news.unshift({ id:newId, title, category:cat, date, content, image });
+          appData.news.unshift({ id:newId, title, category:cat, date, content, image, photos });
         }
         serverOk = true;
       }
