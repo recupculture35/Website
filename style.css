@@ -9,53 +9,53 @@
 :root {
   /* Couleurs de marque officielles du logo et flyers */
   --logo-green: #67b342;          /* Vert feuille naturel du logo RECUP */
-  --logo-green-bright: #7ece4c;   /* Vert éclatant pour badges et survols */
-  --logo-green-glow: rgba(103, 179, 66, 0.45);
-  --logo-green-tint: rgba(103, 179, 66, 0.12);
+  --logo-green-bright: #8ee85c;   /* Vert éclatant très lisible sur fond sombre */
+  --logo-green-glow: rgba(110, 214, 68, 0.45);
+  --logo-green-tint: rgba(110, 214, 68, 0.16);
 
-  --logo-blue: #163f7a;           /* Bleu royal officiel des bannières et titres */
-  --logo-blue-bright: #3b82f6;    /* Bleu vif d'action */
-  --logo-blue-glow: rgba(59, 130, 246, 0.45);
-  --logo-blue-tint: rgba(59, 130, 246, 0.12);
+  --logo-blue: #163f7a;           /* Bleu royal officiel */
+  --logo-blue-bright: #60a5fa;    /* Bleu vif éclatant d'action sur fond sombre */
+  --logo-blue-glow: rgba(96, 165, 250, 0.45);
+  --logo-blue-tint: rgba(96, 165, 250, 0.16);
 
   /* Accents complémentaires issus des flyers */
-  --accent-amber: #f5ba24;        /* Jaune solaire "Solidaire" / dates / badges */
+  --accent-amber: #fcd34d;        /* Jaune solaire "Solidaire" / dates / badges franc */
   --accent-blue-soft: #9bcdfa;    /* Bleu pastel côtier encadré horaires */
-  --accent-coral: #e8685a;        /* Terracotta / corail des parutions */
+  --accent-coral: #f87171;        /* Terracotta vif */
   --accent-red: #ef4444;
 
   /* Dégradés signature */
-  --brand-gradient: linear-gradient(135deg, #67b342 0%, #163f7a 100%);
-  --brand-gradient-hover: linear-gradient(135deg, #7ece4c 0%, #3b82f6 100%);
-  --green-gradient: linear-gradient(135deg, #67b342 0%, #4a8c2c 100%);
-  --blue-gradient: linear-gradient(135deg, #163f7a 0%, #0d2850 100%);
+  --brand-gradient: linear-gradient(135deg, #67b342 0%, #2563eb 100%);
+  --brand-gradient-hover: linear-gradient(135deg, #8ee85c 0%, #60a5fa 100%);
+  --green-gradient: linear-gradient(135deg, #67b342 0%, #3d8b22 100%);
+  --blue-gradient: linear-gradient(135deg, #2563eb 0%, #163f7a 100%);
 
   /* Palette Sombre Ardoise Encrée (Flyer n°2) */
-  --bg-root: #161d27;             /* Fond ardoise encrée minérale et douce */
-  --bg-surface-1: #1a232f;        /* Surface 1 : ardoise profonde */
-  --bg-surface-2: #212c3b;        /* Surface 2 : ardoise structurée */
-  --bg-surface-card: rgba(26, 35, 47, 0.82);
-  --bg-surface-card-hover: rgba(33, 44, 59, 0.95);
-  --bg-surface-elevated: #212c3b;
+  --bg-root: #141a23;             /* Fond ardoise encrée minérale et apaisante */
+  --bg-surface-1: #18202c;        /* Surface 1 : ardoise profonde */
+  --bg-surface-2: #1e2837;        /* Surface 2 : ardoise alternée distincte */
+  --bg-surface-card: rgba(26, 35, 48, 0.94);
+  --bg-surface-card-hover: rgba(34, 46, 62, 0.98);
+  --bg-surface-elevated: #222e3e;
 
-  /* Bordures & Ombres */
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-highlight: rgba(155, 205, 218, 0.22);
-  --border-green: rgba(103, 179, 66, 0.4);
-  --border-blue: rgba(59, 130, 246, 0.4);
+  /* Bordures nettes & Ombres */
+  --border-subtle: rgba(255, 255, 255, 0.12);
+  --border-highlight: rgba(155, 205, 218, 0.3);
+  --border-green: rgba(142, 232, 92, 0.5);
+  --border-blue: rgba(96, 165, 250, 0.5);
 
-  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.35);
-  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.45);
-  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.6);
-  --shadow-green-glow: 0 0 35px rgba(103, 179, 66, 0.35);
-  --shadow-blue-glow: 0 0 35px rgba(59, 130, 246, 0.35);
-  --shadow-brand-glow: 0 0 40px rgba(103, 179, 66, 0.3), 0 0 60px rgba(22, 63, 122, 0.25);
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.65);
+  --shadow-green-glow: 0 0 35px rgba(110, 214, 68, 0.35);
+  --shadow-blue-glow: 0 0 35px rgba(96, 165, 250, 0.35);
+  --shadow-brand-glow: 0 0 40px rgba(110, 214, 68, 0.3), 0 0 60px rgba(37, 99, 235, 0.25);
 
   /* Typographie & Textes (Tons crème et vélin doux sur fond sombre) */
-  --text-white: #f7efe2;          /* Crème papier vélin du flyer pour titrage doux */
-  --text-primary: #e8ecf1;        /* Texte clair haute lisibilité */
-  --text-secondary: #cbd5e1;      /* Texte secondaire */
-  --text-muted: #94a3b8;
+  --text-white: #f7efe2;          /* Crème papier vélin du flyer pour titrage franc */
+  --text-primary: #edf2f7;        /* Texte clair haute lisibilité */
+  --text-secondary: #cbd5e1;      /* Texte secondaire net */
+  --text-muted: #94a3b8;          /* Gris ardoise clair */
   --text-dim: #64748b;
 
   --font-heading: 'Outfit', sans-serif;
@@ -1256,7 +1256,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-white);
+  color: #ffffff;
   font-size: 0.95rem;
   flex-shrink: 0;
   box-shadow: 0 4px 14px rgba(119, 184, 65, 0.3);
@@ -1904,21 +1904,24 @@ p {
 }
 
 .news-badge.boutique {
-  background: var(--logo-green-tint);
-  color: var(--logo-green-bright);
-  border: 1px solid rgba(119, 184, 65, 0.3);
+  background: rgba(110, 214, 68, 0.16);
+  color: #8ee85c;
+  border: 1px solid rgba(142, 232, 92, 0.45);
+  font-weight: 700;
 }
 
 .news-badge.evenement {
-  background: var(--logo-blue-tint);
-  color: var(--logo-blue-bright);
-  border: 1px solid rgba(30, 136, 229, 0.3);
+  background: rgba(96, 165, 250, 0.16);
+  color: #60a5fa;
+  border: 1px solid rgba(96, 165, 250, 0.45);
+  font-weight: 700;
 }
 
 .news-badge.actualite {
-  background: rgba(245, 158, 11, 0.15);
-  color: #fbbf24;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: rgba(252, 211, 77, 0.18);
+  color: #fcd34d;
+  border: 1px solid rgba(252, 211, 77, 0.45);
+  font-weight: 700;
 }
 
 .news-date {
@@ -2781,6 +2784,103 @@ p {
   font-weight: 700;
 }
 
+/* Badges Actualités en mode clair : Contraste maximal et palette fidèle */
+[data-theme="light"] .news-badge.boutique {
+  background: #eaf5e4;
+  color: #1e5610;
+  border: 1.5px solid #36721b;
+  font-weight: 700;
+}
+
+[data-theme="light"] .news-badge.evenement {
+  background: #e6eef8;
+  color: #0a2040;
+  border: 1.5px solid #0f274a;
+  font-weight: 700;
+}
+
+[data-theme="light"] .news-badge.actualite {
+  background: #fef3c7;
+  color: #78350f;
+  border: 1.5px solid #b45309;
+  font-weight: 700;
+}
+
+[data-theme="light"] .news-date {
+  color: #475569;
+  font-weight: 600;
+}
+
+[data-theme="light"] .news-card-body h3 {
+  color: #0f274a;
+  font-weight: 700;
+}
+
+[data-theme="light"] .news-card-body .news-excerpt {
+  color: #1e293b;
+}
+
+/* Infos Boutique en mode clair */
+[data-theme="light"] .boutique-info-item {
+  background: #ffffff;
+  border: 1.5px solid rgba(15, 39, 74, 0.14);
+  box-shadow: 0 4px 14px rgba(15, 39, 74, 0.06);
+}
+
+[data-theme="light"] .boutique-info-item:hover {
+  background: #ffffff;
+  border-color: #2e6314;
+  box-shadow: 0 8px 24px rgba(15, 39, 74, 0.12);
+}
+
+[data-theme="light"] .boutique-info-item strong {
+  color: #475569;
+  font-weight: 700;
+}
+
+[data-theme="light"] .boutique-info-item span {
+  color: #0f274a;
+  font-weight: 600;
+}
+
+/* Carte ESAT & Partenaire en mode clair */
+[data-theme="light"] .esat-hero-card {
+  background: #ffffff;
+  border: 1.5px solid rgba(15, 39, 74, 0.16);
+  box-shadow: 0 12px 36px rgba(15, 39, 74, 0.1);
+}
+
+[data-theme="light"] .esat-partner-badge {
+  background: #e6eef8;
+  border: 1.5px solid #0f274a;
+  color: #0a2040;
+  font-weight: 700;
+}
+
+[data-theme="light"] .esat-partner-info h3 {
+  color: #0f274a;
+  font-weight: 700;
+}
+
+[data-theme="light"] .esat-partner-desc {
+  color: #1e293b;
+}
+
+[data-theme="light"] .esat-pill {
+  color: #0a0f18;
+  font-weight: 500;
+}
+
+[data-theme="light"] .esat-pill i {
+  color: #265912;
+}
+
+[data-theme="light"] .esat-icon {
+  background: #e6eef8;
+  color: #0f274a;
+  border: 1.5px solid #0f274a;
+}
+
 /* Impact Rings & Cartes Impact */
 [data-theme="light"] .impact-card {
   background: #ffffff;
@@ -2927,6 +3027,52 @@ p {
 [data-theme="light"] .form-group select option {
   background: #ffffff;
   color: #0a0f18;
+}
+
+/* Réseaux sociaux & Contact en mode clair */
+[data-theme="light"] .contact-info > p {
+  color: #1e293b;
+}
+
+[data-theme="light"] .social-link {
+  background: #ffffff;
+  border: 1.5px solid rgba(15, 39, 74, 0.16);
+  color: #0f274a;
+  box-shadow: 0 4px 14px rgba(15, 39, 74, 0.06);
+}
+
+[data-theme="light"] .social-link:hover {
+  background: #ffffff;
+  border-color: #0f274a;
+  color: #0f274a;
+  box-shadow: 0 8px 24px rgba(15, 39, 74, 0.12);
+}
+
+[data-theme="light"] .social-link i {
+  background: #e6eef8;
+  color: #0f274a;
+  border: 1px solid rgba(15, 39, 74, 0.15);
+}
+
+[data-theme="light"] .social-link:hover i {
+  background: var(--brand-gradient);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(15, 39, 74, 0.25);
+}
+
+[data-theme="light"] .form-success {
+  background: #eaf5e4;
+  border: 1.5px solid #36721b;
+  color: #1e5610;
+  font-weight: 600;
+}
+
+[data-theme="light"] .form-error {
+  background: #fef2f2;
+  border: 1.5px solid #ef4444;
+  color: #991b1b;
+  font-weight: 600;
 }
 
 /* Carte visuelle Boutique (La Halle aux Artistes) en mode clair */
@@ -3254,8 +3400,8 @@ p {
 }
 
 [data-theme="light"] .gallery-item {
-  border-color: rgba(185, 175, 155, 0.4);
-  box-shadow: 0 6px 18px rgba(78, 64, 45, 0.07);
+  border-color: rgba(15, 39, 74, 0.18);
+  box-shadow: 0 6px 18px rgba(15, 39, 74, 0.08);
 }
 
 .gallery-item:hover {
@@ -3265,7 +3411,8 @@ p {
 }
 
 [data-theme="light"] .gallery-item:hover {
-  box-shadow: 0 12px 28px rgba(78, 64, 45, 0.14);
+  border-color: #2e6314;
+  box-shadow: 0 12px 28px rgba(15, 39, 74, 0.15);
 }
 
 .gallery-item img {
@@ -3383,22 +3530,22 @@ p {
 }
 
 .site-modal-card {
-  background: var(--bg-surface-card, #0f172a);
-  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.1));
+  background: var(--bg-surface-card, #141a23);
+  border: 1px solid var(--border-highlight, rgba(255, 255, 255, 0.15));
   border-radius: 20px;
   width: 100%;
   max-width: 840px;
   max-height: 90vh;
   overflow-y: auto;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65);
   position: relative;
   animation: modalScaleIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 [data-theme="light"] .site-modal-card {
-  background: #fdfbf7;
-  border-color: rgba(185, 175, 155, 0.5);
-  box-shadow: 0 20px 50px rgba(60, 48, 30, 0.18);
+  background: #ffffff;
+  border: 1.5px solid rgba(15, 39, 74, 0.2);
+  box-shadow: 0 25px 60px rgba(15, 39, 74, 0.22);
 }
 
 @keyframes modalScaleIn {
@@ -3413,27 +3560,28 @@ p {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: var(--text-primary, #ffffff);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffffff;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1rem;
-  transition: background 0.2s, transform 0.2s;
+  transition: background 0.2s, transform 0.2s, color 0.2s;
   z-index: 10;
 }
 
 [data-theme="light"] .site-modal-close {
-  background: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.1);
-  color: #2c251d;
+  background: #f0f4f9;
+  border: 1.5px solid rgba(15, 39, 74, 0.2);
+  color: #0f274a;
 }
 
 .site-modal-close:hover {
-  background: #dc2626;
-  color: #ffffff;
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  border-color: #ef4444 !important;
   transform: rotate(90deg);
 }
 
@@ -3455,13 +3603,14 @@ p {
 .article-modal-title {
   font-size: 1.85rem;
   font-weight: 700;
-  color: var(--text-primary, #ffffff);
+  color: var(--text-white, #f7efe2);
   line-height: 1.25;
   margin: 0 0 16px;
 }
 
 [data-theme="light"] .article-modal-title {
-  color: #221c15;
+  color: #0f274a;
+  font-weight: 800;
 }
 
 .article-modal-gallery {
@@ -3471,11 +3620,67 @@ p {
 .article-modal-content {
   color: var(--text-secondary, #cbd5e1);
   font-size: 1.05rem;
-  line-height: 1.75;
+  line-height: 1.8;
+}
+
+.article-modal-content p {
+  margin-bottom: 14px;
+  line-height: 1.8;
+}
+
+.article-modal-content h1,
+.article-modal-content h2,
+.article-modal-content h3,
+.article-modal-content h4 {
+  color: var(--text-white);
+  font-weight: 700;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.article-modal-content a {
+  color: var(--logo-blue-bright);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.article-modal-content strong {
+  color: var(--text-white);
 }
 
 [data-theme="light"] .article-modal-content {
-  color: #4a4135;
+  color: #0a0f18;
+}
+
+[data-theme="light"] .article-modal-content p {
+  color: #1e293b;
+  line-height: 1.8;
+  margin-bottom: 14px;
+}
+
+[data-theme="light"] .article-modal-content h1,
+[data-theme="light"] .article-modal-content h2,
+[data-theme="light"] .article-modal-content h3,
+[data-theme="light"] .article-modal-content h4 {
+  color: #0f274a;
+  font-weight: 700;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+[data-theme="light"] .article-modal-content a {
+  color: #124d9c;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+[data-theme="light"] .article-modal-content strong {
+  color: #0a0f18;
+}
+
+[data-theme="light"] .article-modal-meta .news-date {
+  color: #475569;
+  font-weight: 600;
 }
 
 /* Lightbox Modal (Plein Écran Zoom) */
