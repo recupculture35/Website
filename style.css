@@ -2080,6 +2080,28 @@ p {
   font-size: 1.3rem;
 }
 
+.form-error {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  padding: 16px 20px;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  border-radius: var(--radius-sm);
+  color: #fca5a5;
+  font-size: 0.92rem;
+}
+
+.form-error.show {
+  display: flex;
+}
+
+.form-error i {
+  font-size: 1.3rem;
+  color: #ef4444;
+}
+
 /* =========================================================
    FOOTER
    ========================================================= */

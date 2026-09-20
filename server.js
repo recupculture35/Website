@@ -8,6 +8,7 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -43,10 +44,56 @@ const DATA_DIR = resolveDataDir();
 const UPLOADS_DIR = process.env.UPLOADS_DIR || path.join(DATA_DIR, 'uploads');
 const CONFIG_FILE = path.join(DATA_DIR, 'config.json');
 const CREDS_FILE = path.join(DATA_DIR, 'credentials.json');
+const MESSAGES_FILE = path.join(DATA_DIR, 'messages.json');
 
 const BUNDLED_DATA_DIR = path.join(__dirname, 'data');
 const BUNDLED_CONFIG = path.join(BUNDLED_DATA_DIR, 'config.json');
 const BUNDLED_CREDS = path.join(BUNDLED_DATA_DIR, 'credentials.json');
+
+// ─── Configuration SMTP (Relais OVH) ─────────────────
+const SMTP_HOST = process.env.SMTP_HOST || 'ssl0.ovh.net';
+const SMTP_PORT = parseInt(process.env.SMTP_PORT || '465', 10);
+const SMTP_SECURE = process.env.SMTP_SECURE !== 'false' && (SMTP_PORT === 465 || process.env.SMTP_SECURE === 'true');
+const SMTP_USER = process.env.SMTP_USER || 'info@recupculture.fr';
+const SMTP_PASS = process.env.SMTP_PASS || '';
+const CONTACT_TO_EMAIL = process.env.CONTACT_TO_EMAIL || 'info@recupculture.fr';
+const SUPPORT_TO_EMAIL = process.env.SUPPORT_TO_EMAIL || 'support@recupculture.fr';
+
+function createMailTransporter() {
+  if (!SMTP_PASS) {
+    console.warn('[MAIL] Variable SMTP_PASS non renseignée sur le serveur. Les messages seront sauvegardés sur disque sans transmission SMTP.');
+    return null;
+  }
+  return nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: SMTP_PORT,
+    secure: SMTP_SECURE,
+    auth: {
+      user: SMTP_USER,
+      pass: SMTP_PASS
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+  });
+}
+
+function saveMessageBackup(msg) {
+  try {
+    const list = readJson(MESSAGES_FILE, []);
+    const messages = Array.isArray(list) ? list : [];
+    messages.unshift({
+      id: Date.now(),
+      date: new Date().toISOString(),
+      ...msg
+    });
+    if (messages.length > 200) messages.length = 200;
+    writeJson(MESSAGES_FILE, messages);
+    console.log(`[MAIL BACKUP] Message sauvegardé dans ${MESSAGES_FILE} (total : ${messages.length})`);
+  } catch (err) {
+    console.error('[MAIL BACKUP ERROR]', err.message);
+  }
+}
 
 // Points de collecte et actualités par défaut garantis (indépendants du volume persistant)
 const DEFAULT_COLLECT_POINTS = [
@@ -380,6 +427,144 @@ app.get('/api/data', (req, res) => {
   }
 
   res.json(config);
+});
+
+// ─── API CONTACT (Envoi d'e-mail via SMTP OVH) ──────
+const SUBJECT_LABELS = {
+  don: 'Faire un don',
+  boutique: 'La boutique',
+  partenariat: 'Partenariat',
+  esat: 'ESAT',
+  support: 'Support technique / assistance',
+  autre: 'Autre demande'
+};
+
+app.post('/api/contact', async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body || {};
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({ error: 'Le nom est requis.' });
+    }
+    if (!email || !email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      return res.status(400).json({ error: 'Une adresse e-mail valide est requise.' });
+    }
+    if (!message || !message.trim()) {
+      return res.status(400).json({ error: 'Le message est requis.' });
+    }
+
+    const cleanName = name.trim();
+    const cleanEmail = email.trim();
+    const cleanSubject = (subject || '').trim();
+    const cleanMessage = message.trim();
+    const subjectLabel = SUBJECT_LABELS[cleanSubject] || cleanSubject || 'Message général';
+
+    // Sauvegarde de secours immédiate sur le volume persistant
+    saveMessageBackup({
+      name: cleanName,
+      email: cleanEmail,
+      subjectKey: cleanSubject,
+      subjectLabel,
+      message: cleanMessage
+    });
+
+    const recipient = cleanSubject === 'support' ? SUPPORT_TO_EMAIL : CONTACT_TO_EMAIL;
+    const emailSubject = `[Contact depuis le site recupculture] ${subjectLabel} - ${cleanName}`;
+
+    const textContent = `Nouveau message reçu depuis le site recupculture.fr :
+
+Nom complet : ${cleanName}
+Adresse e-mail : ${cleanEmail}
+Sujet : ${subjectLabel}
+Date : ${new Date().toLocaleString('fr-FR', { timeZone: 'Europe/Paris' })}
+
+--------------------------------------------------
+Message :
+${cleanMessage}
+--------------------------------------------------
+
+Vous pouvez répondre directement à cet e-mail pour écrire à ${cleanName} (${cleanEmail}).`;
+
+    const htmlContent = `<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b; background-color: #f8fafc; margin: 0; padding: 20px; }
+    .card { max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
+    .header { background: #0f172a; color: #ffffff; padding: 24px; text-align: center; }
+    .header h2 { margin: 0; font-size: 1.3rem; color: #8ce44c; letter-spacing: 0.5px; }
+    .header p { margin: 6px 0 0; font-size: 0.9rem; color: #94a3b8; }
+    .content { padding: 24px; }
+    .meta-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    .meta-table td { padding: 8px 12px; font-size: 0.95rem; border-bottom: 1px solid #f1f5f9; }
+    .meta-table td.label { font-weight: 600; color: #64748b; width: 140px; }
+    .message-box { background: #f8fafc; border-left: 4px solid #8ce44c; padding: 16px; border-radius: 6px; font-size: 1rem; white-space: pre-wrap; color: #334155; margin-top: 10px; }
+    .footer { padding: 16px 24px; background: #f1f5f9; font-size: 0.85rem; color: #64748b; text-align: center; border-top: 1px solid #e2e8f0; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <h2>RECUP CULTURE</h2>
+      <p>Nouveau message reçu depuis le formulaire de contact du site</p>
+    </div>
+    <div class="content">
+      <table class="meta-table">
+        <tr>
+          <td class="label">Expéditeur :</td>
+          <td><strong>${cleanName}</strong></td>
+        </tr>
+        <tr>
+          <td class="label">Adresse e-mail :</td>
+          <td><a href="mailto:${cleanEmail}" style="color:#0284c7;text-decoration:none">${cleanEmail}</a></td>
+        </tr>
+        <tr>
+          <td class="label">Sujet :</td>
+          <td><span style="display:inline-block;padding:3px 10px;border-radius:12px;background:#e0f2fe;color:#0369a1;font-weight:600;font-size:0.85rem">${subjectLabel}</span></td>
+        </tr>
+        <tr>
+          <td class="label">Date :</td>
+          <td>${new Date().toLocaleString('fr-FR', { timeZone: 'Europe/Paris' })}</td>
+        </tr>
+      </table>
+
+      <h3 style="font-size:1rem;color:#0f172a;margin:20px 0 8px">Message :</h3>
+      <div class="message-box">${cleanMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>
+    </div>
+    <div class="footer">
+      💡 Cliquez sur <strong>Répondre</strong> dans votre messagerie pour répondre directement à ${cleanName} (${cleanEmail}).
+    </div>
+  </div>
+</body>
+</html>`;
+
+    const transporter = createMailTransporter();
+    if (transporter) {
+      await transporter.sendMail({
+        from: `"${cleanName} (via RECUP CULTURE)" <${SMTP_USER}>`,
+        to: recipient,
+        replyTo: cleanEmail,
+        subject: emailSubject,
+        text: textContent,
+        html: htmlContent
+      });
+      console.log(`[MAIL] Message envoyé avec succès vers ${recipient} pour "${cleanName}" (${cleanEmail})`);
+      return res.json({ success: true, message: 'Message envoyé avec succès.' });
+    } else {
+      console.log(`[MAIL MOCK] SMTP_PASS non renseigné, message sauvegardé dans ${MESSAGES_FILE}`);
+      return res.json({ success: true, message: 'Message bien reçu et sauvegardé.' });
+    }
+  } catch (err) {
+    console.error('[MAIL ERROR]', err);
+    return res.status(500).json({ error: 'Erreur lors de l\'envoi de votre message. Veuillez réessayer ou écrire directement à info@recupculture.fr.' });
+  }
+});
+
+// Route admin pour consulter les messages sauvegardés
+app.get('/api/messages', requireAuth, (req, res) => {
+  const list = readJson(MESSAGES_FILE, []);
+  res.json({ messages: Array.isArray(list) ? list : [] });
 });
 
 // ─── API UPLOAD D'IMAGES ─────────────────────────────

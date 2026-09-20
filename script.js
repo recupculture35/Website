@@ -516,40 +516,86 @@
 
   // ─── Formulaire de contact ─────────────────────────
   function initContactForm() {
-    const form    = $('#contactForm');
-    const success = $('#formSuccess');
+    const form      = $('#contactForm');
+    const success   = $('#formSuccess');
+    const errorBox  = $('#formError');
+    const errorText = $('#formErrorText');
     if (!form) return;
 
-    form.addEventListener('submit', e => {
+    function hideNotifications() {
+      if (success) success.classList.remove('show');
+      if (errorBox) errorBox.classList.remove('show');
+    }
+
+    function showError(message) {
+      if (success) success.classList.remove('show');
+      if (errorBox) {
+        if (errorText) errorText.textContent = message;
+        errorBox.classList.add('show');
+      } else {
+        alert(message);
+      }
+    }
+
+    form.addEventListener('submit', async e => {
       e.preventDefault();
+      hideNotifications();
 
-      // Validation basique
-      const name  = $('#contactName').value.trim();
-      const email = $('#contactEmail').value.trim();
-      const msg   = $('#contactMessage').value.trim();
+      // Validation des champs
+      const name    = ($('#contactName')?.value || '').trim();
+      const email   = ($('#contactEmail')?.value || '').trim();
+      const subject = ($('#contactSubject')?.value || '').trim();
+      const message = ($('#contactMessage')?.value || '').trim();
 
-      if (!name || !email || !msg) {
-        alert('Veuillez remplir tous les champs obligatoires (*).');
+      if (!name || !email || !message) {
+        showError('Veuillez remplir tous les champs obligatoires (*).');
         return;
       }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        alert('Veuillez saisir une adresse e-mail valide.');
+        showError('Veuillez saisir une adresse e-mail valide.');
         return;
       }
 
-      // Simulation envoi (site statique – mailto ou EmailJS possible)
       const btn = $('#contactSubmit');
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Envoi en cours…</span>';
+      const originalHtml = btn ? btn.innerHTML : '';
+      if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Envoi en cours…</span>';
+      }
 
-      setTimeout(() => {
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, subject, message })
+        });
+
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok) {
+          throw new Error(data.error || 'Une erreur est survenue lors de l\'envoi du message.');
+        }
+
         form.reset();
-        if (success) success.classList.add('show');
-        btn.disabled = false;
-        btn.innerHTML = '<i class="fas fa-paper-plane"></i> <span>Envoyer le message</span>';
+        if (success) {
+          const successP = success.querySelector('p');
+          if (successP) {
+            successP.textContent = 'Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.';
+          }
+          success.classList.add('show');
+        }
 
-        setTimeout(() => { if (success) success.classList.remove('show'); }, 6000);
-      }, 1200);
+        setTimeout(() => {
+          if (success) success.classList.remove('show');
+        }, 8000);
+      } catch (err) {
+        showError(err.message || 'Une erreur est survenue. Vous pouvez également nous contacter par e-mail à info@recupculture.fr.');
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = originalHtml || '<i class="fas fa-paper-plane"></i> <span>Envoyer le message</span>';
+        }
+      }
     });
   }
 
