@@ -594,12 +594,17 @@
         btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Envoi en cours…</span>';
       }
 
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 12000);
+
       try {
         const res = await fetch('/api/contact', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, subject, message })
+          body: JSON.stringify({ name, email, subject, message }),
+          signal: controller.signal
         });
+        clearTimeout(timer);
 
         const data = await res.json().catch(() => ({}));
 
@@ -611,7 +616,7 @@
         if (success) {
           const successP = success.querySelector('p');
           if (successP) {
-            successP.textContent = 'Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.';
+            successP.textContent = data.message || 'Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais.';
           }
           success.classList.add('show');
         }
@@ -620,7 +625,12 @@
           if (success) success.classList.remove('show');
         }, 8000);
       } catch (err) {
-        showError(err.message || 'Une erreur est survenue. Vous pouvez également nous contacter par e-mail à info@recupculture.fr.');
+        clearTimeout(timer);
+        if (err.name === 'AbortError') {
+          showError('Le délai de transmission a expiré. Vous pouvez également nous contacter directement par e-mail à info@recupculture.fr.');
+        } else {
+          showError(err.message || 'Une erreur est survenue. Vous pouvez également nous contacter par e-mail à info@recupculture.fr.');
+        }
       } finally {
         if (btn) {
           btn.disabled = false;

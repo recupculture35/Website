@@ -74,7 +74,10 @@ function createMailTransporter() {
     },
     tls: {
       rejectUnauthorized: false
-    }
+    },
+    connectionTimeout: 8000,
+    greetingTimeout: 8000,
+    socketTimeout: 10000
   });
 }
 
@@ -540,24 +543,40 @@ Vous pouvez répondre directement à cet e-mail pour écrire à ${cleanName} (${
 </html>`;
 
     const transporter = createMailTransporter();
+    let emailSent = false;
+    let mailError = null;
+
     if (transporter) {
-      await transporter.sendMail({
-        from: `"${cleanName} (via RECUP CULTURE)" <${SMTP_USER}>`,
-        to: recipient,
-        replyTo: cleanEmail,
-        subject: emailSubject,
-        text: textContent,
-        html: htmlContent
-      });
-      console.log(`[MAIL] Message envoyé avec succès vers ${recipient} pour "${cleanName}" (${cleanEmail})`);
-      return res.json({ success: true, message: 'Message envoyé avec succès.' });
+      try {
+        console.log(`[MAIL] Tentative d'envoi SMTP vers ${SMTP_HOST}:${SMTP_PORT} (${SMTP_USER})...`);
+        await transporter.sendMail({
+          from: `"${cleanName} (via RECUP CULTURE)" <${SMTP_USER}>`,
+          to: recipient,
+          replyTo: cleanEmail,
+          subject: emailSubject,
+          text: textContent,
+          html: htmlContent
+        });
+        emailSent = true;
+        console.log(`[MAIL] Message envoyé avec succès vers ${recipient} pour "${cleanName}" (${cleanEmail})`);
+      } catch (err) {
+        mailError = err.message;
+        console.error(`[MAIL ERROR] Échec lors de la transmission SMTP (${err.code || err.name}: ${err.message}).`);
+        console.warn(`[MAIL INFO] Note : Sur Railway (plans Hobby/Trial), les ports SMTP sortants 465 et 587 sont bloqués par le pare-feu. Le message a bien été persisté dans ${MESSAGES_FILE} et est accessible dans le panneau d'administration.`);
+      }
     } else {
       console.log(`[MAIL MOCK] SMTP_PASS non renseigné, message sauvegardé dans ${MESSAGES_FILE}`);
-      return res.json({ success: true, message: 'Message bien reçu et sauvegardé.' });
     }
+
+    // Le message est 100% sécurisé et sauvegardé dans messages.json
+    return res.json({
+      success: true,
+      emailSent,
+      message: 'Votre message a bien été envoyé ! Nous vous répondrons dans les plus brefs délais.'
+    });
   } catch (err) {
-    console.error('[MAIL ERROR]', err);
-    return res.status(500).json({ error: 'Erreur lors de l\'envoi de votre message. Veuillez réessayer ou écrire directement à info@recupculture.fr.' });
+    console.error('[CONTACT API ERROR]', err);
+    return res.status(500).json({ error: 'Erreur lors du traitement de votre message. Vous pouvez également nous écrire directement à info@recupculture.fr.' });
   }
 });
 
@@ -565,6 +584,17 @@ Vous pouvez répondre directement à cet e-mail pour écrire à ${cleanName} (${
 app.get('/api/messages', requireAuth, (req, res) => {
   const list = readJson(MESSAGES_FILE, []);
   res.json({ messages: Array.isArray(list) ? list : [] });
+});
+
+// Route admin pour supprimer un message sauvegardé
+app.delete('/api/messages/:id', requireAuth, (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  let list = readJson(MESSAGES_FILE, []);
+  if (Array.isArray(list)) {
+    list = list.filter(m => m.id !== id);
+    writeJson(MESSAGES_FILE, list);
+  }
+  res.json({ success: true, messages: list });
 });
 
 // ─── API UPLOAD D'IMAGES ─────────────────────────────

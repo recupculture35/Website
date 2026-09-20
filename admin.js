@@ -2265,6 +2265,122 @@
     }
   };
 
+  // ─── SECTION MESSAGES DE CONTACT ─────────────────────
+  let cachedMessages = [];
+
+  async function loadMessages() {
+    try {
+      const res = await fetch(`/api/messages?_t=${Date.now()}`);
+      if (res.ok) {
+        const data = await res.json();
+        cachedMessages = Array.isArray(data.messages) ? data.messages : [];
+      } else {
+        cachedMessages = [];
+      }
+    } catch (_) {
+      cachedMessages = [];
+    }
+    renderMessagesList();
+  }
+
+  function renderMessagesList() {
+    const container = $('#messagesListContainer');
+    const badge = $('#messagesCountBadge');
+    const totalCount = $('#messagesTotalCount');
+
+    const count = cachedMessages.length;
+    if (badge) {
+      badge.textContent = String(count);
+      badge.style.display = count > 0 ? 'inline-block' : 'none';
+    }
+    if (totalCount) {
+      totalCount.textContent = `${count} message${count > 1 ? 's' : ''}`;
+    }
+
+    if (!container) return;
+
+    if (count === 0) {
+      container.innerHTML = `
+        <div style="text-align:center;padding:48px 20px;color:var(--gray-500)">
+          <i class="fas fa-inbox" style="font-size:2.8rem;margin-bottom:14px;opacity:0.35"></i>
+          <p style="font-size:1rem;margin:0">Aucun message de contact reçu pour le moment.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        ${cachedMessages.map(m => {
+          const dateStr = m.date ? new Date(m.date).toLocaleString('fr-FR') : '';
+          return `
+            <div class="admin-card" style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:12px;padding:20px;margin-bottom:0">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+                <div>
+                  <h4 style="margin:0;color:var(--white);font-size:1.05rem;display:flex;align-items:center;gap:8px">
+                    <i class="fas fa-user-circle" style="color:var(--green-500)"></i> ${escapeHtml(m.name || 'Anonyme')}
+                  </h4>
+                  <div style="margin-top:4px;font-size:0.88rem;color:var(--gray-400)">
+                    <a href="mailto:${escapeHtml(m.email || '')}" style="color:#38bdf8;text-decoration:none">
+                      <i class="fas fa-envelope"></i> ${escapeHtml(m.email || '')}
+                    </a>
+                  </div>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                  <span style="background:rgba(30,136,229,0.2);color:#38bdf8;padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:600">
+                    ${escapeHtml(m.subjectLabel || m.subjectKey || 'Général')}
+                  </span>
+                  <span style="color:var(--gray-500);font-size:0.8rem"><i class="fas fa-clock"></i> ${dateStr}</span>
+                  <button type="button" class="btn btn-danger-admin btn-sm btn-delete-msg" data-id="${m.id}" title="Supprimer ce message" style="padding:5px 10px">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
+                </div>
+              </div>
+              <div style="background:var(--gray-900);border-left:4px solid var(--green-500);padding:14px 16px;border-radius:8px;color:var(--gray-200);font-size:0.95rem;white-space:pre-wrap;line-height:1.6">
+${escapeHtml(m.message || '')}
+              </div>
+              <div style="margin-top:14px;text-align:right">
+                <a href="mailto:${escapeHtml(m.email || '')}?subject=Re: [RECUP CULTURE] ${encodeURIComponent(m.subjectLabel || '')}" class="btn btn-primary-admin btn-sm" style="display:inline-flex;align-items:center;gap:6px">
+                  <i class="fas fa-reply"></i> Répondre par e-mail
+                </a>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+
+    // Écouteurs de suppression
+    $$('.btn-delete-msg', container).forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.getAttribute('data-id');
+        if (!confirm('Voulez-vous vraiment supprimer ce message ?')) return;
+        try {
+          const res = await fetch(`/api/messages/${id}`, { method: 'DELETE' });
+          if (res.ok) {
+            cachedMessages = cachedMessages.filter(m => String(m.id) !== String(id));
+            renderMessagesList();
+            toast('Message supprimé avec succès.');
+          } else {
+            toast('Erreur lors de la suppression.');
+          }
+        } catch (_) {
+          toast('Erreur lors de la suppression.');
+        }
+      });
+    });
+  }
+
+  function initMessagesSection() {
+    const refreshBtn = $('#btnRefreshMessages');
+    if (refreshBtn) {
+      refreshBtn.addEventListener('click', async () => {
+        await loadMessages();
+        toast('Boîte de réception actualisée.');
+      });
+    }
+  }
+
   // ─── INIT ADMIN ──────────────────────────────────────
   let adminInitialized = false;
 
@@ -2276,6 +2392,7 @@
     initContentSection();
     initNewsSection();
     initMapSection();
+    initMessagesSection();
     initUsersSection();
     initIOSection();
 
@@ -2283,6 +2400,7 @@
     renderNewsTable();
     renderUsersTable();
     renderPointsTable();
+    loadMessages();
   }
 
   // ─── BOOT ────────────────────────────────────────────
