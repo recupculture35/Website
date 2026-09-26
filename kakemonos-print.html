@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visuel Kakemono Imprimeur (2m × 1m) – RECUP CULTURE</title>
+  <title>Visuels Kakemonos Imprimeur (2m × 1m) – RECUP CULTURE</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -11,7 +11,7 @@
   <style>
     :root {
       --green: #67b342;
-      --navy: #163f7a;
+      --navy: #143565;
       --dark: #0f172a;
     }
 
@@ -39,7 +39,7 @@
       width: 100%;
       background: #111827;
       border-bottom: 2px solid var(--green);
-      padding: 12px 24px;
+      padding: 14px 28px;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
@@ -50,7 +50,7 @@
 
     .brand-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -67,6 +67,46 @@
       text-transform: uppercase;
     }
 
+    /* SÉLECTEUR D'EXEMPLE */
+    .selector-group {
+      display: flex;
+      background: #1f2937;
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.12);
+      gap: 4px;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: #94a3b8;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      color: #ffffff;
+    }
+
+    .tab-btn.active {
+      background: var(--navy);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    .tab-btn.active.tab-2 {
+      background: #0284c7;
+    }
+
     .actions-group {
       display: flex;
       align-items: center;
@@ -77,7 +117,7 @@
     .btn {
       padding: 9px 18px;
       font-family: 'Outfit', sans-serif;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 700;
       border-radius: 6px;
       border: none;
@@ -111,7 +151,7 @@
     }
 
     .btn-print {
-      background: #0284c7;
+      background: #475569;
       color: #fff;
     }
 
@@ -128,13 +168,13 @@
     /* DOSSIER TECHNIQUE IMPRIMEUR */
     .specs-box {
       width: 100%;
-      max-width: 600px;
+      max-width: 720px;
       background: #27303f;
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 8px;
-      padding: 14px 20px;
+      padding: 14px 24px;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 12px;
       text-align: center;
     }
@@ -153,14 +193,22 @@
       font-family: 'Outfit', sans-serif;
     }
 
+    .description-box {
+      max-width: 720px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+
     /* CADRE DU KAKEMONO SANS AUCUN DÉCOR */
     .banner-container {
       position: relative;
-      width: 500px;
+      width: 520px;
       box-shadow: 0 30px 70px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.15);
       border-radius: 4px;
       overflow: hidden;
-      background: #f7f3ec;
+      background: #faf7f2;
     }
 
     .banner-img {
@@ -186,10 +234,10 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 25px; /* Rail suspension 5cm */
-      background: rgba(239, 68, 68, 0.2);
+      height: 25px; /* Rail suspension 2.5cm */
+      background: rgba(239, 68, 68, 0.25);
       border-bottom: 2px dashed #ef4444;
-      font-size: 10px;
+      font-size: 11px;
       color: #ef4444;
       display: flex;
       align-items: center;
@@ -203,10 +251,10 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: 50px; /* Enrouleur carter 10cm */
-      background: rgba(239, 68, 68, 0.2);
+      height: 52px; /* Enrouleur carter 10cm */
+      background: rgba(239, 68, 68, 0.25);
       border-top: 2px dashed #ef4444;
-      font-size: 10px;
+      font-size: 11px;
       color: #ef4444;
       display: flex;
       align-items: center;
@@ -224,7 +272,7 @@
         background: #ffffff !important;
         padding: 0 !important;
       }
-      .top-bar, .specs-box {
+      .top-bar, .specs-box, .description-box {
         display: none !important;
       }
       .main-view {
@@ -248,15 +296,26 @@
   <header class="top-bar">
     <div class="brand-title">
       <i class="fas fa-file-image" style="color:var(--green)"></i>
-      RECUP CULTURE &nbsp;·&nbsp; Fichier Prêt à Imprimer
-      <span class="badge-fmt">2m × 1m (Format Plat)</span>
+      RECUP CULTURE &nbsp;·&nbsp; Fichiers Imprimeur
+      <span class="badge-fmt">1m × 2m Plat</span>
     </div>
 
+    <!-- SÉLECTEUR DES 2 EXEMPLES -->
+    <div class="selector-group">
+      <button class="tab-btn active" id="tab1" onclick="switchExample(1)">
+        <i class="fas fa-users-cog"></i> Exemple 1 : Modèle Illustré
+      </button>
+      <button class="tab-btn tab-2" id="tab2" onclick="switchExample(2)">
+        <i class="fas fa-chart-pie"></i> Exemple 2 : Modèle Infographique
+      </button>
+    </div>
+
+    <!-- BOUTONS DE TÉLÉCHARGEMENT DYNAMIQUES -->
     <div class="actions-group">
-      <a href="assets/kakemono-recupculture-print-HD.png" download="kakemono-recupculture-print-HD.png" class="btn btn-download-hd">
-        <i class="fas fa-download"></i> Télécharger PNG Haute Définition (300 DPI)
+      <a href="assets/kakemono-1-modele-illustre-HD.png" download="kakemono-1-modele-illustre-HD.png" class="btn btn-download-hd" id="btnDownloadHd">
+        <i class="fas fa-download"></i> Télécharger PNG HD (300 DPI)
       </a>
-      <a href="assets/kakemono-recupculture-print.png" download="kakemono-recupculture-print.png" class="btn btn-download-png">
+      <a href="assets/kakemono-1-modele-illustre.png" download="kakemono-1-modele-illustre.png" class="btn btn-download-png" id="btnDownloadStd">
         <i class="fas fa-file-download"></i> Télécharger PNG Standard
       </a>
       <button class="btn btn-guides" id="btnToggleGuides" onclick="toggleGuides()">
@@ -273,17 +332,25 @@
     <!-- SPÉCIFICATIONS TECHNIQUES IMPRIMEUR -->
     <div class="specs-box">
       <div class="spec-item">
-        <div>Format d'Impression</div>
-        <div>1000 × 2000 mm (1m × 2m)</div>
+        <div>Dimensions Réelles</div>
+        <div>1000 × 2000 mm</div>
       </div>
       <div class="spec-item">
         <div>Format du Fichier</div>
-        <div>PNG (Sans décor ni 3D)</div>
+        <div>PNG Plat (Sans décor 3D)</div>
       </div>
       <div class="spec-item">
-        <div>Résolution Imprimeur</div>
-        <div>300 DPI (Fichier HD)</div>
+        <div>Résolution Fichier HD</div>
+        <div>300 DPI (2400 × 4800 px)</div>
       </div>
+      <div class="spec-item">
+        <div>Compatibilité</div>
+        <div>Roll-Up / Bâche standard</div>
+      </div>
+    </div>
+
+    <div class="description-box" id="exampleDesc">
+      <strong>Exemple 1 (Modèle Illustré)</strong> : Rendu narratif et chaleureux mettant en scène la silhouette de l'atelier de tri solidaire, les flèches cycliques et les pastilles festonnées d'impact.
     </div>
 
     <!-- LE VISUEL DU KAKEMONO PUR (SANS DÉCOR, SANS TABLE, SANS SALON) -->
@@ -293,12 +360,46 @@
         <div class="guide-carter-bottom">ZONE TECHNIQUE BASSE (Carter enrouleur : 100 mm)</div>
       </div>
 
-      <img src="assets/kakemono-recupculture-print.png" alt="Visuel Kakemono RECUP CULTURE 2m x 1m" class="banner-img" id="bannerImg">
+      <img src="assets/kakemono-1-modele-illustre.png" alt="Visuel Kakemono RECUP CULTURE 2m x 1m" class="banner-img" id="bannerImg">
     </div>
 
   </main>
 
   <script>
+    let currentExample = 1;
+
+    function switchExample(num) {
+      currentExample = num;
+      const btn1 = document.getElementById('tab1');
+      const btn2 = document.getElementById('tab2');
+      const img = document.getElementById('bannerImg');
+      const dlHd = document.getElementById('btnDownloadHd');
+      const dlStd = document.getElementById('btnDownloadStd');
+      const desc = document.getElementById('exampleDesc');
+
+      if (num === 1) {
+        btn1.classList.add('active');
+        btn2.classList.remove('active');
+        img.src = 'assets/kakemono-1-modele-illustre.png';
+        img.alt = 'Kakemono RECUP CULTURE – Exemple 1 : Modèle Illustré';
+        dlHd.href = 'assets/kakemono-1-modele-illustre-HD.png';
+        dlHd.download = 'kakemono-1-modele-illustre-HD.png';
+        dlStd.href = 'assets/kakemono-1-modele-illustre.png';
+        dlStd.download = 'kakemono-1-modele-illustre.png';
+        desc.innerHTML = '<strong>Exemple 1 (Modèle Illustré)</strong> : Rendu narratif et chaleureux mettant en scène la silhouette de l\'atelier de tri solidaire, les flèches cycliques et les pastilles festonnées d\'impact.';
+      } else {
+        btn2.classList.add('active');
+        btn1.classList.remove('active');
+        img.src = 'assets/kakemono-2-modele-infographique.png';
+        img.alt = 'Kakemono RECUP CULTURE – Exemple 2 : Modèle Infographique';
+        dlHd.href = 'assets/kakemono-2-modele-infographique-HD.png';
+        dlHd.download = 'kakemono-2-modele-infographique-HD.png';
+        dlStd.href = 'assets/kakemono-2-modele-infographique.png';
+        dlStd.download = 'kakemono-2-modele-infographique.png';
+        desc.innerHTML = '<strong>Exemple 2 (Modèle Infographique)</strong> : Rendu géométrique épuré inspiré du site officiel, avec mosaïque bento pour l\'ESAT, les 2 anneaux de progression (50% Revente / 50% Recyclage) et les angles géométriques.';
+      }
+    }
+
     function toggleGuides() {
       document.body.classList.toggle('show-guides');
       const btn = document.getElementById('btnToggleGuides');
