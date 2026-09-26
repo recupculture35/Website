@@ -3,33 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BON À TIRER (B.A.T.) – Kakemono Roll-up 2m × 1m | RECUP CULTURE</title>
+  <title>Visuel Kakemono Imprimeur (2m × 1m) – RECUP CULTURE</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    /* =========================================================
-       BON À TIRER (B.A.T.) – KAKEMONO 2000mm x 1000mm
-       Modèle : Le Cycle Vertueux de la Culture
-       Données officielles recupculture.fr :
-       - Vrai logo officiel HD
-       - Étape 1 : Livres, CD, DVD, Jeux Vidéo
-       - Étape 2 : ESAT du Domaine à Châteauneuf-d'Ille-et-Vilaine
-       - Étape 3 : 50% Revente solidaire / 50% Recyclage vertueux / +30 000 Articles sauvés
-       - Flèches de flux vert végétal & pictogramme atelier 2D
-       ========================================================= */
     :root {
-      --bg-cream: #f8f4ec;
-      --navy: #163f7a;
-      --navy-dark: #0f274a;
       --green: #67b342;
-      --green-dark: #4d8f2e;
-      --amber: #f59e0b;
-      --text-dark: #141a23;
-      --text-muted: #546375;
-      --font-heading: 'Outfit', sans-serif;
-      --font-body: 'Inter', sans-serif;
+      --navy: #163f7a;
+      --dark: #0f172a;
     }
 
     * {
@@ -39,58 +22,52 @@
     }
 
     body {
-      background: #181d26;
-      color: #e2e8f0;
-      font-family: var(--font-body);
+      background: #1e2430;
+      color: #f1f5f9;
+      font-family: 'Inter', sans-serif;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
-    /* BARRE D'OUTILS DU B.A.T. */
-    .bat-toolbar {
+    /* BARRE D'OUTILS PRINCIPALE */
+    .top-bar {
       position: sticky;
       top: 0;
       z-index: 1000;
       width: 100%;
-      background: #11151c;
-      color: #fff;
+      background: #111827;
+      border-bottom: 2px solid var(--green);
       padding: 12px 24px;
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
       gap: 16px;
-      border-bottom: 2px solid var(--green);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     }
 
-    .bat-brand {
+    .brand-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .bat-pill {
+    .badge-fmt {
       background: var(--green);
       color: #fff;
-      font-family: var(--font-heading);
-      font-weight: 800;
       font-size: 0.75rem;
+      font-weight: 800;
       padding: 3px 8px;
       border-radius: 4px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
     }
 
-    .bat-title {
-      font-family: var(--font-heading);
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
-
-    .bat-controls {
+    .actions-group {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -98,183 +75,109 @@
     }
 
     .btn {
-      padding: 8px 16px;
-      font-family: var(--font-heading);
-      font-size: 0.88rem;
-      font-weight: 600;
+      padding: 9px 18px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
       border-radius: 6px;
-      border: 1px solid transparent;
+      border: none;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      transition: all 0.2s ease;
       text-decoration: none;
+      transition: all 0.2s ease;
     }
 
-    .btn-tab {
-      background: rgba(255,255,255,0.08);
-      color: #e2e8f0;
-      border-color: rgba(255,255,255,0.15);
+    .btn-download-hd {
+      background: #2563eb;
+      color: #fff;
+    }
+    .btn-download-hd:hover {
+      background: #1d4ed8;
     }
 
-    .btn-tab:hover, .btn-tab.active {
+    .btn-download-png {
       background: var(--green);
-      color: #ffffff;
-      border-color: var(--green);
+      color: #fff;
+    }
+    .btn-download-png:hover {
+      background: #569e34;
     }
 
     .btn-guides {
       background: #334155;
-      color: #f1f5f9;
+      color: #fff;
     }
 
     .btn-print {
-      background: #2563eb;
+      background: #0284c7;
       color: #fff;
-      font-weight: 700;
-    }
-    .btn-print:hover {
-      background: #1d4ed8;
     }
 
-    /* ESPACE PRINCIPAL */
-    .workspace {
-      width: 100%;
+    /* ZONE D'AFFICHAGE DU VISUEL */
+    .main-view {
       padding: 30px 20px 60px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 30px;
-    }
-
-    /* FICHE TECHNIQUE B.A.T. */
-    .bat-dossier-card {
-      width: 100%;
-      max-width: 980px;
-      background: #202734;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 10px;
-      padding: 18px 24px;
-      display: grid;
-      grid-template-columns: 2fr 1fr;
       gap: 20px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+      width: 100%;
     }
 
-    .bat-info h3 {
-      font-family: var(--font-heading);
-      font-size: 1.15rem;
-      color: #fff;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .bat-specs-grid {
+    /* DOSSIER TECHNIQUE IMPRIMEUR */
+    .specs-box {
+      width: 100%;
+      max-width: 600px;
+      background: #27303f;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 14px 20px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 12px;
-      margin-top: 10px;
+      text-align: center;
     }
 
-    .spec-item {
-      background: rgba(0,0,0,0.25);
-      border-radius: 6px;
-      padding: 6px 10px;
-      border-left: 3px solid var(--green);
-    }
-
-    .spec-label {
+    .spec-item div:first-child {
       font-size: 0.72rem;
       color: #94a3b8;
       text-transform: uppercase;
       font-weight: 600;
     }
 
-    .spec-val {
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: #f8fafc;
+    .spec-item div:last-child {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: #38bdf8;
+      font-family: 'Outfit', sans-serif;
     }
 
-    .bat-approval-box {
-      background: rgba(103, 179, 66, 0.1);
-      border: 1px dashed var(--green);
-      border-radius: 8px;
-      padding: 12px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .bat-approval-box strong {
-      color: #8ee85c;
-      font-size: 0.95rem;
-      font-family: var(--font-heading);
-    }
-
-    .bat-approval-box span {
-      font-size: 0.78rem;
-      color: #cbd5e1;
-    }
-
-    /* CONTENEUR DU KAKEMONO ET MAQUETTE */
-    .kakemono-display-area {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 40px;
-      flex-wrap: wrap;
-    }
-
-    .view-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .view-card-title {
-      font-family: var(--font-heading);
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: #f1f5f9;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    /* =========================================================
-       LE KAKEMONO B.A.T. (1000mm x 2000mm)
-       Échelle écran : 500px x 1000px
-       ========================================================= */
-    .kakemono-frame {
+    /* CADRE DU KAKEMONO SANS AUCUN DÉCOR */
+    .banner-container {
       position: relative;
       width: 500px;
-      height: 1000px;
-      background: var(--bg-cream);
-      box-shadow: 0 25px 60px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.08);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      color: var(--text-dark);
+      box-shadow: 0 30px 70px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.15);
       border-radius: 4px;
+      overflow: hidden;
+      background: #f7f3ec;
     }
 
-    /* REPERES D'IMPRESSION (HIRONDELLES & MARGES) */
-    .guide-overlay {
+    .banner-img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* GUIDES ET REPÈRES TECHNIQUES */
+    .guides-overlay {
       position: absolute;
       inset: 0;
       pointer-events: none;
-      z-index: 600;
       display: none;
     }
 
-    body.show-guides .guide-overlay {
+    body.show-guides .guides-overlay {
       display: block;
     }
 
@@ -283,15 +186,16 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 25px; /* 5cm rail haut */
-      background: rgba(239, 68, 68, 0.15);
+      height: 25px; /* Rail suspension 5cm */
+      background: rgba(239, 68, 68, 0.2);
       border-bottom: 2px dashed #ef4444;
       font-size: 10px;
       color: #ef4444;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
+      font-weight: 800;
+      letter-spacing: 0.5px;
     }
 
     .guide-carter-bottom {
@@ -299,820 +203,111 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: 50px; /* 10cm enrouleur bas */
-      background: rgba(239, 68, 68, 0.15);
+      height: 50px; /* Enrouleur carter 10cm */
+      background: rgba(239, 68, 68, 0.2);
       border-top: 2px dashed #ef4444;
       font-size: 10px;
       color: #ef4444;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-    }
-
-    /* BANDE DE CONTRÔLE COULEUR CMJN EN HAUT DU BAT */
-    .cmik-control-bar {
-      height: 6px;
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      width: 100%;
-    }
-    .c-c { background: #009ee3; }
-    .c-m { background: #e5007d; }
-    .c-y { background: #ffed00; }
-    .c-k { background: #000000; }
-    .c-g { background: #67b342; }
-    .c-b { background: #163f7a; }
-
-    /* 1. TOP : LOGO OFFICIEL RECUP CULTURE */
-    .k-top-logo {
-      padding: 16px 20px 8px 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      background: var(--bg-cream);
-    }
-
-    .k-logo-img {
-      width: 215px;
-      max-width: 80%;
-      height: auto;
-      display: block;
-      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.06));
-    }
-
-    /* BANDEAU TITRE : BLEU ROYAL DENSE */
-    .k-navy-banner {
-      background: var(--navy);
-      color: #ffffff;
-      padding: 12px 20px;
-      text-align: center;
-      box-shadow: 0 4px 15px rgba(22, 63, 122, 0.25);
-    }
-
-    .k-main-title {
-      font-family: var(--font-heading);
-      font-size: 21px;
       font-weight: 800;
-      letter-spacing: -0.2px;
-      line-height: 1.2;
-      text-transform: none;
+      letter-spacing: 0.5px;
     }
 
-    .k-subtitle {
-      font-size: 13px;
-      color: #dbeafe;
-      font-weight: 400;
-      margin-top: 3px;
-      font-style: normal;
-    }
-
-    /* CORPS DU VISUEL INFOGRAPHIQUE */
-    .k-body-flow {
-      position: relative;
-      padding: 14px 24px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-      justify-content: space-between;
-    }
-
-    /* SVG DES FLÈCHES COURBÉES DE FLUX (STYLE EXACT DU MOCKUP) */
-    .flow-curved-arrow {
-      position: absolute;
-      width: 40px;
-      height: 80px;
-      pointer-events: none;
-      z-index: 50;
-    }
-
-    .arrow-left-1 {
-      top: 90px;
-      left: 12px;
-    }
-
-    .arrow-right-1 {
-      top: 90px;
-      right: 12px;
-      transform: scaleX(-1);
-    }
-
-    .arrow-left-2 {
-      top: 250px;
-      left: 12px;
-    }
-
-    .arrow-right-2 {
-      top: 250px;
-      right: 12px;
-      transform: scaleX(-1);
-    }
-
-    /* SECTION 1 : LA COLLECTE */
-    .k-section {
-      text-align: center;
-      position: relative;
-      z-index: 10;
-    }
-
-    .k-sec-title {
-      font-family: var(--font-heading);
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--navy);
-      margin-bottom: 8px;
-    }
-
-    .k-items-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      max-width: 420px;
-      margin: 0 auto;
-    }
-
-    .k-item-badge {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
-
-    .k-circle-icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 50%;
-      background: var(--navy);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      box-shadow: 0 4px 10px rgba(22, 63, 122, 0.25);
-      margin-bottom: 4px;
-    }
-
-    .k-item-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-dark);
-    }
-
-    /* SECTION 2 : LE TRI SOLIDAIRE (ATELIER ESAT) */
-    .k-esat-section {
-      text-align: center;
-      margin: 6px 0;
-      position: relative;
-      z-index: 10;
-    }
-
-    .k-esat-title {
-      font-family: var(--font-heading);
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--navy);
-      margin-bottom: 2px;
-    }
-
-    .k-esat-sub {
-      font-size: 11.5px;
-      font-weight: 700;
-      color: var(--green-dark);
-      margin-bottom: 8px;
-    }
-
-    /* Pictogramme vectoriel 2D épuré de l'atelier de tri */
-    .k-workshop-picto {
-      width: 100%;
-      max-width: 320px;
-      height: 85px;
-      margin: 0 auto 6px auto;
-      display: block;
-    }
-
-    .k-esat-desc {
-      font-size: 11px;
-      color: var(--text-dark);
-      font-weight: 600;
-      max-width: 410px;
-      margin: 0 auto;
-      line-height: 1.35;
-    }
-
-    /* SECTION 3 : UNE SECONDE VIE (50% REVENTE / 50% RECYCLAGE / +30 000) */
-    .k-second-life-section {
-      text-align: center;
-      position: relative;
-      z-index: 10;
-    }
-
-    .k-life-title {
-      font-family: var(--font-heading);
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--navy);
-      margin-bottom: 10px;
-    }
-
-    .k-badges-trio {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      max-width: 450px;
-      margin: 0 auto;
-    }
-
-    /* Rosette / Nuage festonné découpé (identique au mockup) */
-    .rosette-badge {
-      width: 130px;
-      height: 130px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      color: #fff;
-      padding: 10px;
-      position: relative;
-      filter: drop-shadow(0 6px 14px rgba(0,0,0,0.18));
-      transition: transform 0.2s ease;
-    }
-
-    /* Forme festonnée SVG pour une netteté vectorielle parfaite */
-    .rosette-svg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
-
-    .rosette-content {
-      position: relative;
-      z-index: 2;
-    }
-
-    .rosette-pct {
-      font-family: var(--font-heading);
-      font-size: 26px;
-      font-weight: 900;
-      line-height: 1;
-      margin-bottom: 2px;
-    }
-
-    .rosette-label {
-      font-family: var(--font-heading);
-      font-size: 11px;
-      font-weight: 800;
-      line-height: 1.15;
-      text-transform: uppercase;
-    }
-
-    .rosette-sub {
-      font-size: 8.5px;
-      font-weight: 500;
-      opacity: 0.9;
-      line-height: 1.1;
-      margin-top: 2px;
-    }
-
-    /* Badge central "+30 000 Articles sauvés" */
-    .star-badge-box {
-      width: 110px;
-      height: 110px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      position: relative;
-      filter: drop-shadow(0 6px 14px rgba(245, 158, 11, 0.3));
-    }
-
-    .star-badge-svg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
-
-    .star-badge-content {
-      position: relative;
-      z-index: 2;
-      color: #ffffff;
-      padding: 6px;
-    }
-
-    .star-badge-icon {
-      font-size: 13px;
-      color: #fff;
-      margin-bottom: 2px;
-    }
-
-    .star-badge-num {
-      font-family: var(--font-heading);
-      font-size: 16px;
-      font-weight: 900;
-      line-height: 1;
-      letter-spacing: -0.3px;
-    }
-
-    .star-badge-text {
-      font-size: 9px;
-      font-weight: 700;
-      text-transform: uppercase;
-      line-height: 1.1;
-    }
-
-    /* FOOTER DU KAKEMONO : CALL TO ACTION, SITE & QR CODE */
-    .k-footer-bat {
-      background: var(--bg-cream);
-      padding: 14px 28px 48px 28px; /* Dégagement de sécurité enrouleur */
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      border-top: 2px solid rgba(103, 179, 66, 0.3);
-      position: relative;
-      z-index: 20;
-    }
-
-    .k-footer-left {
-      flex: 1;
-    }
-
-    .k-cta-headline {
-      font-family: var(--font-heading);
-      font-size: 18px;
-      font-weight: 900;
-      color: var(--navy);
-      line-height: 1.2;
-      margin-bottom: 3px;
-    }
-
-    .k-cta-headline span {
-      color: var(--green-dark);
-    }
-
-    .k-cta-website {
-      font-family: var(--font-heading);
-      font-size: 20px;
-      font-weight: 900;
-      color: var(--green-dark);
-      letter-spacing: -0.3px;
-    }
-
-    .k-footer-meta {
-      font-size: 9.5px;
-      color: var(--text-muted);
-      margin-top: 4px;
-      font-weight: 600;
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-
-    .k-qr-wrapper {
-      width: 86px;
-      height: 86px;
-      background: #ffffff;
-      padding: 6px;
-      border-radius: 8px;
-      border: 1px solid #cbd5e1;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .k-qr-wrapper svg {
-      width: 62px;
-      height: 62px;
-    }
-
-    .k-qr-caption {
-      font-size: 7px;
-      font-weight: 800;
-      color: var(--navy);
-      text-transform: uppercase;
-      margin-top: 2px;
-      letter-spacing: 0.3px;
-    }
-
-    /* MAQUETTE PHOTO 3D SUR STAND */
-    .mockup-frame {
-      width: 500px;
-      height: 1000px;
-      border-radius: 6px;
-      overflow: hidden;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.65);
-      background: #000;
-    }
-
-    .mockup-frame img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    /* CONFIGURATION IMPRESSION HAUTE DÉFINITION 1000mm x 2000mm */
     @media print {
       @page {
         size: 1000mm 2000mm;
         margin: 0;
       }
-
       body {
         background: #ffffff !important;
         padding: 0 !important;
-        margin: 0 !important;
       }
-
-      .bat-toolbar, .bat-dossier-card, .mockup-view-card, .view-card-title {
+      .top-bar, .specs-box {
         display: none !important;
       }
-
-      .workspace {
+      .main-view {
         padding: 0 !important;
-        margin: 0 !important;
-        display: block !important;
       }
-
-      .kakemono-frame {
+      .banner-container {
         width: 1000mm !important;
-        height: 2000mm !important;
         box-shadow: none !important;
         border-radius: 0 !important;
-        transform: scale(2) !important;
-        transform-origin: top left !important;
+      }
+      .banner-img {
+        width: 1000mm !important;
+        height: auto !important;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- TOOLBAR B.A.T. -->
-  <header class="bat-toolbar">
-    <div class="bat-brand">
-      <span class="bat-pill">B.A.T. VALIDATION</span>
-      <div class="bat-title">
-        Kakemono 2m × 1m &nbsp;·&nbsp; Le Cycle Vertueux de la Culture
-      </div>
+  <!-- BARRE D'ACTIONS -->
+  <header class="top-bar">
+    <div class="brand-title">
+      <i class="fas fa-file-image" style="color:var(--green)"></i>
+      RECUP CULTURE &nbsp;·&nbsp; Fichier Prêt à Imprimer
+      <span class="badge-fmt">2m × 1m (Format Plat)</span>
     </div>
 
-    <div class="bat-controls">
-      <button class="btn btn-tab active" id="btnTabBAT" onclick="toggleView('bat')">
-        <i class="fas fa-file-invoice"></i> Bon à Tirer Vectoriel
-      </button>
-      <button class="btn btn-tab" id="btnTabMockup" onclick="toggleView('mockup')">
-        <i class="fas fa-camera"></i> Rendu Photo Stand 3D
-      </button>
-      <button class="btn btn-tab" id="btnTabDuo" onclick="toggleView('duo')">
-        <i class="fas fa-columns"></i> Côte à Côte
-      </button>
-      <button class="btn btn-guides" id="btnGuides" onclick="toggleGuides()">
-        <i class="fas fa-ruler-combined"></i> Repères &amp; Marges Enrouleur
+    <div class="actions-group">
+      <a href="assets/kakemono-recupculture-print-HD.png" download="kakemono-recupculture-print-HD.png" class="btn btn-download-hd">
+        <i class="fas fa-download"></i> Télécharger PNG Haute Définition (300 DPI)
+      </a>
+      <a href="assets/kakemono-recupculture-print.png" download="kakemono-recupculture-print.png" class="btn btn-download-png">
+        <i class="fas fa-file-download"></i> Télécharger PNG Standard
+      </a>
+      <button class="btn btn-guides" id="btnToggleGuides" onclick="toggleGuides()">
+        <i class="fas fa-ruler-combined"></i> Repères Enrouleur (10cm bas)
       </button>
       <button class="btn btn-print" onclick="window.print()">
-        <i class="fas fa-print"></i> Imprimer / Exporter PDF HD (1m × 2m)
+        <i class="fas fa-print"></i> Imprimer / PDF
       </button>
     </div>
   </header>
 
-  <main class="workspace">
+  <main class="main-view">
 
-    <!-- FICHE TECHNIQUE DU BON À TIRER -->
-    <section class="bat-dossier-card">
-      <div class="bat-info">
-        <h3><i class="fas fa-certificate" style="color:var(--green)"></i> Fiche de Spécifications Techniques – Impression Roll-up</h3>
-        <p style="font-size:0.85rem;color:#cbd5e1;line-height:1.4">
-          Ce Bon à Tirer reproduit fidèlement la composition graphique de <strong>kakemono-2-principe-mockup.jpg</strong> avec l'ensemble des données certifiées du site <strong>www.recupculture.fr</strong>.
-        </p>
-        <div class="bat-specs-grid">
-          <div class="spec-item">
-            <div class="spec-label">Format Fini</div>
-            <div class="spec-val">1000 × 2000 mm</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-label">Fond Perdu (Bleed)</div>
-            <div class="spec-val">5 mm (1010 × 2010 mm)</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-label">Zone Carter Bas</div>
-            <div class="spec-val">100 mm réservés</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-label">Colorimétrie</div>
-            <div class="spec-val">CMJN / FOGRA 39</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-label">Résolution</div>
-            <div class="spec-val">300 DPI Vectoriel</div>
-          </div>
-          <div class="spec-item">
-            <div class="spec-label">Support Conseillé</div>
-            <div class="spec-val">Bâche 450g M1 Anti-Feu</div>
-          </div>
-        </div>
+    <!-- SPÉCIFICATIONS TECHNIQUES IMPRIMEUR -->
+    <div class="specs-box">
+      <div class="spec-item">
+        <div>Format d'Impression</div>
+        <div>1000 × 2000 mm (1m × 2m)</div>
+      </div>
+      <div class="spec-item">
+        <div>Format du Fichier</div>
+        <div>PNG (Sans décor ni 3D)</div>
+      </div>
+      <div class="spec-item">
+        <div>Résolution Imprimeur</div>
+        <div>300 DPI (Fichier HD)</div>
+      </div>
+    </div>
+
+    <!-- LE VISUEL DU KAKEMONO PUR (SANS DÉCOR, SANS TABLE, SANS SALON) -->
+    <div class="banner-container">
+      <div class="guides-overlay">
+        <div class="guide-rail-top">MARGE DE SÉCURITÉ HAUTE (Rail de serrage : 25 mm)</div>
+        <div class="guide-carter-bottom">ZONE TECHNIQUE BASSE (Carter enrouleur : 100 mm)</div>
       </div>
 
-      <div class="bat-approval-box">
-        <strong>BON POUR ACCORD (B.A.T.)</strong>
-        <span>Validation de conformité avant tirage définitif</span>
-        <div style="font-size:0.75rem;color:#94a3b8;margin-top:4px">
-          Date : 26/09/2026<br>
-          Client : Association RECUP CULTURE
-        </div>
-      </div>
-    </section>
-
-    <!-- ZONE DU KAKEMONO ET DU RENDU 3D -->
-    <div class="kakemono-display-area">
-
-      <!-- 1. LE KAKEMONO VECTORIEL CONFORME B.A.T. -->
-      <section class="view-card" id="cardBAT">
-        <div class="view-card-title">
-          <i class="fas fa-vector-square" style="color:var(--green)"></i>
-          Épreuve Contractuelle – Format 1m × 2m
-        </div>
-
-        <article class="kakemono-frame" id="kakemonoRollup">
-          <!-- Guide de découpe et de sécurité -->
-          <div class="guide-overlay">
-            <div class="guide-rail-top">MARGE DE SÉCURITÉ HAUTE (Rail de serrage : 25 mm)</div>
-            <div class="guide-carter-bottom">ZONE TECHNIQUE BASSE (Enrouleur / Carter alu : 50 à 100 mm)</div>
-          </div>
-
-          <!-- Bande de contrôle densitométrique CMJN pour imprimeur -->
-          <div class="cmik-control-bar">
-            <div class="c-c"></div>
-            <div class="c-m"></div>
-            <div class="c-y"></div>
-            <div class="c-k"></div>
-            <div class="c-g"></div>
-            <div class="c-b"></div>
-          </div>
-
-          <!-- HAUT : LOGO OFFICIEL HD -->
-          <div class="k-top-logo">
-            <img src="assets/logo-transparent.png" alt="RECUP CULTURE - Donnez une seconde vie à la culture" class="k-logo-img">
-          </div>
-
-          <!-- BANDEAU BLEU ROYAL : TITRE MAJEUR DU PROJET -->
-          <div class="k-navy-banner">
-            <h1 class="k-main-title">Le Cycle Vertueux de la Culture</h1>
-            <p class="k-subtitle">Comment ça marche ?</p>
-          </div>
-
-          <!-- CORPS AVEC LES FLÈCHES ET LES 3 ÉTAPES -->
-          <div class="k-body-flow">
-
-            <!-- FLÈCHES COURBÉES VERTES (SVG FIDÈLE AU MOCKUP) -->
-            <!-- Flèche gauche Étape 1 -> Étape 2 -->
-            <svg class="flow-curved-arrow arrow-left-1" viewBox="0 0 40 80">
-              <path d="M 30 5 C 5 25, 5 55, 30 75" fill="none" stroke="#67b342" stroke-width="4.5" stroke-linecap="round"/>
-              <polygon points="36,75 24,68 26,79" fill="#67b342"/>
-            </svg>
-            <!-- Flèche droite Étape 1 -> Étape 2 -->
-            <svg class="flow-curved-arrow arrow-right-1" viewBox="0 0 40 80">
-              <path d="M 30 5 C 5 25, 5 55, 30 75" fill="none" stroke="#67b342" stroke-width="4.5" stroke-linecap="round"/>
-              <polygon points="36,75 24,68 26,79" fill="#67b342"/>
-            </svg>
-
-            <!-- Flèche gauche Étape 2 -> Étape 3 -->
-            <svg class="flow-curved-arrow arrow-left-2" viewBox="0 0 40 80">
-              <path d="M 30 5 C 5 25, 5 55, 30 75" fill="none" stroke="#67b342" stroke-width="4.5" stroke-linecap="round"/>
-              <polygon points="36,75 24,68 26,79" fill="#67b342"/>
-            </svg>
-            <!-- Flèche droite Étape 2 -> Étape 3 -->
-            <svg class="flow-curved-arrow arrow-right-2" viewBox="0 0 40 80">
-              <path d="M 30 5 C 5 25, 5 55, 30 75" fill="none" stroke="#67b342" stroke-width="4.5" stroke-linecap="round"/>
-              <polygon points="36,75 24,68 26,79" fill="#67b342"/>
-            </svg>
-
-            <!-- ÉTAPE 1 : LA COLLECTE -->
-            <div class="k-section">
-              <h2 class="k-sec-title">1. La Collecte</h2>
-              <div class="k-items-row">
-                <div class="k-item-badge">
-                  <div class="k-circle-icon"><i class="fas fa-book"></i></div>
-                  <span class="k-item-label">Livres</span>
-                </div>
-                <div class="k-item-badge">
-                  <div class="k-circle-icon"><i class="fas fa-compact-disc"></i></div>
-                  <span class="k-item-label">CD</span>
-                </div>
-                <div class="k-item-badge">
-                  <div class="k-circle-icon"><i class="fas fa-film"></i></div>
-                  <span class="k-item-label">DVD</span>
-                </div>
-                <div class="k-item-badge">
-                  <div class="k-circle-icon"><i class="fas fa-gamepad"></i></div>
-                  <span class="k-item-label">Jeux Vidéo</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- ÉTAPE 2 : LE TRI SOLIDAIRE EN ESAT -->
-            <div class="k-esat-section">
-              <h2 class="k-esat-title">2. Le Tri Solidaire</h2>
-              <div class="k-esat-sub">ESAT du Domaine à Châteauneuf-d'Ille-et-Vilaine</div>
-
-              <!-- PICTOGRAMME 2D FLAT ET ÉPURÉ (TRI, ATELIER ESAT & ENCADREMENT) -->
-              <svg class="k-workshop-picto" viewBox="0 0 340 90">
-                <!-- Bac de tri gauche avec symbole recyclage -->
-                <rect x="20" y="44" width="38" height="36" rx="4" fill="#163f7a"/>
-                <polygon points="16,44 62,44 58,38 20,38" fill="#163f7a"/>
-                <!-- Logo recyclage sur le bac -->
-                <path d="M39 54 L44 59 L39 64 M43 59 L35 59 A 6 6 0 0 0 29 65" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round"/>
-                <!-- Silhouette ouvrier 1 -->
-                <circle cx="39" cy="22" r="7" fill="#163f7a"/>
-                <path d="M28 36 C28 30, 50 30, 50 36 L50 44 L28 44 Z" fill="#163f7a"/>
-
-                <!-- Table de tri centrale avec les livres -->
-                <rect x="80" y="48" width="140" height="8" rx="2" fill="#163f7a"/>
-                <rect x="90" y="56" width="10" height="24" fill="#163f7a"/>
-                <rect x="200" y="56" width="10" height="24" fill="#163f7a"/>
-
-                <!-- Livres empilés sur la table -->
-                <rect x="110" y="38" width="26" height="10" rx="1.5" fill="#67b342"/>
-                <rect x="112" y="32" width="22" height="6" rx="1.5" fill="#f59e0b"/>
-                <rect x="142" y="36" width="24" height="12" rx="1.5" fill="#163f7a"/>
-                <rect x="172" y="40" width="26" height="8" rx="1.5" fill="#67b342"/>
-
-                <!-- Silhouettes travailleurs 2 & 3 à la table -->
-                <circle cx="102" cy="24" r="7" fill="#163f7a"/>
-                <path d="M92 38 C92 32, 112 32, 112 38 L112 48 L92 48 Z" fill="#163f7a"/>
-
-                <circle cx="188" cy="24" r="7" fill="#163f7a"/>
-                <path d="M178 38 C178 32, 198 32, 198 38 L198 48 L178 48 Z" fill="#163f7a"/>
-
-                <!-- Carton d'expédition / reconditionnement à droite -->
-                <rect x="240" y="52" width="34" height="28" rx="3" fill="#163f7a"/>
-                <polygon points="236,52 278,52 274,47 240,47" fill="#163f7a"/>
-                <circle cx="275" cy="26" r="7" fill="#163f7a"/>
-                <path d="M265 40 C265 34, 285 34, 285 40 L285 52 L265 52 Z" fill="#163f7a"/>
-
-                <!-- Engrenages & inclusion symbolique -->
-                <path d="M 302 36 L 306 36 L 308 40 L 312 42 L 310 46 L 306 48 L 302 46 Z" fill="#67b342"/>
-                <circle cx="305" cy="42" r="3" fill="#f8f4ec"/>
-                <circle cx="318" cy="30" r="5" fill="#f59e0b"/>
-                <circle cx="318" cy="30" r="2" fill="#f8f4ec"/>
-              </svg>
-
-              <p class="k-esat-desc">
-                Traitement par des personnes en situation de handicap<br>
-                <strong>Inclusion sociale &amp; emploi valorisant</strong>
-              </p>
-            </div>
-
-            <!-- ÉTAPE 3 : UNE SECONDE VIE (50% REVENTE / 50% RECYCLAGE / +30 000 ARTICLES) -->
-            <div class="k-second-life-section">
-              <h2 class="k-life-title">3. Une Seconde Vie</h2>
-
-              <div class="k-badges-trio">
-                <!-- 1. ROSETTE 50% REVENTE SOLIDAIRE (BLEU ROYAL) -->
-                <div class="rosette-badge">
-                  <!-- Forme festonnée / nuage 12 pointes en SVG -->
-                  <svg class="rosette-svg" viewBox="0 0 100 100">
-                    <path d="M50 0 C58 0 63 6 70 8 C77 10 84 10 88 16 C92 22 91 30 94 36 C97 42 103 46 103 54 C103 62 97 66 94 72 C91 78 92 86 88 92 C84 98 77 98 70 100 C63 102 58 108 50 108 C42 108 37 102 30 100 C23 98 16 98 12 92 C8 86 9 78 6 72 C3 66 -3 62 -3 54 C-3 46 3 42 6 36 C9 30 8 22 12 16 C16 10 23 10 30 8 C37 6 42 0 50 0 Z" fill="#163f7a"/>
-                  </svg>
-                  <div class="rosette-content">
-                    <div class="rosette-pct">50%</div>
-                    <div class="rosette-label">Revente<br>Solidaire</div>
-                    <div class="rosette-sub">Boutique &amp; en ligne<br>Livres dès 0,50€</div>
-                  </div>
-                </div>
-
-                <!-- 2. ÉTOILE CENTRALE +30 000 ARTICLES SAUVÉS -->
-                <div class="star-badge-box">
-                  <svg class="star-badge-svg" viewBox="0 0 100 100">
-                    <!-- Étoile d'impact dorée / verte festonnée -->
-                    <polygon points="50,5 62,28 88,24 76,46 95,65 69,72 65,98 48,82 28,95 31,69 8,58 28,42 18,18 42,26" fill="#f59e0b"/>
-                    <circle cx="50" cy="52" r="34" fill="#67b342"/>
-                  </svg>
-                  <div class="star-badge-content">
-                    <i class="fas fa-star star-badge-icon"></i>
-                    <div class="star-badge-num">+30 000</div>
-                    <div class="star-badge-text">Articles<br>Sauvés</div>
-                  </div>
-                </div>
-
-                <!-- 3. ROSETTE 50% RECYCLAGE (VERT NATUREL) -->
-                <div class="rosette-badge">
-                  <svg class="rosette-svg" viewBox="0 0 100 100">
-                    <path d="M50 0 C58 0 63 6 70 8 C77 10 84 10 88 16 C92 22 91 30 94 36 C97 42 103 46 103 54 C103 62 97 66 94 72 C91 78 92 86 88 92 C84 98 77 98 70 100 C63 102 58 108 50 108 C42 108 37 102 30 100 C23 98 16 98 12 92 C8 86 9 78 6 72 C3 66 -3 62 -3 54 C-3 46 3 42 6 36 C9 30 8 22 12 16 C16 10 23 10 30 8 C37 6 42 0 50 0 Z" fill="#67b342"/>
-                  </svg>
-                  <div class="rosette-content">
-                    <div class="rosette-pct">50%</div>
-                    <div class="rosette-label">Recyclage<br>Matière</div>
-                    <div class="rosette-sub">Pâte à papier<br>Zéro Déchet</div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-
-          <!-- BAS : CALL TO ACTION, SITE INTERNET & QR CODE -->
-          <footer class="k-footer-bat">
-            <div class="k-footer-left">
-              <div class="k-cta-headline">
-                Donnez vos livres<br><span>&amp; biens culturels !</span>
-              </div>
-              <div class="k-cta-website">www.recupculture.fr</div>
-              <div class="k-footer-meta">
-                <span><i class="fas fa-map-marker-alt" style="color:var(--green)"></i> Bacs de collecte : Saint-Malo · Dinard · Châteauneuf</span>
-                <span><i class="fas fa-envelope" style="color:var(--navy)"></i> info@recupculture.fr &nbsp;·&nbsp; Facebook &amp; Instagram</span>
-              </div>
-            </div>
-
-            <div class="k-qr-wrapper">
-              <!-- QR Code net vers https://www.recupculture.fr -->
-              <svg viewBox="0 0 100 100" fill="#163f7a">
-                <rect x="8" y="8" width="26" height="26" fill="none" stroke="#163f7a" stroke-width="5"/>
-                <rect x="15" y="15" width="12" height="12"/>
-                <rect x="66" y="8" width="26" height="26" fill="none" stroke="#163f7a" stroke-width="5"/>
-                <rect x="73" y="15" width="12" height="12"/>
-                <rect x="8" y="66" width="26" height="26" fill="none" stroke="#163f7a" stroke-width="5"/>
-                <rect x="15" y="73" width="12" height="12"/>
-                <rect x="42" y="10" width="8" height="8"/>
-                <rect x="52" y="22" width="8" height="8"/>
-                <rect x="40" y="36" width="18" height="7"/>
-                <rect x="10" y="42" width="7" height="12"/>
-                <rect x="25" y="48" width="10" height="7"/>
-                <rect x="66" y="44" width="12" height="7"/>
-                <rect x="82" y="52" width="10" height="10"/>
-                <rect x="42" y="66" width="8" height="18"/>
-                <rect x="54" y="68" width="14" height="8"/>
-                <rect x="74" y="74" width="16" height="16"/>
-              </svg>
-              <div class="k-qr-caption">Scannez-moi</div>
-            </div>
-          </footer>
-
-        </article>
-      </section>
-
-      <!-- 2. LA MAQUETTE 3D RÉELLE DU B.A.T. -->
-      <section class="view-card mockup-view-card" id="cardMockup" style="display:none;">
-        <div class="view-card-title">
-          <i class="fas fa-camera" style="color:#60a5fa"></i>
-          Rendu Photo – Kakemono Déployé sur Stand
-        </div>
-
-        <div class="mockup-frame">
-          <img src="assets/bat-kakemono-2-principe.jpg" alt="Rendu 3D Bon à Tirer Kakemono">
-        </div>
-      </section>
-
+      <img src="assets/kakemono-recupculture-print.png" alt="Visuel Kakemono RECUP CULTURE 2m x 1m" class="banner-img" id="bannerImg">
     </div>
 
   </main>
 
   <script>
-    function toggleView(mode) {
-      const cardBAT = document.getElementById('cardBAT');
-      const cardMock = document.getElementById('cardMockup');
-      const bBAT = document.getElementById('btnTabBAT');
-      const bMoc = document.getElementById('btnTabMockup');
-      const bDuo = document.getElementById('btnTabDuo');
-
-      bBAT.classList.remove('active');
-      bMoc.classList.remove('active');
-      bDuo.classList.remove('active');
-
-      if (mode === 'mockup') {
-        cardBAT.style.display = 'none';
-        cardMock.style.display = 'flex';
-        bMoc.classList.add('active');
-      } else if (mode === 'duo') {
-        cardBAT.style.display = 'flex';
-        cardMock.style.display = 'flex';
-        bDuo.classList.add('active');
-      } else {
-        cardBAT.style.display = 'flex';
-        cardMock.style.display = 'none';
-        bBAT.classList.add('active');
-      }
-    }
-
     function toggleGuides() {
       document.body.classList.toggle('show-guides');
-      const btn = document.getElementById('btnGuides');
+      const btn = document.getElementById('btnToggleGuides');
       if (document.body.classList.contains('show-guides')) {
         btn.style.background = '#dc2626';
         btn.innerHTML = '<i class="fas fa-eye-slash"></i> Masquer Repères';
       } else {
         btn.style.background = '#334155';
-        btn.innerHTML = '<i class="fas fa-ruler-combined"></i> Repères &amp; Marges Enrouleur';
+        btn.innerHTML = '<i class="fas fa-ruler-combined"></i> Repères Enrouleur (10cm bas)';
       }
     }
   </script>
