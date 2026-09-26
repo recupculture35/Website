@@ -169,6 +169,7 @@
               <button type="button" class="cms-tab" data-tab="esat"><i class="fas fa-hands-helping"></i> Partenariat ESAT</button>
               <button type="button" class="cms-tab" data-tab="equipe"><i class="fas fa-user-friends"></i> L'Équipe &amp; Photos</button>
               <button type="button" class="cms-tab" data-tab="faq"><i class="fas fa-question-circle"></i> FAQ</button>
+              <button type="button" class="cms-tab" data-tab="news"><i class="fas fa-newspaper"></i> Actualités &amp; Presse</button>
               <button type="button" class="cms-tab" data-tab="contact"><i class="fas fa-envelope"></i> Contact</button>
             </div>
 
@@ -678,6 +679,41 @@
               </div>
             </div>
 
+            <!-- Tab Pane 10: Actualités & Presse -->
+            <div class="cms-pane" id="pane-news">
+              <div class="admin-card">
+                <div class="admin-card-header"><span class="admin-card-title"><i class="fas fa-newspaper"></i> Rubrique Actualités &amp; "On parle de nous"</span></div>
+                <div class="form-row">
+                  <div class="form-group-admin">
+                    <label for="contentNewsTag">Tag / Surtitre</label>
+                    <input type="text" id="contentNewsTag" placeholder="Actualités">
+                  </div>
+                  <div class="form-group-admin">
+                    <label for="contentNewsTitle">Titre principal</label>
+                    <input type="text" id="contentNewsTitle" placeholder="Événements &amp; Nouvelles">
+                  </div>
+                </div>
+                <div class="form-group-admin">
+                  <label for="contentNewsDesc">Description d'introduction</label>
+                  <textarea id="contentNewsDesc" rows="2" placeholder="Restez informés des prochaines ouvertures de boutique, événements, articles de presse et actualités de l'association."></textarea>
+                </div>
+                <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:var(--radius-sm);padding:14px 18px;margin-top:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+                  <div style="font-size:0.88rem;color:var(--gray-300)">
+                    <i class="fas fa-info-circle" style="color:var(--primary);margin-right:6px"></i>
+                    Pour ajouter, modifier ou supprimer des articles (Presse, Boutique, Événements, Actualités), rendez-vous dans la section dédiée aux actualités.
+                  </div>
+                  <button type="button" class="btn btn-secondary-admin btn-sm" onclick="adminApp.navigate('news')">
+                    <i class="fas fa-arrow-right"></i> Gérer les articles publiés
+                  </button>
+                </div>
+                <div class="cms-pane-actions" style="margin-top:20px">
+                  <button type="button" class="btn btn-primary-admin btn-sm btn-save-cms-pane">
+                    <i class="fas fa-save" aria-hidden="true"></i> Enregistrer cette rubrique
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <div style="display:flex;justify-content:flex-end;margin-top:20px">
               <button type="submit" class="btn btn-primary-admin btn-lg" id="btnSaveContentBottom">
                 <i class="fas fa-save" aria-hidden="true"></i> Enregistrer toutes les rubriques
@@ -699,9 +735,21 @@
           </div>
 
           <div class="admin-card">
-            <div class="admin-card-header">
-              <span class="admin-card-title">Articles publiés</span>
-              <span id="newsCount" style="font-size:0.85rem;color:var(--gray-500)">0 article(s)</span>
+            <div class="admin-card-header" style="flex-wrap:wrap;gap:12px">
+              <div>
+                <span class="admin-card-title">Articles publiés</span>
+                <span id="newsCount" style="font-size:0.85rem;color:var(--gray-500);margin-left:8px">0 article(s)</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <label for="adminNewsFilter" style="font-size:0.85rem;color:var(--gray-400);margin:0">Catégorie :</label>
+                <select id="adminNewsFilter" class="form-control" style="width:auto;padding:5px 12px;font-size:0.85rem;background:var(--gray-800);border:1px solid var(--gray-700);color:var(--gray-100);border-radius:var(--radius-sm)">
+                  <option value="all">Toutes les catégories</option>
+                  <option value="presse">🗞️ On parle de nous (Presse)</option>
+                  <option value="boutique">🛍️ Ouverture boutique</option>
+                  <option value="evenement">🎪 Événement</option>
+                  <option value="actualite">📰 Actualité</option>
+                </select>
+              </div>
             </div>
             <table class="admin-table" aria-label="Liste des articles">
               <thead>
@@ -895,9 +943,10 @@
           <div class="form-group-admin">
             <label for="newsCategory">Catégorie *</label>
             <select id="newsCategory" required>
-              <option value="actualite">Actualité</option>
-              <option value="evenement">Événement</option>
-              <option value="boutique">Ouverture boutique</option>
+              <option value="presse">🗞️ On parle de nous (Presse)</option>
+              <option value="actualite">📰 Actualité</option>
+              <option value="evenement">🎪 Événement</option>
+              <option value="boutique">🛍️ Ouverture boutique</option>
             </select>
           </div>
           <div class="form-group-admin">

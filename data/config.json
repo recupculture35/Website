@@ -193,6 +193,11 @@
       "instagram": "@RECUPCULTURE sur Instagram",
       "facebook": "@RECUPCULTURE sur Facebook",
       "website": "recupculture.fr"
+    },
+    "news": {
+      "tag": "Actualités",
+      "title": "Événements, Presse & Nouvelles",
+      "description": "Restez informés des prochaines ouvertures de boutique, événements, articles de presse et actualités de l'association."
     }
   },
   "collectPoints": [
@@ -225,6 +230,14 @@
     }
   ],
   "news": [
+    {
+      "id": 2,
+      "title": "Ouest-France : RECUP CULTURE donne une seconde vie solidaire aux livres avec l'ESAT",
+      "category": "presse",
+      "date": "2025-11-20",
+      "content": "<p>Dans son édition du pays de Saint-Malo, le journal <strong>Ouest-France</strong> consacre un bel article à notre démarche d'économie circulaire et solidaire.</p><p>Le reportage met en lumière le partenariat d'inclusion par le travail noué avec l'<strong>ESAT du Domaine</strong> à Châteauneuf-d'Ille-et-Vilaine, le tri minutieux effectué par les travailleurs en situation de handicap, ainsi que l'ouverture de la boutique solidaire <em>La Halle aux Artistes</em>.</p><p>Une belle reconnaissance pour notre engagement en faveur du réemploi culturel et de la solidarité locale !</p>",
+      "photos": []
+    },
     {
       "id": 1,
       "title": "Ouverture boutique – Octobre 2025",

@@ -442,6 +442,7 @@ h1,h2,h3,h4 { font-family: var(--font-h); line-height: 1.25; }
 .badge-boutique  { background: var(--green-100);  color: var(--green-700); }
 .badge-evenement { background: var(--blue-100);   color: var(--blue-700); }
 .badge-actualite { background: var(--orange-100); color: var(--orange-500); }
+.badge-presse    { background: #ede9fe;           color: #6d28d9; }
 
 /* MAP admin */
 #adminMap {

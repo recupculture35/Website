@@ -124,6 +124,11 @@
         instagram: "@RECUPCULTURE sur Instagram",
         facebook: "@RECUPCULTURE sur Facebook",
         website: "recupculture.fr"
+      },
+      news: {
+        tag: "Actualités",
+        title: "Événements, Presse & Nouvelles",
+        description: "Restez informés des prochaines ouvertures de boutique, événements, articles de presse et actualités de l'association."
       }
     },
     collectPoints: [
@@ -534,9 +539,10 @@
 
   // ─── Actualités ────────────────────────────────────
   const CATEGORY_LABELS = {
-    boutique:  { label: 'Boutique',  cls: 'boutique'  },
-    evenement: { label: 'Événement', cls: 'evenement' },
-    actualite: { label: 'Actualité', cls: 'actualite' }
+    presse:    { label: 'On parle de nous', cls: 'presse'    },
+    boutique:  { label: 'Boutique',         cls: 'boutique'  },
+    evenement: { label: 'Événement',        cls: 'evenement' },
+    actualite: { label: 'Actualité',        cls: 'actualite' }
   };
 
   function formatDate(dateStr) {
@@ -697,25 +703,43 @@
   }
 
   // ─── AFFICHAGE DES ACTUALITÉS ─────────────────────────
+  let currentNewsFilter = 'all';
+
   function renderNews() {
     const grid  = $('#newsGrid');
     const empty = $('#newsEmpty');
     if (!grid) return;
 
-    const news = (appData.news || []).slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+    let news = (appData.news || []).slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    if (currentNewsFilter !== 'all') {
+      news = news.filter(item => {
+        if (currentNewsFilter === 'presse') return item.category === 'presse' || item.category === 'on-parle-de-nous';
+        return item.category === currentNewsFilter;
+      });
+    }
 
     // Supprimer anciennes cards (garder #newsEmpty)
     $$('.news-card', grid).forEach(c => c.remove());
 
     if (news.length === 0) {
-      if (empty) empty.style.display = 'flex';
+      if (empty) {
+        empty.style.display = 'flex';
+        const emptyP = empty.querySelector('p');
+        if (emptyP) {
+          emptyP.textContent = currentNewsFilter === 'all'
+            ? 'Aucune actualité pour le moment. Revenez bientôt !'
+            : `Aucun article dans la rubrique "${CATEGORY_LABELS[currentNewsFilter]?.label || currentNewsFilter}" pour le moment.`;
+        }
+      }
       return;
     }
 
     if (empty) empty.style.display = 'none';
 
     news.forEach(item => {
-      const cat  = CATEGORY_LABELS[item.category] || { label: item.category, cls: 'actualite' };
+      const catKey = (item.category === 'on-parle-de-nous' || item.category === 'presse') ? 'presse' : item.category;
+      const cat  = CATEGORY_LABELS[catKey] || { label: item.category || 'Actualité', cls: 'actualite' };
       const card = document.createElement('article');
       card.className = 'news-card';
       card.setAttribute('tabindex', '0');
@@ -1190,8 +1214,34 @@
       }
     }
 
+    // Actualités (En-tête de section)
+    if (c.news) {
+      if (c.news.tag && $('#newsTag')) $('#newsTag').textContent = c.news.tag;
+      if (c.news.title && $('#news-title')) $('#news-title').textContent = c.news.title;
+      if (c.news.description && $('#newsDesc')) $('#newsDesc').textContent = c.news.description;
+    }
+
     // Réinitialiser les animations d'apparition pour les nouveaux éléments
     initReveal();
+  }
+
+  // ─── FILTRES DES ACTUALITÉS PAR RUBRIQUE ──────────────
+  function initNewsFilters() {
+    const filterButtons = $$('.news-filter-btn');
+    if (!filterButtons.length) return;
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        currentNewsFilter = btn.dataset.filter || 'all';
+        renderNews();
+      });
+    });
   }
 
   // ─── Mise à jour dynamique du schéma JSON-LD pour Google ───
@@ -1296,6 +1346,7 @@
     initReveal();
     initImpactCounters();
     initMap();
+    initNewsFilters();
     renderNews();
     initModals();
     initContactForm();

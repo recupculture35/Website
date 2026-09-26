@@ -476,9 +476,30 @@
   <section id="actualites" class="section section-alt" aria-labelledby="news-title">
     <div class="container">
       <div class="section-header reveal">
-        <span class="section-tag">Actualités</span>
-        <h2 id="news-title">Événements &amp; Nouvelles</h2>
-        <p>Restez informés des prochaines ouvertures de boutique, événements et actualités de l'association.</p>
+        <span class="section-tag" id="newsTag">Actualités</span>
+        <h2 id="news-title">Événements, Presse &amp; Nouvelles</h2>
+        <p id="newsDesc">Restez informés des prochaines ouvertures de boutique, événements, articles de presse et actualités de l'association.</p>
+      </div>
+
+      <!-- Filtres de catégories d'actualités -->
+      <div class="news-filters-wrapper reveal" style="--delay: 0.1s">
+        <div class="news-filters" role="tablist" aria-label="Filtrer les actualités">
+          <button type="button" class="news-filter-btn active" data-filter="all" role="tab" aria-selected="true">
+            Toutes
+          </button>
+          <button type="button" class="news-filter-btn filter-presse" data-filter="presse" role="tab" aria-selected="false">
+            <i class="fas fa-newspaper" aria-hidden="true"></i> On parle de nous
+          </button>
+          <button type="button" class="news-filter-btn filter-boutique" data-filter="boutique" role="tab" aria-selected="false">
+            <i class="fas fa-store" aria-hidden="true"></i> Boutique
+          </button>
+          <button type="button" class="news-filter-btn filter-evenement" data-filter="evenement" role="tab" aria-selected="false">
+            <i class="fas fa-calendar-alt" aria-hidden="true"></i> Événements
+          </button>
+          <button type="button" class="news-filter-btn filter-actualite" data-filter="actualite" role="tab" aria-selected="false">
+            <i class="fas fa-bullhorn" aria-hidden="true"></i> Actualités
+          </button>
+        </div>
       </div>
       <div class="news-grid" id="newsGrid" aria-live="polite">
         <div class="news-empty" id="newsEmpty" aria-label="Aucune actualité pour le moment">

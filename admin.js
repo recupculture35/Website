@@ -170,6 +170,11 @@
         instagram: "@RECUPCULTURE sur Instagram",
         facebook: "@RECUPCULTURE sur Facebook",
         website: "recupculture.fr"
+      },
+      news: {
+        tag: "Actualités",
+        title: "Événements, Presse & Nouvelles",
+        description: "Restez informés des prochaines ouvertures de boutique, événements, articles de presse et actualités de l'association."
       }
     },
     collectPoints: [
@@ -571,7 +576,14 @@
   }
 
   // ─── ACTUALITÉS ──────────────────────────────────────
-  const CATS = { boutique:'Boutique', evenement:'Événement', actualite:'Actualité' };
+  const CATS = {
+    presse: 'On parle de nous',
+    boutique: 'Boutique',
+    evenement: 'Événement',
+    actualite: 'Actualité'
+  };
+
+  let adminNewsCategoryFilter = 'all';
 
   function formatDate(ds) {
     if (!ds) return '';
@@ -582,18 +594,28 @@
   function renderNewsTable() {
     const tbody = $('#newsTableBody');
     const count = $('#newsCount');
-    const news  = appData.news || [];
+    let news  = appData.news || [];
+
+    if (adminNewsCategoryFilter !== 'all') {
+      news = news.filter(item => {
+        if (adminNewsCategoryFilter === 'presse') return item.category === 'presse' || item.category === 'on-parle-de-nous';
+        return item.category === adminNewsCategoryFilter;
+      });
+    }
+
     count.textContent = `${news.length} article(s)`;
 
     if (!news.length) {
-      tbody.innerHTML = `<tr><td colspan="4" class="table-empty"><i class="fas fa-newspaper" aria-hidden="true"></i>Aucun article.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="4" class="table-empty"><i class="fas fa-newspaper" aria-hidden="true"></i>Aucun article ${adminNewsCategoryFilter !== 'all' ? 'dans cette catégorie' : ''}.</td></tr>`;
       return;
     }
 
-    tbody.innerHTML = news.slice().sort((a,b) => new Date(b.date)-new Date(a.date)).map(item => `
+    tbody.innerHTML = news.slice().sort((a,b) => new Date(b.date)-new Date(a.date)).map(item => {
+      const catKey = (item.category === 'on-parle-de-nous' || item.category === 'presse') ? 'presse' : (item.category || 'actualite');
+      return `
       <tr>
         <td><strong>${escapeHtml(item.title)}</strong></td>
-        <td><span class="badge badge-${item.category}">${escapeHtml(CATS[item.category]||item.category)}</span></td>
+        <td><span class="badge badge-${catKey}">${escapeHtml(CATS[item.category]||item.category)}</span></td>
         <td>${formatDate(item.date)}</td>
         <td>
           <div class="actions">
@@ -606,7 +628,8 @@
           </div>
         </td>
       </tr>
-    `).join('');
+    `;
+    }).join('');
   }
 
   function openNewsModal(item = null) {
@@ -1368,6 +1391,12 @@
     if ($('#contentContactInstagram')) $('#contentContactInstagram').value = ct.instagram || def.contact.instagram;
     if ($('#contentContactFacebook')) $('#contentContactFacebook').value = ct.facebook || def.contact.facebook;
     if ($('#contentContactWebsite')) $('#contentContactWebsite').value = ct.website || def.contact.website;
+
+    // Actualités & Presse
+    const nw = c.news || def.news;
+    if ($('#contentNewsTag')) $('#contentNewsTag').value = nw?.tag || def.news?.tag || 'Actualités';
+    if ($('#contentNewsTitle')) $('#contentNewsTitle').value = nw?.title || def.news?.title || 'Événements & Nouvelles';
+    if ($('#contentNewsDesc')) $('#contentNewsDesc').value = nw?.description || def.news?.description || '';
   }
 
   async function saveContentForm(showToast = true) {
@@ -1482,6 +1511,11 @@
         instagram: $('#contentContactInstagram').value.trim(),
         facebook: $('#contentContactFacebook').value.trim(),
         website: $('#contentContactWebsite').value.trim()
+      },
+      news: {
+        tag: $('#contentNewsTag') ? $('#contentNewsTag').value.trim() : 'Actualités',
+        title: $('#contentNewsTitle') ? $('#contentNewsTitle').value.trim() : 'Événements & Nouvelles',
+        description: $('#contentNewsDesc') ? $('#contentNewsDesc').value.trim() : ''
       }
     };
     const token = getAuthToken();
@@ -1643,6 +1677,14 @@
     $('#modalNewsClose').addEventListener('click', closeNewsModal);
     $('#modalNewsCancelBtn').addEventListener('click', closeNewsModal);
     $('#modalNews').addEventListener('click', e => { if(e.target===$('#modalNews')) closeNewsModal(); });
+
+    const adminFilter = $('#adminNewsFilter');
+    if (adminFilter) {
+      adminFilter.addEventListener('change', e => {
+        adminNewsCategoryFilter = e.target.value;
+        renderNewsTable();
+      });
+    }
 
 
     $('#newsForm').addEventListener('submit', async e => {
