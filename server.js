@@ -810,6 +810,13 @@ app.put('/api/content', requireAuth, (req, res) => {
   }
 
   const config = readJson(CONFIG_FILE, { siteContent: {}, collectPoints: [], news: [] });
+  if (siteContent && typeof siteContent === 'object') {
+    ['mission', 'collecte', 'impact', 'boutique', 'esat'].forEach(sec => {
+      if (siteContent[sec] && Array.isArray(siteContent[sec].photos)) {
+        siteContent[sec].photos = [...new Set(siteContent[sec].photos.filter(p => typeof p === 'string' && p.trim()))].slice(0, 4);
+      }
+    });
+  }
   config.siteContent = { ...config.siteContent, ...siteContent };
 
   if (writeJson(CONFIG_FILE, config)) {

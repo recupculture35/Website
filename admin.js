@@ -779,7 +779,9 @@
             if (url) {
               if (!multiPhotoState[sectionKey]) multiPhotoState[sectionKey] = [];
               if (multiPhotoState[sectionKey].length < 4) {
-                multiPhotoState[sectionKey].push(url);
+                if (!multiPhotoState[sectionKey].includes(url)) {
+                  multiPhotoState[sectionKey].push(url);
+                }
                 renderGrid();
                 toast(`Photo ajoutée (${multiPhotoState[sectionKey].length}/4). Pensez à enregistrer.`);
               }
@@ -805,12 +807,12 @@
     } else if (typeof photos === 'string' && photos.trim()) {
       list = [photos.trim()];
     }
-    multiPhotoState[sectionKey] = list;
+    multiPhotoState[sectionKey] = [...new Set(list)];
     initMultiPhotoGroup(sectionKey);
   }
 
   function getMultiPhotos(sectionKey) {
-    return (multiPhotoState[sectionKey] || []).slice(0, 4);
+    return [...new Set(multiPhotoState[sectionKey] || [])].slice(0, 4);
   }
 
   // Équipe dynamique state

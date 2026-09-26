@@ -557,9 +557,10 @@
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    const list = Array.isArray(photos)
-      ? photos.filter(p => typeof p === 'string' && p.trim()).slice(0, 4)
+    const rawList = Array.isArray(photos)
+      ? photos.filter(p => typeof p === 'string' && p.trim())
       : (typeof photos === 'string' && photos.trim() ? [photos.trim()] : []);
+    const list = [...new Set(rawList)].slice(0, 4);
 
     if (list.length === 0) {
       container.innerHTML = '';
@@ -993,9 +994,10 @@
       if (c.boutique.hours && $('#boutiqueHours')) $('#boutiqueHours').textContent = c.boutique.hours;
       if (c.boutique.prices && $('#boutiquePrices')) $('#boutiquePrices').textContent = c.boutique.prices;
 
-      const bPhotos = (Array.isArray(c.boutique.photos) && c.boutique.photos.length) 
+      const rawBPhotos = (Array.isArray(c.boutique.photos) && c.boutique.photos.length) 
         ? c.boutique.photos 
         : (c.boutique.photo ? [c.boutique.photo] : []);
+      const bPhotos = [...new Set(rawBPhotos.filter(p => typeof p === 'string' && p.trim()))];
       const primaryPhoto = bPhotos.length > 0 ? bPhotos[0] : (c.boutique.photo || '');
 
       const visualContainer = $('#boutiqueVisual');
@@ -1018,7 +1020,8 @@
       }
 
       if (bPhotos.length > 1) {
-        renderSectionGallery('boutiqueGallery', bPhotos);
+        // bPhotos[0] est déjà affiché dans la fiche principale ci-dessus, la galerie présente les photos complémentaires
+        renderSectionGallery('boutiqueGallery', bPhotos.slice(1));
       } else {
         renderSectionGallery('boutiqueGallery', []);
       }
@@ -1032,9 +1035,10 @@
       if (c.esat.partnerName && $('#esatPartnerName')) $('#esatPartnerName').textContent = c.esat.partnerName;
       if (c.esat.partnerDesc && $('#esatPartnerDesc')) $('#esatPartnerDesc').textContent = c.esat.partnerDesc;
 
-      const esatPhotos = (Array.isArray(c.esat.photos) && c.esat.photos.length)
+      const rawEsatPhotos = (Array.isArray(c.esat.photos) && c.esat.photos.length)
         ? c.esat.photos
         : (c.esat.photo ? [c.esat.photo] : []);
+      const esatPhotos = [...new Set(rawEsatPhotos.filter(p => typeof p === 'string' && p.trim()))];
       const primaryEsatPhoto = esatPhotos.length > 0 ? esatPhotos[0] : (c.esat.photo || '');
 
       const photoContainer = $('#esatPhotoContainer');
@@ -1072,7 +1076,8 @@
       }
 
       if (esatPhotos.length > 1) {
-        renderSectionGallery('esatGallery', esatPhotos);
+        // esatPhotos[0] est déjà affiché dans le cadre vedette ci-dessus, la galerie présente les photos complémentaires
+        renderSectionGallery('esatGallery', esatPhotos.slice(1));
       } else {
         renderSectionGallery('esatGallery', []);
       }
