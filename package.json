@@ -25,5 +25,8 @@
     "express": "^5.2.1",
     "nodemailer": "^10.0.10",
     "resend": "^6.28.1"
+  },
+  "devDependencies": {
+    "qrcode": "^1.5.4"
   }
 }

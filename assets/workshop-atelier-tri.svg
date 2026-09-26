@@ -1,0 +1,174 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 270" width="100%" height="100%">
+  <defs>
+    <style>
+      .navy { fill: #143565; }
+      .navy-stroke { stroke: #143565; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+      .white { fill: #ffffff; }
+      .esat-text { font-family: 'Outfit', sans-serif; font-size: 26px; font-weight: 800; fill: #143565; letter-spacing: 2px; }
+    </style>
+  </defs>
+
+  <!-- ═══════════════ 1. POSTE GAUCHE : DÉPÔT / TRI INITIAL ═══════════════ -->
+  <g id="station-gauche">
+    <!-- Grand Bac de Collecte / Recyclage -->
+    <path class="navy" d="M 40,140 L 205,140 L 192,250 L 53,250 Z" />
+    <rect class="navy" x="32" y="132" width="180" height="12" rx="4" />
+    <!-- Table support attenante -->
+    <rect class="navy" x="200" y="142" width="75" height="10" rx="2" />
+    <rect class="navy" x="264" y="152" width="11" height="98" rx="3" />
+
+    <!-- Logo Recyclage officiel sur le bac gauche -->
+    <g transform="translate(122, 195) scale(0.85)">
+      <path class="white" d="M -6,-28 L 6,-28 L 0,-18 Z" />
+      <path class="white" d="M -3,-25 A 22 22 0 0 1 20,4 L 14,4 A 16 16 0 0 0 -3,-19 Z" />
+      <path class="white" d="M 26,10 L 32,2 L 23,0 Z" />
+      <path class="white" d="M 23,4 A 22 22 0 0 1 -13,20 L -10,15 A 16 16 0 0 0 18,4 Z" />
+      <path class="white" d="M -20,18 L -20,8 L -28,13 Z" />
+      <path class="white" d="M -18,14 A 22 22 0 0 1 -5,-25 L -5,-19 A 16 16 0 0 0 -14,12 Z" />
+    </g>
+
+    <!-- Travailleur 1 : Tête COMPLÈTE avec casquette / casque -->
+    <circle class="navy" cx="122" cy="46" r="18" />
+    <!-- Casquette visière pointant vers la droite -->
+    <path class="navy" d="M 104,44 C 104,28 140,28 140,44 L 150,47 L 140,49 C 132,49 112,49 104,44 Z" />
+
+    <!-- Corps & Tablier de tri -->
+    <path class="navy" d="M 102,74 C 102,66 142,66 142,74 L 152,132 L 92,132 Z" />
+    <!-- Sangles tablier blanches -->
+    <line x1="112" y1="70" x2="114" y2="96" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+    <line x1="132" y1="70" x2="130" y2="96" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+    <line x1="108" y1="96" x2="136" y2="96" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+
+    <!-- Bras gauche tenant le carton -->
+    <path class="navy-stroke" stroke-width="12" d="M 96,78 C 82,88 80,110 88,130" />
+    <!-- Bras droit soulevant le don -->
+    <path class="navy-stroke" stroke-width="12" d="M 140,78 L 175,98" />
+
+    <!-- Carton de dons tenu en main -->
+    <g transform="translate(198, 86) rotate(12)">
+      <rect class="navy" x="-24" y="-20" width="48" height="40" rx="3" />
+      <line x1="-24" y1="-8" x2="24" y2="-8" stroke="#ffffff" stroke-width="2" />
+      <path d="M -5,-8 L 5,-8 L 0,-1 Z" fill="#ffffff" />
+    </g>
+  </g>
+
+  <!-- ═══════════════ 2. POSTE CENTRE : ATELIER ESAT & TABLE DE TRI ═══════════════ -->
+  <g id="station-centre">
+    <!-- Titre / Marqueur ESAT au-dessus de la table -->
+    <text class="esat-text" x="495" y="44" text-anchor="middle">ESAT</text>
+
+    <!-- Table de Tri Centrale -->
+    <rect class="navy" x="380" y="125" width="230" height="15" rx="3" />
+    <!-- Panneau caisson sous table -->
+    <rect class="navy" x="395" y="140" width="200" height="88" rx="3" />
+    <rect class="white" x="403" y="148" width="184" height="74" rx="2" opacity="0.12" />
+
+    <!-- Cartons & Livres posés sur la table centrale -->
+    <!-- Carton 1 (Gauche) -->
+    <rect class="navy" x="468" y="98" width="36" height="27" rx="2" />
+    <rect class="white" x="482" y="100" width="8" height="6" rx="1" opacity="0.75" />
+    <!-- Carton 2 (Milieu) -->
+    <rect class="navy" x="510" y="90" width="42" height="35" rx="2" />
+    <line x1="510" y1="102" x2="552" y2="102" stroke="#ffffff" stroke-width="1.8" />
+    <path d="M 526,102 L 536,102 L 531,108 Z" fill="#ffffff" />
+    <!-- Livres empilés (Droite) -->
+    <rect class="navy" x="560" y="94" width="34" height="31" rx="2" />
+    <line x1="560" y1="104" x2="594" y2="104" stroke="#ffffff" stroke-width="1.5" />
+    <line x1="560" y1="114" x2="594" y2="114" stroke="#ffffff" stroke-width="1.5" />
+
+    <!-- ── Travailleur 2 (Centre-Gauche, penché vers la droite) ── -->
+    <circle class="navy" cx="370" cy="52" r="17" />
+    <path class="navy" d="M 353,50 C 353,35 387,35 387,50 L 398,53 L 388,55 C 382,55 362,55 353,50 Z" />
+    <!-- Dos / Corps penché en avant -->
+    <path class="navy" d="M 350,75 C 362,68 384,74 388,94 L 380,150 L 352,150 L 342,108 C 340,94 343,81 350,75 Z" />
+    <!-- Bras tenant le carton sur la table -->
+    <path class="navy-stroke" stroke-width="12" d="M 374,84 C 386,88 398,102 414,116" />
+    <path class="navy-stroke" stroke-width="11" d="M 380,102 L 424,120" />
+    <!-- Carton tenu en main -->
+    <rect class="navy" x="410" y="78" width="42" height="47" rx="3" />
+    <line x1="410" y1="94" x2="452" y2="94" stroke="#ffffff" stroke-width="2" />
+    <path d="M 426,94 L 436,94 L 431,101 Z" fill="#ffffff" />
+    <!-- Jambes / Pantalon avec posture naturelle -->
+    <path class="navy" d="M 352,146 L 348,195 C 346,210 338,225 330,240 L 346,242 C 358,228 362,212 364,192 L 368,146 Z" />
+    <path class="navy" d="M 366,146 L 372,188 C 376,208 380,224 382,240 L 398,240 C 396,220 390,198 384,166 L 380,146 Z" />
+
+    <!-- ── Travailleur 3 (Centre-Droit, penché vers la gauche) ── -->
+    <circle class="navy" cx="620" cy="52" r="17" />
+    <path class="navy" d="M 637,50 C 637,35 603,35 603,50 L 592,53 L 602,55 C 608,55 628,55 637,50 Z" />
+    <!-- Dos / Corps penché en avant -->
+    <path class="navy" d="M 640,75 C 628,68 606,74 602,94 L 610,150 L 638,150 L 648,108 C 650,94 647,81 640,75 Z" />
+    <!-- Bras triant les livres sur la table -->
+    <path class="navy-stroke" stroke-width="12" d="M 616,84 C 604,88 590,102 576,116" />
+    <path class="navy-stroke" stroke-width="11" d="M 608,102 L 568,120" />
+    <!-- Jambes / Pantalon avec posture naturelle -->
+    <path class="navy" d="M 638,146 L 642,195 C 644,210 652,225 660,240 L 644,242 C 632,228 628,212 626,192 L 622,146 Z" />
+    <path class="navy" d="M 624,146 L 618,188 C 614,208 610,224 608,240 L 592,240 C 594,220 600,198 606,166 L 610,146 Z" />
+  </g>
+
+  <!-- ═══════════════ 3. POSTE DROITE : EXPÉDITION / VALORISATION ═══════════════ -->
+  <g id="station-droite">
+    <!-- Caisse / Bac de Matière & Valorisation -->
+    <path class="navy" d="M 830,150 L 960,150 L 948,250 L 842,250 Z" />
+    <rect class="navy" x="822" y="142" width="146" height="11" rx="3" />
+    <!-- Livres / Matière papier débordant dans la caisse -->
+    <polygon points="848,142 866,116 886,142" class="navy" />
+    <polygon points="878,142 902,110 926,142" class="navy" />
+    <polygon points="918,142 938,122 956,142" class="navy" />
+    <line x1="866" y1="116" x2="884" y2="142" stroke="#ffffff" stroke-width="1.8" />
+    <line x1="902" y1="110" x2="918" y2="142" stroke="#ffffff" stroke-width="1.8" />
+
+    <!-- Logo Recyclage officiel sur caisse droite -->
+    <g transform="translate(895, 200) scale(0.75)">
+      <path class="white" d="M -6,-28 L 6,-28 L 0,-18 Z" />
+      <path class="white" d="M -3,-25 A 22 22 0 0 1 20,4 L 14,4 A 16 16 0 0 0 -3,-19 Z" />
+      <path class="white" d="M 26,10 L 32,2 L 23,0 Z" />
+      <path class="white" d="M 23,4 A 22 22 0 0 1 -13,20 L -10,15 A 16 16 0 0 0 18,4 Z" />
+      <path class="white" d="M -20,18 L -20,8 L -28,13 Z" />
+      <path class="white" d="M -18,14 A 22 22 0 0 1 -5,-25 L -5,-19 A 16 16 0 0 0 -14,12 Z" />
+    </g>
+
+    <!-- 3 Engrenages de Valorisation / Économie Circulaire -->
+    <g transform="translate(938, 70)">
+      <circle cx="0" cy="0" r="17" class="navy" />
+      <circle cx="0" cy="0" r="7" class="white" />
+      <rect class="navy" x="-4.5" y="-24" width="9" height="9" rx="2" />
+      <rect class="navy" x="-4.5" y="15" width="9" height="9" rx="2" />
+      <rect class="navy" x="-24" y="-4.5" width="9" height="9" rx="2" />
+      <rect class="navy" x="15" y="-4.5" width="9" height="9" rx="2" />
+      <rect class="navy" x="-19" y="-19" width="8" height="8" rx="2" transform="rotate(45)" />
+      <rect class="navy" x="11" y="-19" width="8" height="8" rx="2" transform="rotate(45)" />
+      <rect class="navy" x="-19" y="11" width="8" height="8" rx="2" transform="rotate(45)" />
+      <rect class="navy" x="11" y="11" width="8" height="8" rx="2" transform="rotate(45)" />
+    </g>
+    <g transform="translate(904, 46)">
+      <circle cx="0" cy="0" r="12" class="navy" />
+      <circle cx="0" cy="0" r="4.5" class="white" />
+      <rect class="navy" x="-3.5" y="-17" width="7" height="7" rx="1.5" />
+      <rect class="navy" x="-3.5" y="10" width="7" height="7" rx="1.5" />
+      <rect class="navy" x="-17" y="-3.5" width="7" height="7" rx="1.5" />
+      <rect class="navy" x="10" y="-3.5" width="7" height="7" rx="1.5" />
+    </g>
+
+    <!-- ── Travailleur 4 (Debout avec tablier & carton, tête COMPLÈTE) ── -->
+    <circle class="navy" cx="745" cy="46" r="18" />
+    <path class="navy" d="M 727,44 C 727,28 763,28 763,44 L 772,47 L 763,49 C 755,49 735,49 727,44 Z" />
+    <!-- Buste / Tablier -->
+    <path class="navy" d="M 725,74 C 725,66 765,66 765,74 L 775,160 L 715,160 Z" />
+    <!-- Sangles tablier -->
+    <line x1="735" y1="70" x2="738" y2="102" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+    <line x1="755" y1="70" x2="752" y2="102" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+    <line x1="732" y1="102" x2="758" y2="102" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+
+    <!-- Bras tenant le carton devant lui -->
+    <path class="navy-stroke" stroke-width="12" d="M 722,80 C 710,92 708,114 722,126 L 778,126 C 788,114 784,92 768,80" />
+
+    <!-- Carton tenu par travailleur 4 -->
+    <rect class="navy" x="750" y="90" width="50" height="42" rx="3" />
+    <line x1="750" y1="104" x2="800" y2="104" stroke="#ffffff" stroke-width="2" />
+    <path d="M 770,104 L 780,104 L 775,111 Z" fill="#ffffff" />
+
+    <!-- Jambes / Chaussures naturelles -->
+    <path class="navy" d="M 724,160 L 724,236 C 724,242 718,245 712,245 L 738,245 C 738,238 736,234 736,160 Z" />
+    <path class="navy" d="M 750,160 L 750,234 C 750,238 748,245 748,245 L 774,245 C 768,245 762,242 762,236 L 762,160 Z" />
+  </g>
+</svg>
