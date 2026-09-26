@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visuels Kakemonos (2m x 1m) – RECUP CULTURE</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* =========================================================
+       RECUP CULTURE – VISUELS KAKEMONOS / ROLL-UP (2000mm x 1000mm)
+       Design System officiel : Crème (#f7efe2), Bleu Royal (#163f7a),
+       Vert Feuille (#67b342), Jaune Solaire (#fcd34d)
+       ========================================================= */
+    :root {
+      --c-green: #67b342;
+      --c-green-dark: #3e7e22;
+      --c-green-light: #e8f5e2;
+      --c-blue: #163f7a;
+      --c-blue-dark: #0f274a;
+      --c-blue-light: #e6f0fa;
+      --c-amber: #f59e0b;
+      --c-amber-light: #fef3c7;
+      --c-bg: #f8f3ea;
+      --c-card: #ffffff;
+      --c-text-main: #141a23;
+      --c-text-muted: #5a6675;
+      --font-title: 'Outfit', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #2b3340;
+      color: #333;
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* BARRE D'OUTILS ET CONTRÔLE D'AFFICHAGE */
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      width: 100%;
+      background: #19202c;
+      color: #fff;
+      padding: 14px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .toolbar-title {
+      font-family: var(--font-title);
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toolbar-title span {
+      background: var(--c-green);
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .toolbar-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      font-family: var(--font-title);
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn-tab {
+      background: rgba(255,255,255,0.1);
+      color: #e2e8f0;
+      border-color: rgba(255,255,255,0.15);
+    }
+
+    .btn-tab:hover, .btn-tab.active {
+      background: var(--c-green);
+      color: #ffffff;
+      border-color: var(--c-green);
+    }
+
+    .btn-print {
+      background: #2563eb;
+      color: #fff;
+    }
+    .btn-print:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-toggle-guide {
+      background: #475569;
+      color: #fff;
+    }
+
+    /* CONTENEUR PRINCIPAL DU VISUEL */
+    .workspace {
+      width: 100%;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+      gap: 50px;
+      overflow-x: auto;
+    }
+
+    /* CONTENEUR SIMULANT LE FORMAT 1M X 2M (RATIO 1:2)
+       Taille à l'écran proportionnelle : 500px x 1000px (échelle 1:2 sur écran)
+       Taille d'impression : 1000mm x 2000mm
+    */
+    .kakemono-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .kakemono-label {
+      font-family: var(--font-title);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .kakemono-label span {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      font-weight: 400;
+    }
+
+    .kakemono {
+      position: relative;
+      width: 500px;
+      height: 1000px;
+      background: var(--c-bg);
+      border-radius: 4px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      color: var(--c-text-main);
+      transform-origin: top center;
+    }
+
+    /* REPERES TECHNIQUES PRINT (ENROULEUR / MARGES) */
+    .guide-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 500;
+      border: 2px dashed rgba(239, 68, 68, 0.7);
+      display: none;
+    }
+
+    body.show-guides .guide-overlay {
+      display: block;
+    }
+
+    .guide-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 25px; /* ~5cm rail haut */
+      background: rgba(239, 68, 68, 0.15);
+      border-bottom: 1px dashed #ef4444;
+      font-size: 10px;
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    .guide-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 50px; /* ~10cm enrouleur bas */
+      background: rgba(239, 68, 68, 0.15);
+      border-top: 1px dashed #ef4444;
+      font-size: 10px;
+      color: #ef4444;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    /* =========================================================
+       STRUCTURE DU KAKEMONO 1 : PRÉSENTATION RECUP CULTURE
+       ========================================================= */
+
+    /* 1. TOP HEADER */
+    .k-header {
+      padding: 30px 30px 15px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      position: relative;
+    }
+
+    .k-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--c-blue-dark);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 6px 14px;
+      border-radius: 30px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .k-badge i {
+      color: var(--c-amber);
+    }
+
+    .k-logo-container {
+      width: 220px;
+      margin-bottom: 12px;
+    }
+
+    .k-logo-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.08));
+    }
+
+    .k-tagline {
+      font-family: var(--font-title);
+      font-size: 22px;
+      line-height: 1.25;
+      font-weight: 800;
+      color: var(--c-blue-dark);
+      margin-bottom: 6px;
+    }
+
+    .k-tagline .highlight-green {
+      color: var(--c-green);
+    }
+
+    .k-subtagline {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--c-text-muted);
+      max-width: 90%;
+    }
+
+    /* 2. STATS & VALEURS (ZONE DE PERCEPTION HAUTE) */
+    .k-stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 0 30px;
+      margin-top: 15px;
+      margin-bottom: 15px;
+    }
+
+    .k-stat-box {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 14px 12px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(22, 63, 122, 0.06);
+      border: 1px solid rgba(22, 63, 122, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .k-stat-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--c-green);
+    }
+
+    .k-stat-box.blue::before {
+      background: var(--c-blue);
+    }
+
+    .k-stat-number {
+      font-family: var(--font-title);
+      font-size: 26px;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--c-blue-dark);
+      margin-bottom: 4px;
+    }
+
+    .k-stat-box.green .k-stat-number {
+      color: var(--c-green-dark);
+    }
+
+    .k-stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--c-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    /* 3. FOCUS PARTENARIAT ESAT (ZONE CENTRALE VESTE / REGARD) */
+    .k-esat-card {
+      margin: 5px 30px 15px 30px;
+      background: linear-gradient(135deg, #163f7a 0%, #0d254c 100%);
+      color: #fff;
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 0 8px 25px rgba(22, 63, 122, 0.25);
+      position: relative;
+    }
+
+    .k-esat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(103, 179, 66, 0.25);
+      border: 1px solid rgba(142, 232, 92, 0.4);
+      color: #8ee85c;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+
+    .k-esat-title {
+      font-family: var(--font-title);
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: #ffffff;
+    }
+
+    .k-esat-desc {
+      font-size: 12px;
+      line-height: 1.45;
+      color: #dbeafe;
+      margin-bottom: 12px;
+    }
+
+    .k-esat-points {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .k-esat-point {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: #ffffff;
+    }
+
+    .k-esat-point i {
+      color: var(--c-green);
+      font-size: 12px;
+    }
+
+    /* 4. NOS MISSIONS & ACTIONS SUR LE TERRITOIRE */
+    .k-actions-card {
+      margin: 0 30px 15px 30px;
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .k-card-title {
+      font-family: var(--font-title);
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--c-blue-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .k-card-title i {
+      color: var(--c-green);
+    }
+
+    .k-feature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .k-feature-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .k-feature-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--c-green-light);
+      color: var(--c-green-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .k-feature-item:nth-child(2) .k-feature-icon {
+      background: var(--c-blue-light);
+      color: var(--c-blue);
+    }
+
+    .k-feature-item:nth-child(3) .k-feature-icon {
+      background: var(--c-amber-light);
+      color: var(--c-amber);
+    }
+
+    .k-feature-item:nth-child(4) .k-feature-icon {
+      background: #f3e8ff;
+      color: #7e22ce;
+    }
+
+    .k-feature-text strong {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--c-blue-dark);
+    }
+
+    .k-feature-text span {
+      font-size: 10px;
+      color: var(--c-text-muted);
+      line-height: 1.25;
+      display: block;
+    }
+
+    /* 5. FOOTER & CONTACT (PIED DU KAKEMONO) */
+    .k-footer {
+      margin-top: auto;
+      background: #ffffff;
+      padding: 16px 28px 45px 28px; /* marge basse pour cassette */
+      border-top: 2px solid var(--c-green);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .k-footer-info {
+      flex: 1;
+    }
+
+    .k-footer-cta {
+      font-family: var(--font-title);
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--c-blue-dark);
+      margin-bottom: 4px;
+    }
+
+    .k-footer-url {
+      font-family: var(--font-title);
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--c-green-dark);
+      margin-bottom: 6px;
+      letter-spacing: -0.2px;
+    }
+
+    .k-footer-links {
+      font-size: 10px;
+      color: var(--c-text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-weight: 500;
+    }
+
+    .k-qr-box {
+      width: 82px;
+      height: 82px;
+      background: #fff;
+      padding: 5px;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .k-qr-box svg {
+      width: 60px;
+      height: 60px;
+    }
+
+    .k-qr-caption {
+      font-size: 7.5px;
+      font-weight: 700;
+      color: var(--c-blue-dark);
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    /* =========================================================
+       STRUCTURE DU KAKEMONO 2 : LE PRINCIPE DU PROJET
+       ========================================================= */
+
+    .k2-step-card {
+      margin: 0 30px 10px 30px;
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+      border-left: 4px solid var(--c-green);
+      position: relative;
+    }
+
+    .k2-step-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .k2-step-badge {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--c-green);
+      color: #fff;
+      font-family: var(--font-title);
+      font-weight: 800;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .k2-step-title {
+      font-family: var(--font-title);
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--c-blue-dark);
+    }
+
+    .k2-items-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .k2-item-chip {
+      background: var(--c-bg);
+      border-radius: 6px;
+      padding: 6px 4px;
+      text-align: center;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .k2-item-chip i {
+      font-size: 14px;
+      color: var(--c-blue);
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .k2-item-chip span {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--c-text-main);
+      display: block;
+    }
+
+    /* Flèche de liaison */
+    .k2-flow-arrow {
+      text-align: center;
+      color: var(--c-green);
+      font-size: 14px;
+      margin: 2px 0;
+      line-height: 1;
+    }
+
+    /* Étape 2 : ESAT */
+    .k2-step-card.step-esat {
+      border-left-color: var(--c-blue);
+      background: #f0f6ff;
+    }
+
+    .k2-step-card.step-esat .k2-step-badge {
+      background: var(--c-blue);
+    }
+
+    .k2-esat-box {
+      font-size: 11px;
+      color: var(--c-blue-dark);
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .k2-esat-highlight {
+      font-weight: 700;
+      color: var(--c-blue-dark);
+    }
+
+    /* Étape 3 : Devenir des dons (50% / 30% / 20%) */
+    .k2-step-card.step-impact {
+      border-left-color: var(--c-amber);
+    }
+
+    .k2-step-card.step-impact .k2-step-badge {
+      background: var(--c-amber);
+    }
+
+    .k2-impact-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .k2-impact-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #ffffff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid #edf2f7;
+    }
+
+    .k2-impact-pct {
+      font-family: var(--font-title);
+      font-weight: 900;
+      font-size: 14px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: #fff;
+      min-width: 44px;
+      text-align: center;
+    }
+
+    .pct-green { background: var(--c-green); }
+    .pct-blue { background: #0284c7; }
+    .pct-amber { background: var(--c-amber); }
+
+    .k2-impact-detail strong {
+      display: block;
+      font-size: 10.5px;
+      color: var(--c-blue-dark);
+    }
+
+    .k2-impact-detail span {
+      font-size: 9.5px;
+      color: var(--c-text-muted);
+      display: block;
+      line-height: 1.2;
+    }
+
+    /* =========================================================
+       MEDIA PRINT (IMPRESSION HAUTE DEFINITION 1000mm x 2000mm)
+       ========================================================= */
+    @media print {
+      @page {
+        size: 1000mm 2000mm;
+        margin: 0;
+      }
+
+      body {
+        background: #ffffff !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .toolbar, .kakemono-label {
+        display: none !important;
+      }
+
+      .workspace {
+        padding: 0 !important;
+        margin: 0 !important;
+        gap: 0 !important;
+        display: block !important;
+      }
+
+      .kakemono-wrapper {
+        page-break-after: always;
+        break-after: page;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .kakemono {
+        width: 1000mm !important;
+        height: 2000mm !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        transform: scale(2) !important;
+        transform-origin: top left !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOOLBAR DE PRÉVISUALISATION -->
+  <header class="toolbar">
+    <div class="toolbar-title">
+      <i class="fas fa-scroll" style="color:var(--c-green)"></i>
+      RECUP CULTURE &nbsp;·&nbsp; Visuels Kakemonos (2m x 1m)
+      <span>Format Roll-Up</span>
+    </div>
+
+    <div class="toolbar-controls">
+      <button class="btn btn-tab active" id="btnShowAll" onclick="filterKakemono('all')">
+        <i class="fas fa-columns"></i> Vue Duo (Stand)
+      </button>
+      <button class="btn btn-tab" id="btnShowK1" onclick="filterKakemono('k1')">
+        <i class="fas fa-id-card"></i> 1. Présentation
+      </button>
+      <button class="btn btn-tab" id="btnShowK2" onclick="filterKakemono('k2')">
+        <i class="fas fa-recycle"></i> 2. Principe du Projet
+      </button>
+      <button class="btn btn-toggle-guide" id="btnToggleGuides" onclick="toggleGuides()">
+        <i class="fas fa-ruler-combined"></i> Repères Enrouleur
+      </button>
+      <button class="btn btn-print" onclick="window.print()">
+        <i class="fas fa-print"></i> Imprimer / Exporter PDF
+      </button>
+    </div>
+  </header>
+
+  <!-- ESPACE DE VISUALISATION -->
+  <main class="workspace" id="workspace">
+
+    <!-- ========================================================
+         KAKEMONO 1 : PRÉSENTATION RECUP CULTURE
+         ======================================================== -->
+    <div class="kakemono-wrapper" id="wrap-k1">
+      <div class="kakemono-label">
+        <i class="fas fa-flag" style="color:var(--c-green)"></i> Kakemono 1 : Présentation de l'Association
+        <span>(200cm × 100cm)</span>
+      </div>
+
+      <article class="kakemono" id="kakemono1">
+        <!-- Repères d'impression (guide visuel) -->
+        <div class="guide-overlay">
+          <div class="guide-top">ZONE SÉCURITÉ HAUTE (Rail de suspension : 25mm)</div>
+          <div class="guide-bottom">ZONE TECHNIQUE BASSE (Carter enrouleur : 50mm)</div>
+        </div>
+
+        <!-- 1. En-tête de marque -->
+        <header class="k-header">
+          <div class="k-badge">
+            <i class="fas fa-hands-helping"></i> Économie Circulaire &amp; Inclusion Sociale
+          </div>
+          <div class="k-logo-container">
+            <img src="assets/logo.png" alt="RECUP CULTURE">
+          </div>
+          <h1 class="k-tagline">
+            Donnez une <span class="highlight-green">seconde vie</span><br>à la culture
+          </h1>
+          <p class="k-subtagline">
+            Collecte solidaire &amp; réemploi de biens culturels en Ille-et-Vilaine
+          </p>
+        </header>
+
+        <!-- 2. Chiffres clés percutants (Lecture immédiate de loin) -->
+        <section class="k-stats-row" aria-label="Chiffres Clés">
+          <div class="k-stat-box green">
+            <div class="k-stat-number">+15 000</div>
+            <div class="k-stat-label">Biens Culturels Sauvés</div>
+          </div>
+          <div class="k-stat-box blue">
+            <div class="k-stat-number">100%</div>
+            <div class="k-stat-label">Inclusion par le Travail</div>
+          </div>
+        </section>
+
+        <!-- 3. Spotlight Partenariat ESAT (Le cœur de la mission) -->
+        <section class="k-esat-card" aria-label="Partenariat ESAT">
+          <div class="k-esat-pill">
+            <i class="fas fa-star"></i> Partenariat Solidaire d'Excellence
+          </div>
+          <h2 class="k-esat-title">Partenariat avec l'ESAT de Châteauneuf</h2>
+          <p class="k-esat-desc">
+            Le tri, le contrôle qualité et le reconditionnement de l'ensemble des biens collectés sont assurés par des personnes en situation de handicap.
+          </p>
+          <div class="k-esat-points">
+            <div class="k-esat-point">
+              <i class="fas fa-check-circle"></i>
+              <span>Activité professionnelle stimulante et valorisante</span>
+            </div>
+            <div class="k-esat-point">
+              <i class="fas fa-check-circle"></i>
+              <span>Écologie et insertion sociale avancent ensemble</span>
+            </div>
+            <div class="k-esat-point">
+              <i class="fas fa-check-circle"></i>
+              <span>Ancrage local fort : Saint-Malo, Dinard, Bretagne</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Nos Piliers & Actions Terrain -->
+        <section class="k-actions-card" aria-label="Nos Piliers">
+          <h3 class="k-card-title">
+            <i class="fas fa-bullseye"></i> Nos Engagements Quotidiens
+          </h3>
+          <div class="k-feature-grid">
+            <div class="k-feature-item">
+              <div class="k-feature-icon"><i class="fas fa-box-heart"></i></div>
+              <div class="k-feature-text">
+                <strong>Collecte Locale</strong>
+                <span>Bacs de dépôt partenaires de proximité</span>
+              </div>
+            </div>
+            <div class="k-feature-item">
+              <div class="k-feature-icon"><i class="fas fa-store"></i></div>
+              <div class="k-feature-text">
+                <strong>Boutique Solidaire</strong>
+                <span>Livres &amp; DVD dès 0,50€ à la Halle aux Artistes</span>
+              </div>
+            </div>
+            <div class="k-feature-item">
+              <div class="k-feature-icon"><i class="fas fa-leaf"></i></div>
+              <div class="k-feature-text">
+                <strong>Zéro Déchet</strong>
+                <span>Valorisation matière &amp; recyclage papier</span>
+              </div>
+            </div>
+            <div class="k-feature-item">
+              <div class="k-feature-icon"><i class="fas fa-heart"></i></div>
+              <div class="k-feature-text">
+                <strong>Humanitaire</strong>
+                <span>Dons aux écoles &amp; associations solidaires</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. Pied du Kakemono (Call-To-Action, Site & QR Code) -->
+        <footer class="k-footer">
+          <div class="k-footer-info">
+            <div class="k-footer-cta">Rejoignez notre mouvement solidaire</div>
+            <div class="k-footer-url">recupculture.fr</div>
+            <div class="k-footer-links">
+              <span><i class="fas fa-envelope" style="color:var(--c-green);width:14px"></i> info@recupculture.fr</span>
+              <span><i class="fab fa-instagram" style="color:var(--c-green);width:14px"></i> @recupculture (Instagram &amp; Facebook)</span>
+              <span><i class="fas fa-map-marker-alt" style="color:var(--c-green);width:14px"></i> Saint-Malo · Dinard · Châteauneuf</span>
+            </div>
+          </div>
+
+          <div class="k-qr-box">
+            <!-- QR Code vectoriel propre -->
+            <svg viewBox="0 0 100 100" fill="#163f7a">
+              <rect x="10" y="10" width="25" height="25" fill="none" stroke="#163f7a" stroke-width="6"/>
+              <rect x="17" y="17" width="11" height="11"/>
+              <rect x="65" y="10" width="25" height="25" fill="none" stroke="#163f7a" stroke-width="6"/>
+              <rect x="72" y="17" width="11" height="11"/>
+              <rect x="10" y="65" width="25" height="25" fill="none" stroke="#163f7a" stroke-width="6"/>
+              <rect x="17" y="72" width="11" height="11"/>
+              <rect x="42" y="12" width="8" height="8"/>
+              <rect x="52" y="24" width="8" height="8"/>
+              <rect x="42" y="38" width="16" height="8"/>
+              <rect x="12" y="42" width="8" height="12"/>
+              <rect x="26" y="48" width="10" height="8"/>
+              <rect x="65" y="45" width="12" height="8"/>
+              <rect x="80" y="55" width="10" height="10"/>
+              <rect x="42" y="65" width="8" height="18"/>
+              <rect x="55" y="70" width="14" height="8"/>
+              <rect x="75" y="75" width="15" height="15"/>
+            </svg>
+            <div class="k-qr-caption">Scannez-moi</div>
+          </div>
+        </footer>
+      </article>
+    </div>
+
+    <!-- ========================================================
+         KAKEMONO 2 : LE PRINCIPE DU PROJET (INFOGRAPHIE CYCLE VERTUEUX)
+         ======================================================== -->
+    <div class="kakemono-wrapper" id="wrap-k2">
+      <div class="kakemono-label">
+        <i class="fas fa-project-diagram" style="color:var(--c-blue)"></i> Kakemono 2 : Le Principe du Projet
+        <span>(200cm × 100cm)</span>
+      </div>
+
+      <article class="kakemono" id="kakemono2">
+        <!-- Repères d'impression (guide visuel) -->
+        <div class="guide-overlay">
+          <div class="guide-top">ZONE SÉCURITÉ HAUTE (Rail de suspension : 25mm)</div>
+          <div class="guide-bottom">ZONE TECHNIQUE BASSE (Carter enrouleur : 50mm)</div>
+        </div>
+
+        <!-- 1. En-tête -->
+        <header class="k-header" style="padding-bottom:10px;">
+          <div class="k-badge" style="background:var(--c-green-dark)">
+            <i class="fas fa-sync-alt"></i> Économie Circulaire en Action
+          </div>
+          <div class="k-logo-container" style="width:170px;margin-bottom:8px;">
+            <img src="assets/logo.png" alt="RECUP CULTURE">
+          </div>
+          <h1 class="k-tagline" style="font-size:21px;">
+            Le Cycle Vertueux<br><span class="highlight-green">de la Culture</span>
+          </h1>
+          <p class="k-subtagline">
+            Comment nous donnons une seconde vie à vos dons culturels
+          </p>
+        </header>
+
+        <!-- 2. ÉTAPE 1 : LA COLLECTE -->
+        <section class="k2-step-card" aria-label="Étape 1 : Collecte">
+          <div class="k2-step-header">
+            <div class="k2-step-badge">1</div>
+            <div>
+              <h2 class="k2-step-title">La Collecte Solidaire</h2>
+              <span style="font-size:10px;color:var(--c-text-muted)">Ce que vous pouvez déposer dans nos points de collecte :</span>
+            </div>
+          </div>
+
+          <div class="k2-items-row">
+            <div class="k2-item-chip">
+              <i class="fas fa-book"></i>
+              <span>Livres &amp; BD</span>
+            </div>
+            <div class="k2-item-chip">
+              <i class="fas fa-compact-disc"></i>
+              <span>CD &amp; Musique</span>
+            </div>
+            <div class="k2-item-chip">
+              <i class="fas fa-film"></i>
+              <span>DVD &amp; Blu-ray</span>
+            </div>
+            <div class="k2-item-chip">
+              <i class="fas fa-gamepad"></i>
+              <span>Jeux Vidéo</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Flèche 1 -->
+        <div class="k2-flow-arrow"><i class="fas fa-arrow-down"></i></div>
+
+        <!-- 3. ÉTAPE 2 : LE TRI EN ESAT -->
+        <section class="k2-step-card step-esat" aria-label="Étape 2 : Tri en ESAT">
+          <div class="k2-step-header">
+            <div class="k2-step-badge">2</div>
+            <div>
+              <h2 class="k2-step-title" style="color:var(--c-blue)">Le Tri &amp; le Reconditionnement</h2>
+              <span style="font-size:10px;color:var(--c-blue-dark);font-weight:600">Atelier de Châteauneuf-d'Ille-et-Vilaine</span>
+            </div>
+          </div>
+
+          <div class="k2-esat-box">
+            <p style="margin-bottom:6px;">
+              Chaque article collecté est soigneusement <span class="k2-esat-highlight">vérifié, nettoyé, trié et préparé</span> par les travailleurs en situation de handicap de l'ESAT.
+            </p>
+            <div style="display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--c-blue-dark);font-weight:700">
+              <i class="fas fa-heart" style="color:#ef4444"></i>
+              <span>Un tremplin d'insertion valorisant et respectueux</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Flèche 2 -->
+        <div class="k2-flow-arrow"><i class="fas fa-arrow-down"></i></div>
+
+        <!-- 4. ÉTAPE 3 : UNE SECONDE VIE TRANSPARENTE -->
+        <section class="k2-step-card step-impact" aria-label="Étape 3 : Deuxième vie">
+          <div class="k2-step-header">
+            <div class="k2-step-badge" style="background:var(--c-amber)">3</div>
+            <div>
+              <h2 class="k2-step-title" style="color:#b45309">Une Seconde Vie Transparente</h2>
+              <span style="font-size:10px;color:var(--c-text-muted)">Pour chaque lot de biens collectés :</span>
+            </div>
+          </div>
+
+          <div class="k2-impact-grid">
+            <div class="k2-impact-row">
+              <div class="k2-impact-pct pct-green">50%</div>
+              <div class="k2-impact-detail">
+                <strong>Revente Solidaire à Prix Mini</strong>
+                <span>Boutique "La Halle aux Artistes" (Livres dès 0,50€, DVD dès 1€)</span>
+              </div>
+            </div>
+
+            <div class="k2-impact-row">
+              <div class="k2-impact-pct pct-blue">30%</div>
+              <div class="k2-impact-detail">
+                <strong>Recyclage Matière Écologique</strong>
+                <span>Revalorisation en pâte à papier · Objectif zéro gaspillage</span>
+              </div>
+            </div>
+
+            <div class="k2-impact-row">
+              <div class="k2-impact-pct pct-amber">20%</div>
+              <div class="k2-impact-detail">
+                <strong>Dons Humanitaires &amp; Écoles</strong>
+                <span>Redistribution gratuite aux projets éducatifs &amp; solidaires</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. Pied du Kakemono (Call-To-Action) -->
+        <footer class="k-footer">
+          <div class="k-footer-info">
+            <div class="k-footer-cta">Vous avez des biens culturels à donner ?</div>
+            <div class="k-footer-url" style="color:var(--c-blue)">recupculture.fr</div>
+            <div class="k-footer-links">
+              <span><i class="fas fa-map-pin" style="color:var(--c-blue);width:14px"></i> Trouvez le point de dépôt le plus proche</span>
+              <span><i class="fas fa-hand-holding-heart" style="color:var(--c-blue);width:14px"></i> Proposez un partenariat ou un bac de collecte</span>
+            </div>
+          </div>
+
+          <div class="k-qr-box">
+            <svg viewBox="0 0 100 100" fill="#163f7a">
+              <rect x="10" y="10" width="25" height="25" fill="none" stroke="#163f7a" stroke-width="6"/>
+              <rect x="17" y="17" width="11" height="11"/>
+              <rect x="65" y="10" width="25" height="25" fill="none" stroke="#163f7a" stroke-width="6"/>
+              <rect x="72" y="17" width="11" height="11"/>
+              <rect x="10" y="65" width="25" height="25" fill="none" stroke="#163f7a" stroke-width="6"/>
+              <rect x="17" y="72" width="11" height="11"/>
+              <rect x="42" y="12" width="8" height="8"/>
+              <rect x="52" y="24" width="8" height="8"/>
+              <rect x="42" y="38" width="16" height="8"/>
+              <rect x="12" y="42" width="8" height="12"/>
+              <rect x="26" y="48" width="10" height="8"/>
+              <rect x="65" y="45" width="12" height="8"/>
+              <rect x="80" y="55" width="10" height="10"/>
+              <rect x="42" y="65" width="8" height="18"/>
+              <rect x="55" y="70" width="14" height="8"/>
+              <rect x="75" y="75" width="15" height="15"/>
+            </svg>
+            <div class="k-qr-caption">Points de dépôt</div>
+          </div>
+        </footer>
+      </article>
+    </div>
+
+  </main>
+
+  <script>
+    function filterKakemono(mode) {
+      const k1 = document.getElementById('wrap-k1');
+      const k2 = document.getElementById('wrap-k2');
+      const bAll = document.getElementById('btnShowAll');
+      const bK1 = document.getElementById('btnShowK1');
+      const bK2 = document.getElementById('btnShowK2');
+
+      bAll.classList.remove('active');
+      bK1.classList.remove('active');
+      bK2.classList.remove('active');
+
+      if (mode === 'k1') {
+        k1.style.display = 'flex';
+        k2.style.display = 'none';
+        bK1.classList.add('active');
+      } else if (mode === 'k2') {
+        k1.style.display = 'none';
+        k2.style.display = 'flex';
+        bK2.classList.add('active');
+      } else {
+        k1.style.display = 'flex';
+        k2.style.display = 'flex';
+        bAll.classList.add('active');
+      }
+    }
+
+    function toggleGuides() {
+      document.body.classList.toggle('show-guides');
+      const btn = document.getElementById('btnToggleGuides');
+      if (document.body.classList.contains('show-guides')) {
+        btn.style.background = '#dc2626';
+      } else {
+        btn.style.background = '#475569';
+      }
+    }
+  </script>
+</body>
+</html>
