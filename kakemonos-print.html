@@ -312,10 +312,10 @@
 
     <!-- BOUTONS DE TÉLÉCHARGEMENT DYNAMIQUES -->
     <div class="actions-group">
-      <a href="assets/kakemono-1-modele-illustre-HD.png" download="kakemono-1-modele-illustre-HD.png" class="btn btn-download-hd" id="btnDownloadHd">
+      <a href="communication/kakemono/kakemono-1-modele-illustre-HD.png" download="kakemono-1-modele-illustre-HD.png" class="btn btn-download-hd" id="btnDownloadHd">
         <i class="fas fa-download"></i> Télécharger PNG HD (300 DPI)
       </a>
-      <a href="assets/kakemono-1-modele-illustre.png" download="kakemono-1-modele-illustre.png" class="btn btn-download-png" id="btnDownloadStd">
+      <a href="communication/kakemono/kakemono-1-modele-illustre.png" download="kakemono-1-modele-illustre.png" class="btn btn-download-png" id="btnDownloadStd">
         <i class="fas fa-file-download"></i> Télécharger PNG Standard
       </a>
       <button class="btn btn-guides" id="btnToggleGuides" onclick="toggleGuides()">
@@ -360,7 +360,7 @@
         <div class="guide-carter-bottom">ZONE TECHNIQUE BASSE (Carter enrouleur : 100 mm)</div>
       </div>
 
-      <img src="assets/kakemono-1-modele-illustre.png" alt="Visuel Kakemono RECUP CULTURE 2m x 1m" class="banner-img" id="bannerImg">
+      <img src="communication/kakemono/kakemono-1-modele-illustre.png" alt="Visuel Kakemono RECUP CULTURE 2m x 1m" class="banner-img" id="bannerImg">
     </div>
 
   </main>
@@ -380,22 +380,22 @@
       if (num === 1) {
         btn1.classList.add('active');
         btn2.classList.remove('active');
-        img.src = 'assets/kakemono-1-modele-illustre.png';
+        img.src = 'communication/kakemono/kakemono-1-modele-illustre.png';
         img.alt = 'Kakemono RECUP CULTURE – Exemple 1 : Modèle Illustré';
-        dlHd.href = 'assets/kakemono-1-modele-illustre-HD.png';
+        dlHd.href = 'communication/kakemono/kakemono-1-modele-illustre-HD.png';
         dlHd.download = 'kakemono-1-modele-illustre-HD.png';
-        dlStd.href = 'assets/kakemono-1-modele-illustre.png';
+        dlStd.href = 'communication/kakemono/kakemono-1-modele-illustre.png';
         dlStd.download = 'kakemono-1-modele-illustre.png';
         desc.innerHTML = '<strong>Exemple 1 (Modèle Illustré)</strong> : Rendu narratif et chaleureux mettant en scène la silhouette de l\'atelier de tri solidaire, les flèches cycliques et les pastilles festonnées d\'impact.';
       } else {
         btn2.classList.add('active');
         btn1.classList.remove('active');
-        img.src = 'assets/kakemono-2-modele-infographique.png';
+        img.src = 'communication/kakemono/kakemono-2-modele-infographique.png';
         img.alt = 'Kakemono RECUP CULTURE – Exemple 2 : Modèle Infographique';
-        dlHd.href = 'assets/kakemono-2-modele-infographique-HD.png';
+        dlHd.href = 'communication/kakemono/kakemono-2-modele-infographique-HD.png';
         dlHd.download = 'kakemono-2-modele-infographique-HD.png';
-        dlStd.href = 'assets/kakemono-2-modele-infographique.png';
-        dlStd.download = 'kakemono-2-modele-infographique.png';
+        dlStd.href = 'communication/kakemono/kakemono-2-modele-infographique.png';
+        dlStd.download = 'communication/kakemono/kakemono-2-modele-infographique.png';
         desc.innerHTML = '<strong>Exemple 2 (Modèle Infographique)</strong> : Rendu géométrique épuré inspiré du site officiel, avec mosaïque bento pour l\'ESAT, les 2 anneaux de progression (50% Revente / 50% Recyclage) et les angles géométriques.';
       }
     }

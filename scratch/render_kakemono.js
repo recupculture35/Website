@@ -20,7 +20,8 @@ const path = require('path');
   console.log('Page loaded (standard).');
   await new Promise(r => setTimeout(r, 2000));
 
-  const stdPath = path.resolve(__dirname, '..', 'assets', 'kakemono-1-modele-illustre.png');
+  const outDir = path.resolve(__dirname, '..', 'communication', 'kakemono');
+  const stdPath = path.join(outDir, 'kakemono-1-modele-illustre.png');
   await page.screenshot({ path: stdPath, fullPage: false, clip: { x: 0, y: 0, width: 1020, height: 2400 } });
   console.log('Standard saved:', stdPath);
 
@@ -30,7 +31,7 @@ const path = require('path');
   console.log('Page loaded (HD).');
   await new Promise(r => setTimeout(r, 2000));
 
-  const hdPath = path.resolve(__dirname, '..', 'assets', 'kakemono-1-modele-illustre-HD.png');
+  const hdPath = path.join(outDir, 'kakemono-1-modele-illustre-HD.png');
   await page.screenshot({ path: hdPath, fullPage: false, clip: { x: 0, y: 0, width: 1020, height: 2400 } });
   console.log('HD saved:', hdPath);
 
