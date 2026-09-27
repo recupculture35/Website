@@ -278,21 +278,21 @@
     }
 
     .macaron-icon-wrap {
-      width: 46px;
-      height: 46px;
+      width: 58px;
+      height: 58px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.18);
+      background: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 8px;
-      backdrop-filter: blur(4px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
     }
 
     .macaron-icon-wrap svg {
-      width: 24px;
-      height: 24px;
-      fill: #ffffff;
+      width: 34px;
+      height: 34px;
+      display: block;
     }
 
     .macaron-title {
@@ -554,8 +554,19 @@
           </svg>
           <div class="macaron-content">
             <div class="macaron-icon-wrap">
-              <svg viewBox="0 0 24 24">
-                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" fill="#facc15"/>
+              <!-- Option 4 : Deux mains ouvertes transmettant / soutenant un livre -->
+              <svg viewBox="0 0 48 48">
+                <!-- Livre ouvert stylisé au centre -->
+                <path d="M 24 13 C 19 9, 12 9, 8 11 L 8 26 C 12 24, 19 24, 24 27 C 29 24, 36 24, 40 26 L 40 11 C 36 9, 29 9, 24 13 Z" fill="#143565"/>
+                <line x1="24" y1="13" x2="24" y2="27" stroke="#ffffff" stroke-width="2"/>
+                <!-- Pages / lignes blanches -->
+                <line x1="12" y1="16" x2="20" y2="17" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
+                <line x1="12" y1="20" x2="20" y2="21" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
+                <line x1="28" y1="17" x2="36" y2="16" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
+                <line x1="28" y1="21" x2="36" y2="20" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
+                <!-- Mains ouvertes en coupe en dessous -->
+                <path d="M 6 34 C 11 30, 16 31, 20 35 C 21.2 36.2, 20.5 38.5, 18.5 38.2 C 15 37.8, 10.5 36.2, 5.5 38.2 C 4 38.8, 3 37.2, 3.8 35.8 C 4.5 34.8, 5.2 34.4, 6 34 Z" fill="#143565"/>
+                <path d="M 42 34 C 37 30, 32 31, 28 35 C 26.8 36.2, 27.5 38.5, 29.5 38.2 C 33 37.8, 37.5 36.2, 42.5 38.2 C 44 38.8, 45 37.2, 44.2 35.8 C 43.5 34.8, 42.8 34.4, 42 34 Z" fill="#143565"/>
               </svg>
             </div>
             <span class="macaron-title">Revente<br>solidaire</span>
@@ -575,8 +586,9 @@
           </svg>
           <div class="macaron-content">
             <div class="macaron-icon-wrap">
-              <svg viewBox="0 0 24 24">
-                <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z" fill="#ffffff"/>
+              <!-- Vrai logo universel du Recyclage (Ruban de Möbius à 3 flèches pliées) -->
+              <svg viewBox="0 0 512 512">
+                <path d="M174.7 45.1C192.2 17 223 0 256 0s63.8 17 81.3 45.1l38.6 61.7 27-15.6c8.4-4.9 18.9-4.2 26.6 1.7s11.1 15.9 8.6 25.3l-23.4 87.4c-3.4 12.8-16.6 20.4-29.4 17l-87.4-23.4c-9.4-2.5-16.3-10.4-17.6-20s3.4-19.1 11.8-23.9l28.4-16.4L283 79c-5.8-9.3-16-15-27-15s-21.2 5.7-27 15l-17.5 28c-9.2 14.8-28.6 19.5-43.6 10.5c-15.3-9.2-20.2-29.2-10.7-44.4l17.5-28zM429.5 251.9c15-9 34.4-4.3 43.6 10.5l24.4 39.1c9.4 15.1 14.4 32.4 14.6 50.2c.3 53.1-42.7 96.4-95.8 96.4L320 448l0 32c0 9.7-5.8 18.5-14.8 22.2s-19.3 1.7-26.2-5.2l-64-64c-9.4-9.4-9.4-24.6 0-33.9l64-64c6.9-6.9 17.2-8.9 26.2-5.2s14.8 12.5 14.8 22.2l0 32 96.2 0c17.6 0 31.9-14.4 31.8-32c0-5.9-1.7-11.7-4.8-16.7l-24.4-39.1c-9.5-15.2-4.7-35.2 10.7-44.4zm-364.6-31L36 204.2c-8.4-4.9-13.1-14.3-11.8-23.9s8.2-17.5 17.6-20l87.4-23.4c12.8-3.4 26 4.2 29.4 17L182 241.2c2.5 9.4-.9 19.3-8.6 25.3s-18.2 6.6-26.6 1.7l-26.5-15.3L68.8 335.3c-3.1 5-4.8 10.8-4.8 16.7c-.1 17.6 14.2 32 31.8 32l32.2 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32.2 0C42.7 448-.3 404.8 0 351.6c.1-17.8 5.1-35.1 14.6-50.2l50.3-80.5z" fill="#276722"/>
               </svg>
             </div>
             <span class="macaron-title">Recyclage<br>matière</span>
