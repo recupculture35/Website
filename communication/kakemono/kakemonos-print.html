@@ -296,21 +296,11 @@
   <header class="top-bar">
     <div class="brand-title">
       <i class="fas fa-file-image" style="color:var(--green)"></i>
-      RECUP CULTURE &nbsp;·&nbsp; Fichiers Imprimeur
-      <span class="badge-fmt">85cm × 200cm Plat</span>
+      RECUP CULTURE &nbsp;·&nbsp; Kakemono Officiel
+      <span class="badge-fmt">85cm × 200cm</span>
     </div>
 
-    <!-- SÉLECTEUR DES 2 EXEMPLES -->
-    <div class="selector-group">
-      <button class="tab-btn active" id="tab1" onclick="switchExample(1)">
-        <i class="fas fa-users-cog"></i> Exemple 1 : Modèle Illustré
-      </button>
-      <button class="tab-btn tab-2" id="tab2" onclick="switchExample(2)">
-        <i class="fas fa-chart-pie"></i> Exemple 2 : Modèle Infographique
-      </button>
-    </div>
-
-    <!-- BOUTONS DE TÉLÉCHARGEMENT DYNAMIQUES -->
+    <!-- BOUTONS DE TÉLÉCHARGEMENT DIRECTS -->
     <div class="actions-group">
       <a href="kakemono-1-modele-illustre-HD.png" download="kakemono-1-modele-illustre-HD.png" class="btn btn-download-hd" id="btnDownloadHd">
         <i class="fas fa-download"></i> Télécharger PNG HD (300 DPI)
@@ -350,7 +340,7 @@
     </div>
 
     <div class="description-box" id="exampleDesc">
-      <strong>Exemple 1 (Modèle Illustré)</strong> : Rendu narratif et chaleureux mettant en scène la silhouette de l'atelier de tri solidaire, les flèches cycliques et les pastilles festonnées d'impact.
+      <strong>Kakemono Officiel (Modèle Illustré)</strong> : Rendu narratif et chaleureux mettant en scène la silhouette de l'atelier de tri solidaire, les flèches cycliques et le double circuit pérenne de valorisation (Revente solidaire &amp; Recyclage matière).
     </div>
 
     <!-- LE VISUEL DU KAKEMONO PUR (SANS DÉCOR, SANS TABLE, SANS SALON) -->
@@ -366,40 +356,6 @@
   </main>
 
   <script>
-    let currentExample = 1;
-
-    function switchExample(num) {
-      currentExample = num;
-      const btn1 = document.getElementById('tab1');
-      const btn2 = document.getElementById('tab2');
-      const img = document.getElementById('bannerImg');
-      const dlHd = document.getElementById('btnDownloadHd');
-      const dlStd = document.getElementById('btnDownloadStd');
-      const desc = document.getElementById('exampleDesc');
-
-      if (num === 1) {
-        btn1.classList.add('active');
-        btn2.classList.remove('active');
-        img.src = 'kakemono-1-modele-illustre.png';
-        img.alt = 'Kakemono RECUP CULTURE – Exemple 1 : Modèle Illustré';
-        dlHd.href = 'kakemono-1-modele-illustre-HD.png';
-        dlHd.download = 'kakemono-1-modele-illustre-HD.png';
-        dlStd.href = 'kakemono-1-modele-illustre.png';
-        dlStd.download = 'kakemono-1-modele-illustre.png';
-        desc.innerHTML = '<strong>Exemple 1 (Modèle Illustré)</strong> : Rendu narratif et chaleureux mettant en scène la silhouette de l\'atelier de tri solidaire, les flèches cycliques et les pastilles festonnées d\'impact.';
-      } else {
-        btn2.classList.add('active');
-        btn1.classList.remove('active');
-        img.src = 'kakemono-2-modele-infographique.png';
-        img.alt = 'Kakemono RECUP CULTURE – Exemple 2 : Modèle Infographique';
-        dlHd.href = 'kakemono-2-modele-infographique-HD.png';
-        dlHd.download = 'kakemono-2-modele-infographique-HD.png';
-        dlStd.href = 'kakemono-2-modele-infographique.png';
-        dlStd.download = 'kakemono-2-modele-infographique.png';
-        desc.innerHTML = '<strong>Exemple 2 (Modèle Infographique)</strong> : Rendu géométrique épuré inspiré du site officiel, avec mosaïque bento pour l\'ESAT, les 2 anneaux de progression (50% Revente / 50% Recyclage) et les angles géométriques.';
-      }
-    }
-
     function toggleGuides() {
       document.body.classList.toggle('show-guides');
       const btn = document.getElementById('btnToggleGuides');
