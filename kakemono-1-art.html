@@ -13,10 +13,11 @@
       padding: 0;
     }
 
+    /* Fond blanc cassé authentique officiel du site (#f7efe2 - crème lin/parchemin chaud) */
     body {
       width: 1020px;
       height: 2400px;
-      background: #faf7f2;
+      background: #f7efe2;
       font-family: 'Inter', sans-serif;
       color: #0f172a;
       position: relative;
@@ -28,7 +29,7 @@
       padding: 0 0 100px 0;
     }
 
-    /* ─── FLÈCHES CYCLIQUES VECTORIELLES D'ENCHAÎNEMENT ─── */
+    /* ─── FLÈCHES CYCLIQUES VECTORIELLES D'ENCHAÎNEMENT ENGLOBANTES ─── */
     .flow-arrow-svg {
       position: absolute;
       pointer-events: none;
@@ -70,7 +71,7 @@
 
     .title-banner h2 {
       font-family: 'Outfit', sans-serif;
-      font-size: 45px;
+      font-size: 46px;
       font-weight: 800;
       letter-spacing: -0.5px;
       margin-bottom: 8px;
@@ -80,7 +81,7 @@
 
     .title-banner p {
       font-family: 'Outfit', sans-serif;
-      font-size: 32px;
+      font-size: 33px;
       font-weight: 700;
       color: #93c5fd;
       letter-spacing: 0.3px;
@@ -95,7 +96,7 @@
       z-index: 2;
       flex: 1;
       justify-content: space-between;
-      padding: 38px 0 20px 0;
+      padding: 34px 0 20px 0;
     }
 
     .step-section {
@@ -107,10 +108,10 @@
       position: relative;
     }
 
-    /* Titres des 3 étapes UNIFORMES 52px */
+    /* Titres des 3 étapes UNIFORMES 56px */
     .step-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 52px;
+      font-size: 56px;
       font-weight: 800;
       color: #143565;
       letter-spacing: -0.5px;
@@ -126,21 +127,21 @@
     }
 
     .step-subtitle {
-      font-size: 21px;
-      font-weight: 600;
-      color: #1e3a8a;
-      max-width: 840px;
+      font-size: 23px;
+      font-weight: 700;
+      color: #143565;
+      max-width: 860px;
       margin-bottom: 16px;
       line-height: 1.35;
     }
 
-    /* ─── ÉTAPE 1 : LA COLLECTE ─── */
+    /* ─── ÉTAPE 1 : LA COLLECTE (Largeur calibrée pour laisser place aux flèches englobantes) ─── */
     .collect-row {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 26px;
+      gap: 24px;
       width: 100%;
-      max-width: 920px;
+      max-width: 760px;
     }
 
     .collect-item {
@@ -150,22 +151,22 @@
     }
 
     .collect-icon-box {
-      width: 172px;
-      height: 172px;
-      border-radius: 36px;
+      width: 156px;
+      height: 156px;
+      border-radius: 32px;
       background: #143565;
       color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 14px 32px rgba(20, 53, 101, 0.24);
-      margin-bottom: 14px;
+      box-shadow: 0 12px 28px rgba(20, 53, 101, 0.22);
+      margin-bottom: 12px;
       position: relative;
     }
 
     .collect-icon-box svg {
-      width: 94px;
-      height: 94px;
+      width: 88px;
+      height: 88px;
       fill: currentColor;
     }
 
@@ -188,7 +189,7 @@
 
     .workshop-image-box {
       width: 100%;
-      max-width: 890px;
+      max-width: 830px;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -208,11 +209,11 @@
       background: #eef7e9;
       border: 2.5px solid #67b342;
       border-radius: 50px;
-      padding: 12px 34px;
+      padding: 12px 36px;
       display: inline-flex;
       align-items: center;
       gap: 12px;
-      max-width: 600px;
+      max-width: 620px;
       box-shadow: 0 6px 16px rgba(103, 179, 66, 0.2);
     }
 
@@ -225,7 +226,7 @@
 
     .inclusion-pill span {
       font-family: 'Outfit', sans-serif;
-      font-size: 19px;
+      font-size: 21px;
       font-weight: 700;
       color: #276722;
       letter-spacing: 0.2px;
@@ -274,7 +275,7 @@
     }
 
     .macaron-star {
-      font-size: 26px;
+      font-size: 28px;
       color: #facc15;
       margin-bottom: 2px;
       line-height: 1;
@@ -283,7 +284,7 @@
 
     .macaron-number {
       font-family: 'Outfit', sans-serif;
-      font-size: 56px;
+      font-size: 58px;
       font-weight: 900;
       line-height: 1;
       margin-bottom: 2px;
@@ -291,14 +292,14 @@
 
     .macaron-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 25px;
+      font-size: 26px;
       font-weight: 800;
       line-height: 1.12;
       margin-bottom: 5px;
     }
 
     .macaron-detail {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
       opacity: 0.95;
       line-height: 1.24;
@@ -325,7 +326,7 @@
 
     .footer-cta {
       font-family: 'Outfit', sans-serif;
-      font-size: 32px;
+      font-size: 34px;
       font-weight: 800;
       color: #143565;
       letter-spacing: -0.3px;
@@ -333,7 +334,7 @@
 
     .footer-url {
       font-family: 'Outfit', sans-serif;
-      font-size: 46px;
+      font-size: 48px;
       font-weight: 900;
       color: #67b342;
       text-decoration: none;
@@ -341,7 +342,7 @@
     }
 
     .footer-subtitle {
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 600;
       color: #64748b;
     }
@@ -381,29 +382,29 @@
 </head>
 <body>
 
-  <!-- FLÈCHES CYCLIQUES VECTORIELLES D'ENCHAÎNEMENT (Inspirées de bat-kakemono-2-principe.jpg) -->
-  <!-- Flèche gauche 1 → 2 : courbe enveloppante qui pointe vers "2. Le Tri Solidaire" -->
-  <svg class="flow-arrow-svg" id="arrow-1-left" style="top: 865px; left: 24px; width: 88px; height: 200px;" viewBox="0 0 88 200">
-    <path d="M 68 6 C 12 50, 10 140, 62 182" fill="none" stroke="#67b342" stroke-width="8.5" stroke-linecap="round" />
-    <polygon points="78,188 56,182 66,166" fill="#67b342" />
+  <!-- FLÈCHES CYCLIQUES VECTORIELLES D'ENCHAÎNEMENT ENGLOBANTES (Inspirées exactement de la copie d'écran) -->
+  <!-- Flèche gauche 1 → 2 : part à hauteur du haut de l'icône Livres, s'évase puis plonge vers le titre 2 -->
+  <svg class="flow-arrow-svg" id="arrow-1-left" style="top: 655px; left: 28px; width: 120px; height: 390px;" viewBox="0 0 120 390">
+    <path d="M 105 12 C 20 90, 15 270, 95 365" fill="none" stroke="#67b342" stroke-width="10" stroke-linecap="round" />
+    <polygon points="114,378 90,370 100,350" fill="#67b342" />
   </svg>
 
-  <!-- Flèche droite 1 → 2 : courbe enveloppante qui pointe vers "2. Le Tri Solidaire" -->
-  <svg class="flow-arrow-svg" id="arrow-1-right" style="top: 865px; right: 24px; width: 88px; height: 200px;" viewBox="0 0 88 200">
-    <path d="M 20 6 C 76 50, 78 140, 26 182" fill="none" stroke="#67b342" stroke-width="8.5" stroke-linecap="round" />
-    <polygon points="10,188 22,166 32,182" fill="#67b342" />
+  <!-- Flèche droite 1 → 2 : part à hauteur du haut de l'icône Jeux Vidéo, s'évase puis plonge vers le titre 2 -->
+  <svg class="flow-arrow-svg" id="arrow-1-right" style="top: 655px; right: 28px; width: 120px; height: 390px;" viewBox="0 0 120 390">
+    <path d="M 15 12 C 100 90, 105 270, 25 365" fill="none" stroke="#67b342" stroke-width="10" stroke-linecap="round" />
+    <polygon points="6,378 20,350 30,370" fill="#67b342" />
   </svg>
 
-  <!-- Flèche gauche 2 → 3 : courbe enveloppante qui pointe vers "3. Une Seconde Vie" -->
-  <svg class="flow-arrow-svg" id="arrow-2-left" style="top: 1505px; left: 24px; width: 88px; height: 200px;" viewBox="0 0 88 200">
-    <path d="M 68 6 C 12 50, 10 140, 62 182" fill="none" stroke="#67b342" stroke-width="8.5" stroke-linecap="round" />
-    <polygon points="78,188 56,182 66,166" fill="#67b342" />
+  <!-- Flèche gauche 2 → 3 : part à hauteur du poste de tri gauche, s'évase puis plonge vers le titre 3 -->
+  <svg class="flow-arrow-svg" id="arrow-2-left" style="top: 1380px; left: 28px; width: 120px; height: 300px;" viewBox="0 0 120 300">
+    <path d="M 95 12 C 20 70, 15 200, 90 275" fill="none" stroke="#67b342" stroke-width="10" stroke-linecap="round" />
+    <polygon points="108,288 84,280 94,260" fill="#67b342" />
   </svg>
 
-  <!-- Flèche droite 2 → 3 : courbe enveloppante qui pointe vers "3. Une Seconde Vie" -->
-  <svg class="flow-arrow-svg" id="arrow-2-right" style="top: 1505px; right: 24px; width: 88px; height: 200px;" viewBox="0 0 88 200">
-    <path d="M 20 6 C 76 50, 78 140, 26 182" fill="none" stroke="#67b342" stroke-width="8.5" stroke-linecap="round" />
-    <polygon points="10,188 22,166 32,182" fill="#67b342" />
+  <!-- Flèche droite 2 → 3 : part à hauteur de la caisse droite / engrenages, s'évase puis plonge vers le titre 3 -->
+  <svg class="flow-arrow-svg" id="arrow-2-right" style="top: 1380px; right: 28px; width: 120px; height: 300px;" viewBox="0 0 120 300">
+    <path d="M 25 12 C 100 70, 105 200, 30 275" fill="none" stroke="#67b342" stroke-width="10" stroke-linecap="round" />
+    <polygon points="12,288 26,260 36,280" fill="#67b342" />
   </svg>
 
   <!-- ════════════════════ EN-TÊTE ════════════════════ -->
@@ -520,7 +521,7 @@
           </svg>
           <div class="macaron-content">
             <span class="macaron-star">★</span>
-            <span class="macaron-number" style="font-size: 40px; margin-top: -2px;">+30 000</span>
+            <span class="macaron-number" style="font-size: 42px; margin-top: -2px;">+30 000</span>
             <span class="macaron-title" style="margin-top: 2px;">Articles<br>Sauvés</span>
             <span class="macaron-detail">&amp; valorisés avec nos partenaires locaux</span>
           </div>
