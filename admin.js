@@ -529,6 +529,9 @@
     const sec = $(`#section-${name}`);
     if (sec) sec.classList.add('active');
 
+    if (name === 'news') {
+      renderNewsTable();
+    }
     if (name === 'map') {
       initAdminMap();
       renderAdminMapPoints();
@@ -594,7 +597,12 @@
   function renderNewsTable() {
     const tbody = $('#newsTableBody');
     const count = $('#newsCount');
+    const cmsBadge = $('#cmsNewsCountBadge');
     let news  = appData.news || [];
+
+    if (cmsBadge) {
+      cmsBadge.textContent = `${(appData.news || []).length} article(s)`;
+    }
 
     if (adminNewsCategoryFilter !== 'all') {
       news = news.filter(item => {
@@ -1397,6 +1405,10 @@
     if ($('#contentNewsTag')) $('#contentNewsTag').value = nw?.tag || def.news?.tag || 'Actualités';
     if ($('#contentNewsTitle')) $('#contentNewsTitle').value = nw?.title || def.news?.title || 'Événements & Nouvelles';
     if ($('#contentNewsDesc')) $('#contentNewsDesc').value = nw?.description || def.news?.description || '';
+    const cmsBadge = $('#cmsNewsCountBadge');
+    if (cmsBadge) {
+      cmsBadge.textContent = `${(appData.news || []).length} article(s)`;
+    }
   }
 
   async function saveContentForm(showToast = true) {
@@ -1667,6 +1679,23 @@
     const btnSaveFaq = $('#btnSaveFaqTab');
     if (btnSaveFaq) {
       btnSaveFaq.addEventListener('click', () => saveContentForm());
+    }
+
+    const btnGoToNews = $('#btnGoToNews');
+    if (btnGoToNews) {
+      btnGoToNews.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchSection('news');
+      });
+    }
+
+    const btnQuickAddNews = $('#btnQuickAddNews');
+    if (btnQuickAddNews) {
+      btnQuickAddNews.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchSection('news');
+        setTimeout(() => openNewsModal(), 100);
+      });
     }
 
     populateContentForm();
@@ -2242,8 +2271,15 @@
 
   // ─── API publique pour les onclick HTML ───────────────
   window.adminApp = {
+    navigate(section, tab) {
+      switchSection(section, tab);
+    },
+    createNews() {
+      switchSection('news');
+      setTimeout(() => openNewsModal(), 100);
+    },
     editNews(id) {
-      const item = (appData.news||[]).find(n => n.id===id);
+      const item = (appData.news||[]).find(n => n.id == id);
       if (item) openNewsModal(item);
     },
     async deleteNews(id) {
@@ -2265,7 +2301,7 @@
           toast('Impossible de joindre le serveur pour supprimer l\'article.', true);
         }
       } else {
-        appData.news = (appData.news||[]).filter(n => n.id!==id);
+        appData.news = (appData.news||[]).filter(n => n.id != id);
         success = true;
       }
 
@@ -2276,7 +2312,7 @@
       }
     },
     editPoint(id) {
-      const pt = (appData.collectPoints||[]).find(p => p.id===id);
+      const pt = (appData.collectPoints||[]).find(p => p.id == id);
       if (pt) {
         switchSection('map');
         setTimeout(() => { initAdminMap(); openPointModal(pt); }, 300);

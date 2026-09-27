@@ -697,14 +697,22 @@
                   <label for="contentNewsDesc">Description d'introduction</label>
                   <textarea id="contentNewsDesc" rows="2" placeholder="Restez informés des prochaines ouvertures de boutique, événements, articles de presse et actualités de l'association."></textarea>
                 </div>
-                <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:var(--radius-sm);padding:14px 18px;margin-top:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-                  <div style="font-size:0.88rem;color:var(--gray-300)">
-                    <i class="fas fa-info-circle" style="color:var(--primary);margin-right:6px"></i>
-                    Pour ajouter, modifier ou supprimer des articles (Presse, Boutique, Événements, Actualités), rendez-vous dans la section dédiée aux actualités.
+                <div style="background:var(--gray-800);border:1px solid var(--gray-700);border-radius:var(--radius-sm);padding:16px 20px;margin-top:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px">
+                  <div style="font-size:0.88rem;color:var(--gray-300);display:flex;align-items:center;gap:12px">
+                    <i class="fas fa-newspaper" style="font-size:1.4rem;color:var(--primary)" aria-hidden="true"></i>
+                    <div>
+                      <strong>Articles publiés : </strong><span id="cmsNewsCountBadge" style="color:var(--primary);font-weight:600">0 article(s)</span><br>
+                      <span style="font-size:0.82rem;color:var(--gray-400)">Gérez la liste complète des articles (Presse, boutique, événements, actualités).</span>
+                    </div>
                   </div>
-                  <button type="button" class="btn btn-secondary-admin btn-sm" onclick="adminApp.navigate('news')">
-                    <i class="fas fa-arrow-right"></i> Gérer les articles publiés
-                  </button>
+                  <div style="display:flex;gap:8px;flex-wrap:wrap">
+                    <button type="button" class="btn btn-secondary-admin btn-sm" id="btnQuickAddNews" onclick="adminApp.createNews()">
+                      <i class="fas fa-plus" aria-hidden="true"></i> Nouvel article
+                    </button>
+                    <button type="button" class="btn btn-primary-admin btn-sm" id="btnGoToNews" onclick="adminApp.navigate('news')">
+                      <i class="fas fa-list" aria-hidden="true"></i> Gérer les articles publiés &rarr;
+                    </button>
+                  </div>
                 </div>
                 <div class="cms-pane-actions" style="margin-top:20px">
                   <button type="button" class="btn btn-primary-admin btn-sm btn-save-cms-pane">
