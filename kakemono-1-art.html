@@ -29,11 +29,21 @@
       padding: 0 0 100px 0;
     }
 
-    /* ─── FLÈCHES CYCLIQUES VECTORIELLES D'ENCHAÎNEMENT ENGLOBANTES ─── */
-    .flow-arrow-svg {
-      position: absolute;
+    /* ─── FLÈCHES DE TRANSITION ENTRE ÉTAPES (dans le flux flex) ─── */
+    .arrow-transition {
+      width: 100%;
+      position: relative;
       pointer-events: none;
-      z-index: 3;
+      z-index: 1;
+      flex-shrink: 0;
+      overflow: visible;
+    }
+
+    .arrow-transition svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
     }
 
     /* ─── EN-TÊTE ─── */
@@ -382,30 +392,6 @@
 </head>
 <body>
 
-  <!-- FLÈCHES CYCLIQUES VECTORIELLES D'ENCHAÎNEMENT ENGLOBANTES -->
-  <!-- Flèche gauche 1 → 2 : part du milieu des icônes étape 1 -->
-  <svg class="flow-arrow-svg" id="arrow-1-left" style="top: 660px; left: 8px; width: 175px; height: 340px;" viewBox="0 0 175 340">
-    <path d="M 145 18 C 28 75, 22 230, 135 312" fill="none" stroke="#67b342" stroke-width="12" stroke-linecap="round" />
-    <polygon points="160,322 128,322 136,298" fill="#67b342" />
-  </svg>
-
-  <!-- Flèche droite 1 → 2 : part du milieu des icônes étape 1 -->
-  <svg class="flow-arrow-svg" id="arrow-1-right" style="top: 660px; right: 8px; width: 175px; height: 340px;" viewBox="0 0 175 340">
-    <path d="M 30 18 C 147 75, 153 230, 40 312" fill="none" stroke="#67b342" stroke-width="12" stroke-linecap="round" />
-    <polygon points="15,322 39,298 47,322" fill="#67b342" />
-  </svg>
-
-  <!-- Flèche gauche 2 → 3 : part du milieu de l'illustration atelier -->
-  <svg class="flow-arrow-svg" id="arrow-2-left" style="top: 1300px; left: 8px; width: 175px; height: 350px;" viewBox="0 0 175 350">
-    <path d="M 140 18 C 28 70, 22 235, 130 322" fill="none" stroke="#67b342" stroke-width="12" stroke-linecap="round" />
-    <polygon points="155,332 123,332 131,308" fill="#67b342" />
-  </svg>
-
-  <!-- Flèche droite 2 → 3 : part du milieu de l'illustration atelier -->
-  <svg class="flow-arrow-svg" id="arrow-2-right" style="top: 1300px; right: 8px; width: 175px; height: 350px;" viewBox="0 0 175 350">
-    <path d="M 35 18 C 147 70, 153 235, 45 322" fill="none" stroke="#67b342" stroke-width="12" stroke-linecap="round" />
-    <polygon points="20,332 44,308 52,332" fill="#67b342" />
-  </svg>
 
   <!-- ════════════════════ EN-TÊTE ════════════════════ -->
   <header class="header-section">
@@ -478,6 +464,18 @@
       </div>
     </section>
 
+    <!-- ── FLÈCHES 1 → 2 (grands arcs englobants dans le flux) ── -->
+    <div class="arrow-transition" style="height: 220px; margin: -95px 0;">
+      <svg viewBox="0 0 1020 220" preserveAspectRatio="xMidYMid meet">
+        <!-- Flèche gauche 1 → 2 -->
+        <path d="M 220 8 C -20 40, -20 180, 220 210" fill="none" stroke="#67b342" stroke-width="10" stroke-linecap="round" />
+        <polygon points="245,215 215,205 220,185" fill="#67b342" />
+        <!-- Flèche droite 1 → 2 -->
+        <path d="M 800 8 C 1040 40, 1040 180, 800 210" fill="none" stroke="#67b342" stroke-width="10" stroke-linecap="round" />
+        <polygon points="775,215 800,185 805,205" fill="#67b342" />
+      </svg>
+    </div>
+
     <!-- ── ÉTAPE 2 : LE TRI SOLIDAIRE ── -->
     <section class="step-section">
       <h3 class="step-title"><span class="num-badge">2.</span> Le Tri Solidaire</h3>
@@ -496,6 +494,18 @@
         </div>
       </div>
     </section>
+
+    <!-- ── FLÈCHES 2 → 3 (grands arcs englobants dans le flux) ── -->
+    <div class="arrow-transition" style="height: 220px; margin: -95px 0;">
+      <svg viewBox="0 0 1020 220" preserveAspectRatio="xMidYMid meet">
+        <!-- Flèche gauche 2 → 3 -->
+        <path d="M 220 8 C -20 40, -20 180, 220 210" fill="none" stroke="#67b342" stroke-width="10" stroke-linecap="round" />
+        <polygon points="245,215 215,205 220,185" fill="#67b342" />
+        <!-- Flèche droite 2 → 3 -->
+        <path d="M 800 8 C 1040 40, 1040 180, 800 210" fill="none" stroke="#67b342" stroke-width="10" stroke-linecap="round" />
+        <polygon points="775,215 800,185 805,205" fill="#67b342" />
+      </svg>
+    </div>
 
     <!-- ── ÉTAPE 3 : UNE SECONDE VIE (3 MACARONS HARMONISÉS) ── -->
     <section class="step-section">
