@@ -29,20 +29,15 @@
       padding: 0 0 100px 0;
     }
 
-    /* ─── FLÈCHES DE TRANSITION ENTRE ÉTAPES (dans le flux flex) ─── */
-    .arrow-transition {
-      width: 100%;
-      position: relative;
+    /* ─── CALQUE DES FLÈCHES FLUIDES ENTRE ÉTAPES ─── */
+    .flow-arrows-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1020px;
+      height: 2400px;
       pointer-events: none;
-      z-index: 1;
-      flex-shrink: 0;
-      overflow: visible;
-    }
-
-    .arrow-transition svg {
-      display: block;
-      width: 100%;
-      height: 100%;
+      z-index: 10;
       overflow: visible;
     }
 
@@ -392,6 +387,33 @@
 </head>
 <body>
 
+  <!-- ════════════════════ CALQUE DES FLÈCHES FLUIDES (ÉTAPES 1 → 2 & 2 → 3) ════════════════════ -->
+  <svg id="flow-arrows-layer" class="flow-arrows-layer" viewBox="0 0 1020 2400" preserveAspectRatio="none">
+    <!-- Flèche 1 → 2 Gauche -->
+    <path id="path-arrow-1-2-left" fill="none" stroke="#67b342" stroke-width="8.5" stroke-linecap="round"
+      d="M 118 810 C 63 904, 93 1043, 236 1076" />
+    <polygon id="poly-arrow-1-2-left" fill="#67b342"
+      points="246,1078 221,1083 226,1063" />
+
+    <!-- Flèche 1 → 2 Droite -->
+    <path id="path-arrow-1-2-right" fill="none" stroke="#67b342" stroke-width="8.5" stroke-linecap="round"
+      d="M 902 810 C 957 904, 927 1043, 784 1076" />
+    <polygon id="poly-arrow-1-2-right" fill="#67b342"
+      points="774,1078 794,1063 799,1083" />
+
+    <!-- Flèche 2 → 3 Gauche -->
+    <path id="path-arrow-2-3-left" fill="none" stroke="#67b342" stroke-width="8.5" stroke-linecap="round"
+      d="M 75 1292 C 20 1409, 50 1592, 212 1625" />
+    <polygon id="poly-arrow-2-3-left" fill="#67b342"
+      points="222,1627 198,1632 202,1612" />
+
+    <!-- Flèche 2 → 3 Droite -->
+    <path id="path-arrow-2-3-right" fill="none" stroke="#67b342" stroke-width="8.5" stroke-linecap="round"
+      d="M 945 1292 C 1000 1409, 970 1592, 808 1625" />
+    <polygon id="poly-arrow-2-3-right" fill="#67b342"
+      points="798,1627 818,1612 822,1632" />
+  </svg>
+
 
   <!-- ════════════════════ EN-TÊTE ════════════════════ -->
   <header class="header-section">
@@ -410,7 +432,7 @@
 
     <!-- ── ÉTAPE 1 : LA COLLECTE ── -->
     <section class="step-section">
-      <h3 class="step-title"><span class="num-badge">1.</span> La Collecte</h3>
+      <h3 class="step-title"><span class="num-badge">1.</span> La collecte</h3>
       <div class="collect-row">
         <!-- 1. Livres -->
         <div class="collect-item">
@@ -464,21 +486,9 @@
       </div>
     </section>
 
-    <!-- ── FLÈCHES 1 → 2 (grands arcs englobants dans le flux) ── -->
-    <div class="arrow-transition" style="height: 220px; margin: -95px 0;">
-      <svg viewBox="0 0 1020 220" preserveAspectRatio="xMidYMid meet">
-        <!-- Flèche gauche 1 → 2 -->
-        <path d="M 220 8 C -20 40, -20 180, 220 210" fill="none" stroke="#67b342" stroke-width="10" stroke-linecap="round" />
-        <polygon points="245,215 215,205 220,185" fill="#67b342" />
-        <!-- Flèche droite 1 → 2 -->
-        <path d="M 800 8 C 1040 40, 1040 180, 800 210" fill="none" stroke="#67b342" stroke-width="10" stroke-linecap="round" />
-        <polygon points="775,215 800,185 805,205" fill="#67b342" />
-      </svg>
-    </div>
-
     <!-- ── ÉTAPE 2 : LE TRI SOLIDAIRE ── -->
     <section class="step-section">
-      <h3 class="step-title"><span class="num-badge">2.</span> Le Tri Solidaire</h3>
+      <h3 class="step-title"><span class="num-badge">2.</span> Le tri solidaire</h3>
       <p class="step-subtitle">réalisé par des travailleurs en situation de handicap avec l'aide d'ESAT</p>
 
       <div class="workshop-wrapper">
@@ -495,21 +505,9 @@
       </div>
     </section>
 
-    <!-- ── FLÈCHES 2 → 3 (grands arcs englobants dans le flux) ── -->
-    <div class="arrow-transition" style="height: 220px; margin: -95px 0;">
-      <svg viewBox="0 0 1020 220" preserveAspectRatio="xMidYMid meet">
-        <!-- Flèche gauche 2 → 3 -->
-        <path d="M 220 8 C -20 40, -20 180, 220 210" fill="none" stroke="#67b342" stroke-width="10" stroke-linecap="round" />
-        <polygon points="245,215 215,205 220,185" fill="#67b342" />
-        <!-- Flèche droite 2 → 3 -->
-        <path d="M 800 8 C 1040 40, 1040 180, 800 210" fill="none" stroke="#67b342" stroke-width="10" stroke-linecap="round" />
-        <polygon points="775,215 800,185 805,205" fill="#67b342" />
-      </svg>
-    </div>
-
     <!-- ── ÉTAPE 3 : UNE SECONDE VIE (3 MACARONS HARMONISÉS) ── -->
     <section class="step-section">
-      <h3 class="step-title"><span class="num-badge">3.</span> Une Seconde Vie</h3>
+      <h3 class="step-title"><span class="num-badge">3.</span> Une seconde vie</h3>
 
       <div class="macarons-row">
         <!-- Macaron 1 (Gauche) : 50% Revente Solidaire -->
@@ -567,6 +565,97 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    function updateArrows() {
+      const getRect = (sel) => {
+        const el = document.querySelector(sel);
+        return el ? el.getBoundingClientRect() : null;
+      };
+
+      const icon1 = getRect('.collect-item:nth-child(1) .collect-icon-box');
+      const icon4 = getRect('.collect-item:nth-child(4) .collect-icon-box');
+      const title2 = getRect('.step-section:nth-of-type(2) .step-title');
+      const workshop = getRect('.workshop-image-box');
+      const title3 = getRect('.step-section:nth-of-type(3) .step-title');
+
+      if (!icon1 || !icon4 || !title2 || !workshop || !title3) return;
+
+      function drawArrow(pathId, polyId, startX, startY, endX, endY, cp1X, cp1Y, cp2X, cp2Y, headSize = 25) {
+        const pathEl = document.getElementById(pathId);
+        const polyEl = document.getElementById(polyId);
+        if (!pathEl || !polyEl) return;
+
+        const angle = Math.atan2(endY - cp2Y, endX - cp2X);
+        const tipX = endX;
+        const tipY = endY;
+
+        const lineEndX = tipX - Math.cos(angle) * (headSize * 0.4);
+        const lineEndY = tipY - Math.sin(angle) * (headSize * 0.4);
+        pathEl.setAttribute('d', `M ${Math.round(startX)} ${Math.round(startY)} C ${Math.round(cp1X)} ${Math.round(cp1Y)}, ${Math.round(cp2X)} ${Math.round(cp2Y)}, ${Math.round(lineEndX)} ${Math.round(lineEndY)}`);
+
+        const backAngle1 = angle + Math.PI - 0.42;
+        const backAngle2 = angle + Math.PI + 0.42;
+
+        const p1X = Math.round(tipX + Math.cos(backAngle1) * headSize);
+        const p1Y = Math.round(tipY + Math.sin(backAngle1) * headSize);
+        const p2X = Math.round(tipX + Math.cos(backAngle2) * headSize);
+        const p2Y = Math.round(tipY + Math.sin(backAngle2) * headSize);
+
+        polyEl.setAttribute('points', `${Math.round(tipX)},${Math.round(tipY)} ${p1X},${p1Y} ${p2X},${p2Y}`);
+      }
+
+      // ─── Flèche 1 → 2 Gauche (part du milieu de l'icône 1 vers titre 2) ───
+      const start12L_X = icon1.left - 20;
+      const start12L_Y = icon1.top + icon1.height / 2;
+      const end12L_X = title2.left - 20;
+      const end12L_Y = title2.top + title2.height / 2;
+      const cp1_12L_X = start12L_X - 55;
+      const cp1_12L_Y = start12L_Y + (end12L_Y - start12L_Y) * 0.35;
+      const cp2_12L_X = start12L_X - 25;
+      const cp2_12L_Y = end12L_Y - 35;
+      drawArrow('path-arrow-1-2-left', 'poly-arrow-1-2-left', start12L_X, start12L_Y, end12L_X, end12L_Y, cp1_12L_X, cp1_12L_Y, cp2_12L_X, cp2_12L_Y);
+
+      // ─── Flèche 1 → 2 Droite (part du milieu de l'icône 4 vers titre 2) ───
+      const start12R_X = icon4.right + 20;
+      const start12R_Y = icon4.top + icon4.height / 2;
+      const end12R_X = title2.right + 20;
+      const end12R_Y = title2.top + title2.height / 2;
+      const cp1_12R_X = start12R_X + 55;
+      const cp1_12R_Y = start12R_Y + (end12R_Y - start12R_Y) * 0.35;
+      const cp2_12R_X = start12R_X + 25;
+      const cp2_12R_Y = end12R_Y - 35;
+      drawArrow('path-arrow-1-2-right', 'poly-arrow-1-2-right', start12R_X, start12R_Y, end12R_X, end12R_Y, cp1_12R_X, cp1_12R_Y, cp2_12R_X, cp2_12R_Y);
+
+      // ─── Flèche 2 → 3 Gauche (part du milieu de l'illustration 2 vers titre 3) ───
+      const start23L_X = workshop.left - 20;
+      const start23L_Y = workshop.top + workshop.height / 2;
+      const end23L_X = title3.left - 20;
+      const end23L_Y = title3.top + title3.height / 2;
+      const cp1_23L_X = start23L_X - 55;
+      const cp1_23L_Y = start23L_Y + (end23L_Y - start23L_Y) * 0.35;
+      const cp2_23L_X = start23L_X - 25;
+      const cp2_23L_Y = end23L_Y - 35;
+      drawArrow('path-arrow-2-3-left', 'poly-arrow-2-3-left', start23L_X, start23L_Y, end23L_X, end23L_Y, cp1_23L_X, cp1_23L_Y, cp2_23L_X, cp2_23L_Y);
+
+      // ─── Flèche 2 → 3 Droite (part du milieu de l'illustration 2 vers titre 3) ───
+      const start23R_X = workshop.right + 20;
+      const start23R_Y = workshop.top + workshop.height / 2;
+      const end23R_X = title3.right + 20;
+      const end23R_Y = title3.top + title3.height / 2;
+      const cp1_23R_X = start23R_X + 55;
+      const cp1_23R_Y = start23R_Y + (end23R_Y - start23R_Y) * 0.35;
+      const cp2_23R_X = start23R_X + 25;
+      const cp2_23R_Y = end23R_Y - 35;
+      drawArrow('path-arrow-2-3-right', 'poly-arrow-2-3-right', start23R_X, start23R_Y, end23R_X, end23R_Y, cp1_23R_X, cp1_23R_Y, cp2_23R_X, cp2_23R_Y);
+    }
+
+    window.addEventListener('DOMContentLoaded', updateArrows);
+    window.addEventListener('load', updateArrows);
+    document.fonts.ready.then(updateArrows);
+    setTimeout(updateArrows, 150);
+    setTimeout(updateArrows, 600);
+  </script>
 
 </body>
 </html>
