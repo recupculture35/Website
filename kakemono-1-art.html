@@ -24,15 +24,15 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      /* 35px haut, 45px côtés, 100px bas pour enrouleur/carter */
-      padding: 35px 45px 100px 45px;
+      /* 100px de réserve en bas pour le carter/enrouleur */
+      padding: 0 0 100px 0;
     }
 
-    /* ─── FLÈCHES CYCLIQUES VECTORIELLES ─── */
+    /* ─── FLÈCHES CYCLIQUES VECTORIELLES D'ENCHAÎNEMENT ─── */
     .flow-arrow-svg {
       position: absolute;
       pointer-events: none;
-      z-index: 1;
+      z-index: 3;
     }
 
     /* ─── EN-TÊTE ─── */
@@ -42,13 +42,12 @@
       flex-direction: column;
       align-items: center;
       z-index: 2;
-      margin-bottom: 30px;
     }
 
     .logo-container {
       width: 100%;
-      max-width: 500px;
-      margin-bottom: 16px;
+      max-width: 530px;
+      padding: 44px 45px 26px 45px;
       display: flex;
       justify-content: center;
     }
@@ -59,37 +58,35 @@
       object-fit: contain;
     }
 
-    /* Accroche supérieure */
+    /* Bandeau supérieur PLEINE LARGEUR (inspiré fidèlement de bat-kakemono-2-principe.jpg) */
     .title-banner {
-      background: linear-gradient(135deg, #143565 0%, #1a4a8a 100%);
+      background: #143565;
       color: #ffffff;
-      border-radius: 20px;
-      padding: 28px 36px;
+      padding: 34px 45px 36px 45px;
       text-align: center;
       width: 100%;
-      max-width: 930px;
-      box-shadow: 0 10px 28px rgba(20, 53, 101, 0.22);
+      box-shadow: 0 8px 24px rgba(20, 53, 101, 0.22);
     }
 
     .title-banner h2 {
       font-family: 'Outfit', sans-serif;
-      font-size: 44px;
+      font-size: 45px;
       font-weight: 800;
       letter-spacing: -0.5px;
       margin-bottom: 8px;
-      line-height: 1.18;
+      line-height: 1.15;
       color: #ffffff;
     }
 
     .title-banner p {
       font-family: 'Outfit', sans-serif;
-      font-size: 33px;
-      font-weight: 800;
+      font-size: 32px;
+      font-weight: 700;
       color: #93c5fd;
       letter-spacing: 0.3px;
     }
 
-    /* ─── CORPS (3 ÉTAPES) — RÉPARTITION ÉQUILIBRÉE ─── */
+    /* ─── CORPS EN 3 ÉTAPES (ENCHAÎNEMENT HARMONIEUX) ─── */
     .content-body {
       width: 100%;
       max-width: 930px;
@@ -98,7 +95,7 @@
       z-index: 2;
       flex: 1;
       justify-content: space-between;
-      margin-bottom: 25px;
+      padding: 38px 0 20px 0;
     }
 
     .step-section {
@@ -110,10 +107,10 @@
       position: relative;
     }
 
-    /* Titres des 3 étapes UNIFORMES 54px */
+    /* Titres des 3 étapes UNIFORMES 52px */
     .step-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 54px;
+      font-size: 52px;
       font-weight: 800;
       color: #143565;
       letter-spacing: -0.5px;
@@ -121,7 +118,7 @@
       align-items: center;
       justify-content: center;
       gap: 14px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .step-title .num-badge {
@@ -167,8 +164,8 @@
     }
 
     .collect-icon-box svg {
-      width: 96px;
-      height: 96px;
+      width: 94px;
+      height: 94px;
       fill: currentColor;
     }
 
@@ -191,12 +188,11 @@
 
     .workshop-image-box {
       width: 100%;
-      max-width: 880px;
+      max-width: 890px;
       display: flex;
       justify-content: center;
       align-items: center;
       margin-bottom: 16px;
-      /* Ne jamais rogner les têtes */
       overflow: visible;
     }
 
@@ -216,7 +212,7 @@
       display: inline-flex;
       align-items: center;
       gap: 12px;
-      max-width: 580px;
+      max-width: 600px;
       box-shadow: 0 6px 16px rgba(103, 179, 66, 0.2);
     }
 
@@ -235,7 +231,7 @@
       letter-spacing: 0.2px;
     }
 
-    /* ─── ÉTAPE 3 : UNE SECONDE VIE (3 MACARONS) ─── */
+    /* ─── ÉTAPE 3 : UNE SECONDE VIE (3 MACARONS ÉQUILIBRÉS) ─── */
     .macarons-row {
       display: flex;
       justify-content: center;
@@ -277,6 +273,14 @@
       justify-content: center;
     }
 
+    .macaron-star {
+      font-size: 26px;
+      color: #facc15;
+      margin-bottom: 2px;
+      line-height: 1;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
     .macaron-number {
       font-family: 'Outfit', sans-serif;
       font-size: 56px;
@@ -310,7 +314,6 @@
       align-items: center;
       border-top: 3px solid #dcd6cc;
       padding-top: 24px;
-      margin-top: 15px;
       z-index: 2;
     }
 
@@ -322,7 +325,7 @@
 
     .footer-cta {
       font-family: 'Outfit', sans-serif;
-      font-size: 30px;
+      font-size: 32px;
       font-weight: 800;
       color: #143565;
       letter-spacing: -0.3px;
@@ -330,7 +333,7 @@
 
     .footer-url {
       font-family: 'Outfit', sans-serif;
-      font-size: 44px;
+      font-size: 46px;
       font-weight: 900;
       color: #67b342;
       text-decoration: none;
@@ -338,7 +341,7 @@
     }
 
     .footer-subtitle {
-      font-size: 16px;
+      font-size: 17px;
       font-weight: 600;
       color: #64748b;
     }
@@ -360,8 +363,8 @@
     }
 
     .qr-box img {
-      width: 130px;
-      height: 130px;
+      width: 132px;
+      height: 132px;
       display: block;
       image-rendering: pixelated;
     }
@@ -378,29 +381,29 @@
 </head>
 <body>
 
-  <!-- FLÈCHES CYCLIQUES VECTORIELLES — Positionnées au pixel près dans les transitions 1→2 et 2→3 -->
-  <!-- Flèche gauche étape 1 → 2 -->
-  <svg class="flow-arrow-svg" style="top: 852px; left: 16px; width: 68px; height: 185px;" viewBox="0 0 68 185">
-    <path d="M 56 6 C 8 50, 8 135, 50 174" fill="none" stroke="#67b342" stroke-width="7" stroke-linecap="round" />
-    <polygon points="56,182 40,172 50,163" fill="#67b342" />
+  <!-- FLÈCHES CYCLIQUES VECTORIELLES D'ENCHAÎNEMENT (Inspirées de bat-kakemono-2-principe.jpg) -->
+  <!-- Flèche gauche 1 → 2 : courbe enveloppante qui pointe vers "2. Le Tri Solidaire" -->
+  <svg class="flow-arrow-svg" id="arrow-1-left" style="top: 865px; left: 24px; width: 88px; height: 200px;" viewBox="0 0 88 200">
+    <path d="M 68 6 C 12 50, 10 140, 62 182" fill="none" stroke="#67b342" stroke-width="8.5" stroke-linecap="round" />
+    <polygon points="78,188 56,182 66,166" fill="#67b342" />
   </svg>
 
-  <!-- Flèche droite étape 1 → 2 -->
-  <svg class="flow-arrow-svg" style="top: 852px; right: 16px; width: 68px; height: 185px;" viewBox="0 0 68 185">
-    <path d="M 12 6 C 60 50, 60 135, 18 174" fill="none" stroke="#67b342" stroke-width="7" stroke-linecap="round" />
-    <polygon points="12,182 28,172 18,163" fill="#67b342" />
+  <!-- Flèche droite 1 → 2 : courbe enveloppante qui pointe vers "2. Le Tri Solidaire" -->
+  <svg class="flow-arrow-svg" id="arrow-1-right" style="top: 865px; right: 24px; width: 88px; height: 200px;" viewBox="0 0 88 200">
+    <path d="M 20 6 C 76 50, 78 140, 26 182" fill="none" stroke="#67b342" stroke-width="8.5" stroke-linecap="round" />
+    <polygon points="10,188 22,166 32,182" fill="#67b342" />
   </svg>
 
-  <!-- Flèche gauche étape 2 → 3 -->
-  <svg class="flow-arrow-svg" style="top: 1482px; left: 16px; width: 68px; height: 185px;" viewBox="0 0 68 185">
-    <path d="M 56 6 C 8 50, 8 135, 50 174" fill="none" stroke="#67b342" stroke-width="7" stroke-linecap="round" />
-    <polygon points="56,182 40,172 50,163" fill="#67b342" />
+  <!-- Flèche gauche 2 → 3 : courbe enveloppante qui pointe vers "3. Une Seconde Vie" -->
+  <svg class="flow-arrow-svg" id="arrow-2-left" style="top: 1505px; left: 24px; width: 88px; height: 200px;" viewBox="0 0 88 200">
+    <path d="M 68 6 C 12 50, 10 140, 62 182" fill="none" stroke="#67b342" stroke-width="8.5" stroke-linecap="round" />
+    <polygon points="78,188 56,182 66,166" fill="#67b342" />
   </svg>
 
-  <!-- Flèche droite étape 2 → 3 -->
-  <svg class="flow-arrow-svg" style="top: 1482px; right: 16px; width: 68px; height: 185px;" viewBox="0 0 68 185">
-    <path d="M 12 6 C 60 50, 60 135, 18 174" fill="none" stroke="#67b342" stroke-width="7" stroke-linecap="round" />
-    <polygon points="12,182 28,172 18,163" fill="#67b342" />
+  <!-- Flèche droite 2 → 3 : courbe enveloppante qui pointe vers "3. Une Seconde Vie" -->
+  <svg class="flow-arrow-svg" id="arrow-2-right" style="top: 1505px; right: 24px; width: 88px; height: 200px;" viewBox="0 0 88 200">
+    <path d="M 20 6 C 76 50, 78 140, 26 182" fill="none" stroke="#67b342" stroke-width="8.5" stroke-linecap="round" />
+    <polygon points="10,188 22,166 32,182" fill="#67b342" />
   </svg>
 
   <!-- ════════════════════ EN-TÊTE ════════════════════ -->
@@ -408,6 +411,7 @@
     <div class="logo-container">
       <img src="assets/logo.png" alt="RECUP CULTURE – Donnez une seconde vie à la culture">
     </div>
+    <!-- Bandeau pleine largeur comme dans bat-kakemono-2-principe.jpg -->
     <div class="title-banner">
       <h2>De vos étagères à une seconde vie solidaire</h2>
       <p>Le voyage de vos dons culturels en 3 étapes</p>
@@ -492,12 +496,12 @@
       </div>
     </section>
 
-    <!-- ── ÉTAPE 3 : UNE SECONDE VIE ── -->
+    <!-- ── ÉTAPE 3 : UNE SECONDE VIE (3 MACARONS HARMONISÉS) ── -->
     <section class="step-section">
       <h3 class="step-title"><span class="num-badge">3.</span> Une Seconde Vie</h3>
 
       <div class="macarons-row">
-        <!-- Macaron 1 : 50% Revente Solidaire -->
+        <!-- Macaron 1 (Gauche) : 50% Revente Solidaire -->
         <div class="macaron-card">
           <svg class="macaron-bg" viewBox="0 0 200 200">
             <path d="M 100 8 C 112 8, 120 18, 130 22 C 141 27, 153 27, 161 36 C 170 45, 170 57, 176 68 C 180 78, 190 86, 190 98 C 190 110, 180 118, 176 128 C 170 139, 170 151, 161 160 C 153 169, 141 169, 130 174 C 120 178, 112 188, 100 188 C 88 188, 80 178, 70 174 C 59 169, 47 169, 39 160 C 30 151, 30 139, 24 128 C 20 118, 10 110, 10 98 C 10 86, 20 78, 24 68 C 30 57, 30 45, 39 36 C 47 27, 59 27, 70 22 C 80 18, 88 8, 100 8 Z" fill="#143565" />
@@ -509,7 +513,20 @@
           </div>
         </div>
 
-        <!-- Macaron 2 : 50% Recyclage Matière -->
+        <!-- Macaron 2 (Centre) : +30 000 Articles sauvés (Rosette avec étoile comme dans bat-kakemono-2-principe.jpg) -->
+        <div class="macaron-card">
+          <svg class="macaron-bg" viewBox="0 0 200 200">
+            <path d="M 100 8 C 112 8, 120 18, 130 22 C 141 27, 153 27, 161 36 C 170 45, 170 57, 176 68 C 180 78, 190 86, 190 98 C 190 110, 180 118, 176 128 C 170 139, 170 151, 161 160 C 153 169, 141 169, 130 174 C 120 178, 112 188, 100 188 C 88 188, 80 178, 70 174 C 59 169, 47 169, 39 160 C 30 151, 30 139, 24 128 C 20 118, 10 110, 10 98 C 10 86, 20 78, 24 68 C 30 57, 30 45, 39 36 C 47 27, 59 27, 70 22 C 80 18, 88 8, 100 8 Z" fill="#4a7e26" />
+          </svg>
+          <div class="macaron-content">
+            <span class="macaron-star">★</span>
+            <span class="macaron-number" style="font-size: 40px; margin-top: -2px;">+30 000</span>
+            <span class="macaron-title" style="margin-top: 2px;">Articles<br>Sauvés</span>
+            <span class="macaron-detail">&amp; valorisés avec nos partenaires locaux</span>
+          </div>
+        </div>
+
+        <!-- Macaron 3 (Droite) : 50% Recyclage Matière -->
         <div class="macaron-card">
           <svg class="macaron-bg" viewBox="0 0 200 200">
             <path d="M 100 8 C 112 8, 120 18, 130 22 C 141 27, 153 27, 161 36 C 170 45, 170 57, 176 68 C 180 78, 190 86, 190 98 C 190 110, 180 118, 176 128 C 170 139, 170 151, 161 160 C 153 169, 141 169, 130 174 C 120 178, 112 188, 100 188 C 88 188, 80 178, 70 174 C 59 169, 47 169, 39 160 C 30 151, 30 139, 24 128 C 20 118, 10 110, 10 98 C 10 86, 20 78, 24 68 C 30 57, 30 45, 39 36 C 47 27, 59 27, 70 22 C 80 18, 88 8, 100 8 Z" fill="#67b342" />
@@ -518,18 +535,6 @@
             <span class="macaron-number">50%</span>
             <span class="macaron-title">Recyclage<br>Matière</span>
             <span class="macaron-detail">(Transformation locale en pâte à papier · Zéro Déchet)</span>
-          </div>
-        </div>
-
-        <!-- Macaron 3 : +30 000 Articles sauvés -->
-        <div class="macaron-card">
-          <svg class="macaron-bg" viewBox="0 0 200 200">
-            <path d="M 100 8 C 112 8, 120 18, 130 22 C 141 27, 153 27, 161 36 C 170 45, 170 57, 176 68 C 180 78, 190 86, 190 98 C 190 110, 180 118, 176 128 C 170 139, 170 151, 161 160 C 153 169, 141 169, 130 174 C 120 178, 112 188, 100 188 C 88 188, 80 178, 70 174 C 59 169, 47 169, 39 160 C 30 151, 30 139, 24 128 C 20 118, 10 110, 10 98 C 10 86, 20 78, 24 68 C 30 57, 30 45, 39 36 C 47 27, 59 27, 70 22 C 80 18, 88 8, 100 8 Z" fill="#2d7a22" />
-          </svg>
-          <div class="macaron-content">
-            <span class="macaron-number" style="font-size: 42px;">+30 000</span>
-            <span class="macaron-title" style="margin-top: 3px;">Articles<br>Sauvés</span>
-            <span class="macaron-detail">&amp; valorisés avec nos partenaires locaux</span>
           </div>
         </div>
       </div>
