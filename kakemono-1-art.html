@@ -95,8 +95,8 @@
       flex-direction: column;
       z-index: 2;
       flex: 1;
-      justify-content: space-between;
-      padding: 34px 0 20px 0;
+      justify-content: space-evenly;
+      padding: 20px 0 10px 0;
     }
 
     .step-section {
@@ -108,10 +108,10 @@
       position: relative;
     }
 
-    /* Titres des 3 étapes UNIFORMES 56px */
+    /* Titres des 3 étapes UNIFORMES 64px – réduction du vide */
     .step-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 56px;
+      font-size: 64px;
       font-weight: 800;
       color: #143565;
       letter-spacing: -0.5px;
@@ -119,7 +119,7 @@
       align-items: center;
       justify-content: center;
       gap: 14px;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
     }
 
     .step-title .num-badge {
@@ -382,29 +382,29 @@
 </head>
 <body>
 
-  <!-- FLÈCHES CYCLIQUES VECTORIELLES D'ENCHAÎNEMENT ENGLOBANTES (Inspirées exactement de la copie d'écran) -->
-  <!-- Flèche gauche 1 → 2 : part à hauteur du haut de l'icône Livres, s'évase puis plonge vers le titre 2 -->
-  <svg class="flow-arrow-svg" id="arrow-1-left" style="top: 655px; left: 28px; width: 120px; height: 390px;" viewBox="0 0 120 390">
-    <path d="M 105 12 C 20 90, 15 270, 95 365" fill="none" stroke="#67b342" stroke-width="10" stroke-linecap="round" />
-    <polygon points="114,378 90,370 100,350" fill="#67b342" />
+  <!-- FLÈCHES CYCLIQUES VECTORIELLES D'ENCHAÎNEMENT ENGLOBANTES -->
+  <!-- Flèche gauche 1 → 2 : part du milieu des icônes étape 1 -->
+  <svg class="flow-arrow-svg" id="arrow-1-left" style="top: 660px; left: 8px; width: 175px; height: 340px;" viewBox="0 0 175 340">
+    <path d="M 145 18 C 28 75, 22 230, 135 312" fill="none" stroke="#67b342" stroke-width="12" stroke-linecap="round" />
+    <polygon points="160,322 128,322 136,298" fill="#67b342" />
   </svg>
 
-  <!-- Flèche droite 1 → 2 : part à hauteur du haut de l'icône Jeux Vidéo, s'évase puis plonge vers le titre 2 -->
-  <svg class="flow-arrow-svg" id="arrow-1-right" style="top: 655px; right: 28px; width: 120px; height: 390px;" viewBox="0 0 120 390">
-    <path d="M 15 12 C 100 90, 105 270, 25 365" fill="none" stroke="#67b342" stroke-width="10" stroke-linecap="round" />
-    <polygon points="6,378 20,350 30,370" fill="#67b342" />
+  <!-- Flèche droite 1 → 2 : part du milieu des icônes étape 1 -->
+  <svg class="flow-arrow-svg" id="arrow-1-right" style="top: 660px; right: 8px; width: 175px; height: 340px;" viewBox="0 0 175 340">
+    <path d="M 30 18 C 147 75, 153 230, 40 312" fill="none" stroke="#67b342" stroke-width="12" stroke-linecap="round" />
+    <polygon points="15,322 39,298 47,322" fill="#67b342" />
   </svg>
 
-  <!-- Flèche gauche 2 → 3 : part à hauteur du poste de tri gauche, s'évase puis plonge vers le titre 3 -->
-  <svg class="flow-arrow-svg" id="arrow-2-left" style="top: 1380px; left: 28px; width: 120px; height: 300px;" viewBox="0 0 120 300">
-    <path d="M 95 12 C 20 70, 15 200, 90 275" fill="none" stroke="#67b342" stroke-width="10" stroke-linecap="round" />
-    <polygon points="108,288 84,280 94,260" fill="#67b342" />
+  <!-- Flèche gauche 2 → 3 : part du milieu de l'illustration atelier -->
+  <svg class="flow-arrow-svg" id="arrow-2-left" style="top: 1300px; left: 8px; width: 175px; height: 350px;" viewBox="0 0 175 350">
+    <path d="M 140 18 C 28 70, 22 235, 130 322" fill="none" stroke="#67b342" stroke-width="12" stroke-linecap="round" />
+    <polygon points="155,332 123,332 131,308" fill="#67b342" />
   </svg>
 
-  <!-- Flèche droite 2 → 3 : part à hauteur de la caisse droite / engrenages, s'évase puis plonge vers le titre 3 -->
-  <svg class="flow-arrow-svg" id="arrow-2-right" style="top: 1380px; right: 28px; width: 120px; height: 300px;" viewBox="0 0 120 300">
-    <path d="M 25 12 C 100 70, 105 200, 30 275" fill="none" stroke="#67b342" stroke-width="10" stroke-linecap="round" />
-    <polygon points="12,288 26,260 36,280" fill="#67b342" />
+  <!-- Flèche droite 2 → 3 : part du milieu de l'illustration atelier -->
+  <svg class="flow-arrow-svg" id="arrow-2-right" style="top: 1300px; right: 8px; width: 175px; height: 350px;" viewBox="0 0 175 350">
+    <path d="M 35 18 C 147 70, 153 235, 45 322" fill="none" stroke="#67b342" stroke-width="12" stroke-linecap="round" />
+    <polygon points="20,332 44,308 52,332" fill="#67b342" />
   </svg>
 
   <!-- ════════════════════ EN-TÊTE ════════════════════ -->
