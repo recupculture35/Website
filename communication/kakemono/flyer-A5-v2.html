@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Flyer RECUP CULTURE - A5</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    @page { size: 148mm 210mm; margin: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 148mm;
+      height: 210mm;
+      background: #f7efe2;
+      font-family: 'Inter', sans-serif;
+      color: #0f172a;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .logo-container {
+      width: 100%;
+      padding: 12px 16px 6px 16px;
+      display: flex;
+      justify-content: center;
+    }
+    .logo-container img {
+      height: 75px;
+      width: auto;
+      object-fit: contain;
+    }
+    
+    .title-banner {
+      background: #143565;
+      color: #ffffff;
+      padding: 10px 16px;
+      text-align: center;
+      width: 100%;
+      box-shadow: 0 3px 6px rgba(20, 53, 101, 0.15);
+    }
+    .title-banner h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+
+    /* Corps principal avec espacement réduit */
+    .content-body {
+      flex: 1;
+      padding: 10px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Boîtes de base */
+    .step-box {
+      width: 100%;
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 10px 14px;
+      border: 2px solid #143565;
+      box-shadow: 0 4px 6px rgba(20, 53, 101, 0.08);
+      position: relative;
+    }
+    .step-box.step-green {
+      border-color: #67b342;
+      background: #eef7e9;
+    }
+
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      justify-content: center;
+    }
+    .step-badge {
+      background: #143565;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 800;
+      font-family: 'Outfit', sans-serif;
+    }
+    .step-green .step-badge {
+      background: #67b342;
+    }
+    .step-header h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: #143565;
+    }
+    .step-green .step-header h3 {
+      color: #276722;
+    }
+
+    /* Mini-icônes des objets à donner */
+    .items-icons-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .item-icon {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* 1. Où déposer */
+    .locations-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .location-card {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: #f8fafc;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #cbd5e1;
+      text-align: center;
+    }
+    .location-card.full {
+      grid-column: span 2;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 8px 12px;
+    }
+    .location-icon {
+      width: 20px;
+      height: 20px;
+      background: #143565;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+    }
+    .location-card.full .location-icon {
+      margin: 0;
+    }
+    .location-icon svg { width: 12px; height: 12px; fill: white; }
+    
+    .location-info h4 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #143565;
+      line-height: 1.1;
+      margin-bottom: 2px;
+    }
+    .location-info p {
+      font-size: 9.5px;
+      color: #475569;
+      line-height: 1.25;
+    }
+    .location-info p strong {
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    /* Flèches de transition */
+    .transition-arrow {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 2px 0;
+    }
+    .transition-arrow svg {
+      width: 32px;
+      height: 32px;
+      fill: #67b342;
+      filter: drop-shadow(0 3px 4px rgba(103, 179, 66, 0.3));
+    }
+
+    /* 2. Tri ESAT */
+    .tri-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .workshop-img {
+      width: 100%;
+      height: auto;
+      margin-top: 4px;
+    }
+    .tri-text {
+      font-size: 11px;
+      color: #3f6212;
+      line-height: 1.4;
+      text-align: center;
+    }
+    .tri-text strong {
+      font-weight: 700;
+      color: #14532d;
+    }
+
+    /* Flèches de séparation */
+    .split-transitions {
+      display: flex;
+      width: 100%;
+      justify-content: space-around;
+      margin: 2px 0;
+    }
+    .split-transitions svg {
+      width: 32px;
+      height: 32px;
+      fill: #67b342;
+      filter: drop-shadow(0 3px 4px rgba(103, 179, 66, 0.3));
+    }
+    .arrow-left { transform: rotate(35deg); }
+    .arrow-right { transform: rotate(-35deg); }
+
+    /* 3. Seconde Vie & Rebut (Macarons) */
+    .outcomes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      width: 100%;
+      margin-top: 6px;
+    }
+    .macaron-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+    .outcome-box {
+      width: 100%;
+      aspect-ratio: 1;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px 18px;
+      color: white;
+    }
+    .librairie-box {
+      background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M 100 8 C 112 8, 120 18, 130 22 C 141 27, 153 27, 161 36 C 170 45, 170 57, 176 68 C 180 78, 190 86, 190 98 C 190 110, 180 118, 176 128 C 170 139, 170 151, 161 160 C 153 169, 141 169, 130 174 C 120 178, 112 188, 100 188 C 88 188, 80 178, 70 174 C 59 169, 47 169, 39 160 C 30 151, 30 139, 24 128 C 20 118, 10 110, 10 98 C 10 86, 20 78, 24 68 C 30 57, 30 45, 39 36 C 47 27, 59 27, 70 22 C 80 18, 88 8, 100 8 Z" fill="%23143565" /></svg>');
+      filter: drop-shadow(0 3px 6px rgba(20,53,101,0.2));
+    }
+    .rebut-box {
+      background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M 100 8 C 112 8, 120 18, 130 22 C 141 27, 153 27, 161 36 C 170 45, 170 57, 176 68 C 180 78, 190 86, 190 98 C 190 110, 180 118, 176 128 C 170 139, 170 151, 161 160 C 153 169, 141 169, 130 174 C 120 178, 112 188, 100 188 C 88 188, 80 178, 70 174 C 59 169, 47 169, 39 160 C 30 151, 30 139, 24 128 C 20 118, 10 110, 10 98 C 10 86, 20 78, 24 68 C 30 57, 30 45, 39 36 C 47 27, 59 27, 70 22 C 80 18, 88 8, 100 8 Z" fill="%2367b342" /></svg>');
+      filter: drop-shadow(0 3px 6px rgba(103,179,66,0.3));
+    }
+    .macaron-icon {
+      width: 32px;
+      height: 32px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+    .macaron-icon svg { width: 20px; height: 20px; }
+    .icon-blue { color: #143565; fill: #143565; }
+    .icon-green { color: #67b342; fill: #67b342; }
+
+    .outcome-box h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 4px;
+      line-height: 1;
+      color: white;
+    }
+    .subtitle-tag {
+      border: 1px solid rgba(255,255,255,0.6);
+      border-radius: 10px;
+      padding: 2px 8px;
+      font-size: 8px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .macaron-text {
+      font-size: 9.5px;
+      line-height: 1.15;
+    }
+    .macaron-text strong {
+      font-weight: 700;
+    }
+    
+    .macaron-footer {
+      text-align: center;
+    }
+    .opening-badge {
+      display: inline-block;
+      background: #67b342;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .address {
+      font-size: 10.5px;
+      color: #143565;
+      font-weight: 700;
+    }
+
+    /* Footer */
+    .footer-section {
+      border-top: 3px solid #dcd6cc;
+      padding: 10px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+    }
+    .footer-social {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .social-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      color: #143565;
+      font-size: 10px;
+      font-weight: 600;
+    }
+    .social-link svg {
+      width: 14px;
+      height: 14px;
+    }
+    .icon-site { fill: #276722; }
+    .icon-insta { fill: #E1306C; }
+    .icon-fb { fill: #1877F2; }
+    
+    .qr-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .qr-box img {
+      width: 40px;
+      height: 40px;
+      image-rendering: pixelated;
+    }
+    .qr-box span {
+      font-family: 'Outfit', sans-serif;
+      font-size: 8px;
+      font-weight: 800;
+      color: #143565;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header-section">
+    <div class="logo-container">
+      <img src="logo.png" alt="RECUP CULTURE">
+    </div>
+    <div class="title-banner">
+      <h2>Le voyage de vos dons culturels</h2>
+    </div>
+  </header>
+
+  <main class="content-body">
+    
+    <!-- 1. OU DEPOSER -->
+    <div class="step-box">
+      <div class="step-header">
+        <div class="step-badge">1</div>
+        <h3>Où déposer vos dons ?</h3>
+      </div>
+
+      <!-- Icones des dons (livre, cd, dvd, jeu) -->
+      <div class="items-icons-row">
+        <!-- Livre -->
+        <svg class="item-icon" viewBox="0 0 100 110">
+          <rect x="15" y="8" width="70" height="94" rx="8" fill="#143565"/>
+          <path d="M 27 8 L 27 102" stroke="#ffffff" stroke-width="2.5" opacity="0.35"/>
+          <rect x="36" y="32" width="36" height="6.5" rx="3.25" fill="#ffffff"/>
+          <rect x="36" y="47" width="24" height="6.5" rx="3.25" fill="#ffffff"/>
+        </svg>
+        <!-- CD -->
+        <svg class="item-icon" viewBox="0 0 100 110">
+          <circle cx="50" cy="55" r="45" fill="#143565"/>
+          <circle cx="50" cy="55" r="36" fill="none" stroke="#ffffff" stroke-width="2.2" opacity="0.85"/>
+          <circle cx="50" cy="55" r="28" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.45"/>
+          <circle cx="50" cy="55" r="7.5" fill="#f7efe2" stroke="#ffffff" stroke-width="2"/>
+          <g fill="#ffffff">
+            <polygon points="60.2,20.5 75,17 75,23 60.2,26.5"/>
+            <rect x="60.2" y="20.5" width="3.5" height="17.5"/>
+            <rect x="71.5" y="17" width="3.5" height="18"/>
+            <ellipse cx="58" cy="38" rx="6" ry="4.5" transform="rotate(-25 58 38)"/>
+            <ellipse cx="69" cy="35" rx="6" ry="4.5" transform="rotate(-25 69 35)"/>
+          </g>
+        </svg>
+        <!-- DVD -->
+        <svg class="item-icon" viewBox="0 0 100 110">
+          <circle cx="50" cy="55" r="45" fill="#143565"/>
+          <circle cx="50" cy="55" r="39" fill="none" stroke="#ffffff" stroke-width="1.8" opacity="0.6"/>
+          <rect x="14" y="42" width="72" height="26" rx="4" fill="#143565" stroke="#ffffff" stroke-width="2"/>
+          <text x="50" y="59" text-anchor="middle" font-family="'Outfit', sans-serif" font-size="14" font-weight="900" fill="#ffffff" letter-spacing="1.5px">DVD</text>
+        </svg>
+        <!-- Jeux -->
+        <svg class="item-icon" viewBox="0 0 100 110">
+          <path d="M 12 36 C 24 28, 40 32, 50 35 C 60 32, 76 28, 88 36 C 100 44, 102 68, 95 88 C 90 101, 78 102, 69 92 L 59 79 C 55 75, 45 75, 41 79 L 31 92 C 22 102, 10 101, 5 88 C -2 68, 0 44, 12 36 Z" fill="#143565"/>
+          <path d="M 22 55 H 29 V 48 H 36 V 55 H 43 V 62 H 36 V 69 H 29 V 62 H 22 Z" fill="#ffffff"/>
+          <circle cx="74" cy="50" r="3.5" fill="#ffffff"/>
+          <circle cx="82" cy="58.5" r="3.5" fill="#ffffff"/>
+          <circle cx="74" cy="67" r="3.5" fill="#ffffff"/>
+          <circle cx="66" cy="58.5" r="3.5" fill="#ffffff"/>
+        </svg>
+      </div>
+
+      <div class="locations-grid">
+        <div class="location-card">
+          <div class="location-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          </div>
+          <div class="location-info">
+            <h4>La Coop Bio La Richardais</h4>
+            <p>18 La ville Biais<br>35780 La Richardais<br><strong>9h00 - 19h00</strong></p>
+          </div>
+        </div>
+        <div class="location-card">
+          <div class="location-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          </div>
+          <div class="location-info">
+            <h4>La Coop Bio Espérance</h4>
+            <p>13 Bd de l'Espérance<br>35400 Saint-Malo<br><strong>9h00 - 19h00</strong></p>
+          </div>
+        </div>
+        <div class="location-card full">
+          <div class="location-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          </div>
+          <div class="location-info" style="text-align:left;">
+            <h4>Déchèterie de Saint-Malo</h4>
+            <p>Rue des Belettes, 35400 Saint-Malo &nbsp;|&nbsp; <strong>Selon horaires déchèterie</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FLECHE -->
+    <div class="transition-arrow">
+      <!-- Full thick arrow -->
+      <svg viewBox="0 0 24 24"><path d="M13 10V3h-2v7H6l6 8 6-8h-5z"/></svg>
+    </div>
+
+    <!-- 2. TRI ESAT -->
+    <div class="step-box step-green">
+      <div class="step-header">
+        <div class="step-badge">2</div>
+        <h3>Tri des livres : ESAT</h3>
+      </div>
+      <div class="tri-content">
+        <p class="tri-text">
+          <strong>Inclusion sociale :</strong> Tri solidaire en partenariat avec l'ESAT de Châteauneuf, une activité valorisante pour des travailleurs en situation de handicap.
+        </p>
+        <img src="workshop-atelier-tri.svg" class="workshop-img" alt="Atelier de tri">
+      </div>
+    </div>
+
+    <!-- FLECHES SEPARATION -->
+    <div class="split-transitions">
+      <svg class="arrow-left" viewBox="0 0 24 24"><path d="M13 10V3h-2v7H6l6 8 6-8h-5z"/></svg>
+      <svg class="arrow-right" viewBox="0 0 24 24"><path d="M13 10V3h-2v7H6l6 8 6-8h-5z"/></svg>
+    </div>
+
+    <!-- 3. ISSUES (Macarons) -->
+    <div class="outcomes-grid">
+      
+      <!-- Seconde vie : Librairie Solidaire -->
+      <div class="macaron-container">
+        <div class="outcome-box librairie-box">
+          <div class="macaron-icon">
+            <svg class="icon-blue" viewBox="0 0 64 64">
+              <path d="M 32 14 C 26 10, 16 10, 10 13 L 10 35 C 16 32, 26 32, 32 36 C 38 32, 48 32, 54 35 L 54 13 C 48 10, 38 10, 32 14 Z" fill="currentColor"/>
+              <line x1="32" y1="14" x2="32" y2="36" stroke="#ffffff" stroke-width="2"/>
+              <line x1="16" y1="19" x2="26" y2="20" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+              <line x1="16" y1="24" x2="26" y2="25" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+              <line x1="38" y1="20" x2="48" y2="19" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+              <line x1="38" y1="25" x2="48" y2="24" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+              <path d="M 6 52 C 10 44, 15 42, 22 45 C 24 45.8, 25 47.5, 23.5 49 C 21.5 50.8, 17 52, 10 54 Z" fill="currentColor"/>
+              <rect x="14" y="34" width="3.5" height="10" rx="1.75" fill="currentColor"/>
+              <rect x="18.5" y="34" width="3.5" height="11" rx="1.75" fill="currentColor"/>
+              <rect x="23" y="35" width="3.5" height="10.5" rx="1.75" fill="currentColor"/>
+              <rect x="27.5" y="36.5" width="3.5" height="8.5" rx="1.75" fill="currentColor"/>
+              <path d="M 58 52 C 54 44, 49 42, 42 45 C 40 45.8, 39 47.5, 40.5 49 C 42.5 50.8, 47 52, 54 54 Z" fill="currentColor"/>
+              <rect x="46.5" y="34" width="3.5" height="10" rx="1.75" fill="currentColor"/>
+              <rect x="42" y="34" width="3.5" height="11" rx="1.75" fill="currentColor"/>
+              <rect x="37.5" y="35" width="3.5" height="10.5" rx="1.75" fill="currentColor"/>
+              <rect x="33" y="36.5" width="3.5" height="8.5" rx="1.75" fill="currentColor"/>
+            </svg>
+          </div>
+          <h3>Librairie<br>solidaire</h3>
+          <div class="subtitle-tag">LA HALLE AUX ARTISTES</div>
+          <p class="macaron-text">
+            Trouvez des pépites dans la<br>
+            librairie solidaire<br>
+            à petits prix.<br>
+            <strong>Réemploi & culture pour tous.</strong>
+          </p>
+        </div>
+        <div class="macaron-footer">
+          <div class="opening-badge">Ouvert le 2ème week-end de chaque mois</div>
+          <p class="address">3 pl. du Martray, Châteauneuf</p>
+        </div>
+      </div>
+      
+      <!-- Rebuts : Recyclage Matière -->
+      <div class="macaron-container">
+        <div class="outcome-box rebut-box">
+          <div class="macaron-icon">
+            <svg class="icon-green" viewBox="0 0 512 512">
+              <path fill="currentColor" d="M174.7 45.1C192.2 17 223 0 256 0s63.8 17 81.3 45.1l38.6 61.7 27-15.6c8.4-4.9 18.9-4.2 26.6 1.7s11.1 15.9 8.6 25.3l-23.4 87.4c-3.4 12.8-16.6 20.4-29.4 17l-87.4-23.4c-9.4-2.5-16.3-10.4-17.6-20s3.4-19.1 11.8-23.9l28.4-16.4L283 79c-5.8-9.3-16-15-27-15s-21.2 5.7-27 15l-17.5 28c-9.2 14.8-28.6 19.5-43.6 10.5c-15.3-9.2-20.2-29.2-10.7-44.4l17.5-28zM429.5 251.9c15-9 34.4-4.3 43.6 10.5l24.4 39.1c9.4 15.1 14.4 32.4 14.6 50.2c.3 53.1-42.7 96.4-95.8 96.4L320 448l0 32c0 9.7-5.8 18.5-14.8 22.2s-19.3 1.7-26.2-5.2l-64-64c-9.4-9.4-9.4-24.6 0-33.9l64-64c6.9-6.9 17.2-8.9 26.2-5.2s14.8 12.5 14.8 22.2l0 32 96.2 0c17.6 0 31.9-14.4 31.8-32c0-5.9-1.7-11.7-4.8-16.7l-24.4-39.1c-9.5-15.2-4.7-35.2 10.7-44.4zm-364.6-31L36 204.2c-8.4-4.9-13.1-14.3-11.8-23.9s8.2-17.5 17.6-20l87.4-23.4c12.8-3.4 26 4.2 29.4 17L182 241.2c2.5 9.4-.9 19.3-8.6 25.3s-18.2 6.6-26.6 1.7l-26.5-15.3L68.8 335.3c-3.1 5-4.8 10.8-4.8 16.7c-.1 17.6 14.2 32 31.8 32l32.2 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32.2 0C42.7 448-.3 404.8 0 351.6c.1-17.8 5.1-35.1 14.6-50.2l50.3-80.5z" />
+            </svg>
+          </div>
+          <h3>Recyclage<br>matière</h3>
+          <div class="subtitle-tag">FILIÈRE LOCALE</div>
+          <p class="macaron-text">
+            Transformation en pâte<br>
+            à papier avec des<br>
+            partenaires locaux.<br>
+            <strong>Éco. circulaire & Zéro Déchet.</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer-section">
+    <div class="footer-social">
+      <a href="https://www.recupculture.fr" class="social-link" target="_blank">
+        <svg class="icon-site" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        www.recupculture.fr
+      </a>
+      <a href="https://www.instagram.com/recupculture/" class="social-link" target="_blank">
+        <svg class="icon-insta" viewBox="0 0 24 24"><path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z" /></svg>
+        @recupculture
+      </a>
+      <a href="https://www.facebook.com/people/Recup-Culture/61577195973355/" class="social-link" target="_blank">
+        <svg class="icon-fb" viewBox="0 0 24 24"><path d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z" /></svg>
+        Recup Culture
+      </a>
+    </div>
+    <div class="qr-box">
+      <img src="qr-code-recupculture.png" alt="Scanner pour accéder au site">
+      <span>Scanner ici</span>
+    </div>
+  </footer>
+
+</body>
+</html>
