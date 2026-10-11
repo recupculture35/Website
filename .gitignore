@@ -14,3 +14,9 @@ Thumbs.db
 /*.png
 /*.pdf
 .agents/
+
+# Clés et secrets locaux
+.session_secret
+data/.session_secret
+.env
+.env.*

@@ -367,9 +367,68 @@ function hashPassword(str) {
 }
 
 // ─── Sessions persistantes signées HMAC (survit aux redémarrages Railway) ───
-const SESSION_SECRET = process.env.SESSION_SECRET || 'recupculture-session-secret-2025-bretagne';
+function resolveSessionSecret() {
+  if (process.env.SESSION_SECRET && process.env.SESSION_SECRET.trim().length >= 16) {
+    console.log('[SECURITY] Clé SESSION_SECRET chargée depuis les variables d\'environnement.');
+    return process.env.SESSION_SECRET.trim();
+  }
+
+  const secretFile = path.join(DATA_DIR, '.session_secret');
+  try {
+    if (fs.existsSync(secretFile)) {
+      const existing = fs.readFileSync(secretFile, 'utf8').trim();
+      if (existing.length >= 32) {
+        return existing;
+      }
+    }
+    const generated = crypto.randomBytes(32).toString('hex');
+    fs.writeFileSync(secretFile, generated, { mode: 0o600 });
+    console.log('[SECURITY] Nouvelle clé de session cryptographique aléatoire générée et persistée.');
+    return generated;
+  } catch (err) {
+    console.warn('[SECURITY] Impossible d\'écrire .session_secret sur disque, génération en mémoire:', err.message);
+    return crypto.randomBytes(32).toString('hex');
+  }
+}
+const SESSION_SECRET = resolveSessionSecret();
 const sessions = new Map(); // token -> { user, expiresAt } (support legacy)
 const SESSION_TTL = 7 * 24 * 60 * 60 * 1000; // 7 jours
+
+// ─── Sécurité : Anti-Brute Force sur la connexion ────
+const loginAttempts = new Map(); // ip -> { count, blockedUntil }
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOGIN_BLOCK_DURATION = 15 * 60 * 1000; // 15 minutes de blocage
+
+function checkLoginRateLimit(ip) {
+  const record = loginAttempts.get(ip);
+  if (!record) return { allowed: true };
+  if (record.blockedUntil && Date.now() < record.blockedUntil) {
+    const remainingMinutes = Math.ceil((record.blockedUntil - Date.now()) / 60000);
+    return {
+      allowed: false,
+      error: `Trop de tentatives de connexion échouées. Accès temporairement bloqué pendant encore ${remainingMinutes} minute(s).`
+    };
+  }
+  if (record.blockedUntil && Date.now() >= record.blockedUntil) {
+    loginAttempts.delete(ip);
+    return { allowed: true };
+  }
+  return { allowed: true };
+}
+
+function recordLoginFailure(ip) {
+  const record = loginAttempts.get(ip) || { count: 0, blockedUntil: 0 };
+  record.count += 1;
+  if (record.count >= MAX_LOGIN_ATTEMPTS) {
+    record.blockedUntil = Date.now() + LOGIN_BLOCK_DURATION;
+    console.warn(`[SECURITY] IP ${ip} bloquée pendant 15 minutes suite à ${record.count} échecs de connexion.`);
+  }
+  loginAttempts.set(ip, record);
+}
+
+function recordLoginSuccess(ip) {
+  loginAttempts.delete(ip);
+}
 
 function createSession(user) {
   const safeUser = { id: user.id, username: user.username, displayName: user.displayName || user.username, role: user.role };
@@ -425,7 +484,56 @@ function requireAuth(req, res, next) {
   next();
 }
 
-// ─── Middlewares ─────────────────────────────────────
+// ─── Middlewares & Sécurité ──────────────────────────
+// 1. En-têtes HTTP de sécurité
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  next();
+});
+
+// 2. Filtrage strict : interdiction absolue d'accès aux fichiers et données sensibles
+app.use((req, res, next) => {
+  // Laisser passer les requêtes d'API légitimes
+  if (req.path.startsWith('/api/')) {
+    return next();
+  }
+
+  let normalized = '';
+  try {
+    const decoded = decodeURIComponent(req.path);
+    normalized = path.posix.normalize(decoded.replace(/\\/g, '/')).toLowerCase();
+  } catch (_) {
+    return res.status(400).send('Bad request');
+  }
+
+  const isBlockedDir = (
+    normalized.startsWith('/data') ||
+    normalized.startsWith('/.git') ||
+    normalized.startsWith('/.agents') ||
+    normalized.startsWith('/scratch') ||
+    normalized.startsWith('/node_modules')
+  );
+
+  const isBlockedFile = (
+    normalized.endsWith('.json') ||
+    normalized.endsWith('.bat') ||
+    normalized.endsWith('.env') ||
+    normalized.endsWith('.md') ||
+    normalized.includes('procfile') ||
+    normalized.includes('package')
+  );
+
+  if (isBlockedDir || isBlockedFile) {
+    // 404 opaque pour ne pas divulguer l'existence des fichiers internes
+    return res.status(404).send('Not found');
+  }
+
+  next();
+});
+
 app.use(cors());
 app.use(express.json({ limit: '30mb' }));
 app.use(express.urlencoded({ extended: true, limit: '30mb' }));
@@ -741,6 +849,14 @@ app.post('/api/upload', requireAuth, (req, res) => {
 
 // ─── API AUTHENTIFICATION ────────────────────────────
 app.post('/api/auth/login', (req, res) => {
+  const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || '127.0.0.1';
+  
+  // 1. Contrôle anti-brute force (rate limiting)
+  const rateLimit = checkLoginRateLimit(clientIp);
+  if (!rateLimit.allowed) {
+    return res.status(429).json({ error: rateLimit.error });
+  }
+
   const { username, password } = req.body || {};
   if (!username || !password) {
     return res.status(400).json({ error: 'Nom d\'utilisateur et mot de passe requis.' });
@@ -754,36 +870,19 @@ app.post('/api/auth/login', (req, res) => {
   const hash = hashPassword(password);
   const cleanUser = (username || '').trim().toLowerCase();
 
-  let found = (creds.users || []).find(u => 
+  const found = (creds.users || []).find(u => 
     u.username.toLowerCase() === cleanUser &&
-    (u.passwordHash === hash || u.passwordHash === password)
+    u.passwordHash === hash
   );
 
-  // Authentification croisée de secours pour les identifiants d'administration (admin ou admin@recupculture.fr)
   if (!found) {
-    const isMasterAdmin = (cleanUser === 'admin' || cleanUser === 'admin@recupculture.fr');
-    const isMasterPassword = (
-      hash === "759ba3c7dd186752103946686a029b63f146d55073ccc2f9f3aa9c11d5393d03" || // RecupCulture2025!
-      hash === "aebc7c19bdc2aa84991dad7067e89d4aa78de2df5a9d612e4571a90a82609cef" || // Rc2026!Global#AdminK9
-      password === "RecupCulture2025!" ||
-      password === "Rc2026!Global#AdminK9"
-    );
-    if (isMasterAdmin && isMasterPassword) {
-      found = (creds.users || []).find(u => u.username.toLowerCase() === 'admin' || u.username.toLowerCase() === 'admin@recupculture.fr') || {
-        id: 1,
-        username: cleanUser,
-        displayName: cleanUser === 'admin' ? 'Administrateur' : 'Administrateur Général',
-        role: 'superadmin'
-      };
-    }
-  }
-
-  if (!found) {
-    console.warn(`[AUTH] Échec de connexion pour l'utilisateur "${cleanUser}"`);
+    recordLoginFailure(clientIp);
+    console.warn(`[AUTH] Échec de connexion pour l'utilisateur "${cleanUser}" depuis l'IP ${clientIp}`);
     return res.status(401).json({ error: 'Identifiant ou mot de passe incorrect.' });
   }
 
-  console.log(`[AUTH] Connexion réussie pour "${found.username}" (${found.role})`);
+  recordLoginSuccess(clientIp);
+  console.log(`[AUTH] Connexion réussie pour "${found.username}" (${found.role}) depuis l'IP ${clientIp}`);
   const token = createSession(found);
   res.json({
     token,

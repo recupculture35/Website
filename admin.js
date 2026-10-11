@@ -311,15 +311,6 @@
       }
     }
 
-    if (!usersLoaded) {
-      try {
-        const r = await fetch('data/credentials.json');
-        if (r.ok) {
-          credentials = await r.json();
-          saveCredentials();
-        }
-      } catch(_) {}
-    }
   }
 
   function saveData() {
