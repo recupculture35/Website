@@ -102,6 +102,10 @@
           </div>
 
           <div class="sidebar-label">Gestion</div>
+          <div class="sidebar-item" data-section="stats" role="button" tabindex="0">
+            <i class="fas fa-chart-line" aria-hidden="true"></i>
+            Statistiques
+          </div>
           <div class="sidebar-item" data-section="messages" role="button" tabindex="0">
             <i class="fas fa-inbox" aria-hidden="true"></i>
             Messages reçus
@@ -134,6 +138,9 @@
           </button>
           <button type="button" class="mobile-nav-btn" data-section="content">
             <i class="fas fa-layer-group"></i> <span>Rubriques</span>
+          </button>
+          <button type="button" class="mobile-nav-btn" data-section="stats">
+            <i class="fas fa-chart-line"></i> <span>Stats</span>
           </button>
           <button type="button" class="mobile-nav-btn" data-section="messages">
             <i class="fas fa-inbox"></i> <span>Messages</span>
@@ -924,6 +931,139 @@
               <button class="btn btn-danger" id="btnReset">
                 <i class="fas fa-trash-alt" aria-hidden="true"></i> Réinitialiser
               </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== STATISTIQUES D'AUDIENCE ========== -->
+        <section class="admin-section" id="section-stats" aria-labelledby="stats-section-title">
+          <div class="admin-page-header">
+            <div>
+              <h2 class="admin-page-title" id="stats-section-title">Statistiques d'audience</h2>
+              <p class="admin-page-subtitle">Mesure de trafic éco-conçue &amp; anonymisée · 100% conforme RGPD (<span id="statsStorageSize">~15 Ko</span>)</p>
+            </div>
+            <div class="stats-header-actions">
+              <div class="stats-period-group" role="group" aria-label="Période analysée">
+                <button type="button" class="btn-period-filter active" data-period="7">7 jours</button>
+                <button type="button" class="btn-period-filter" data-period="30">30 jours</button>
+                <button type="button" class="btn-period-filter" data-period="all">Historique</button>
+              </div>
+              <button type="button" class="btn btn-secondary-admin btn-sm" id="btnRefreshStats" title="Actualiser les statistiques">
+                <i class="fas fa-sync-alt" aria-hidden="true"></i> Actualiser
+              </button>
+              <button type="button" class="btn btn-secondary-admin btn-sm btn-stats-reset" id="btnResetStats" title="Réinitialiser les compteurs de visite" style="color:var(--red-500);border-color:rgba(239,68,68,0.25)">
+                <i class="fas fa-trash-alt" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Cards Grid -->
+          <div class="stats-kpi-grid">
+            <div class="stats-kpi-card">
+              <div class="stats-kpi-header">
+                <span class="stats-kpi-label">Visites totales</span>
+                <div class="stats-kpi-icon-wrap icon-blue">
+                  <i class="fas fa-eye" aria-hidden="true"></i>
+                </div>
+              </div>
+              <div class="stats-kpi-value" id="kpiTotalViews">0</div>
+              <div class="stats-kpi-subtext" id="kpiPeriodLabelViews">Sur les 7 derniers jours</div>
+            </div>
+
+            <div class="stats-kpi-card">
+              <div class="stats-kpi-header">
+                <span class="stats-kpi-label">Visiteurs uniques</span>
+                <div class="stats-kpi-icon-wrap icon-green">
+                  <i class="fas fa-users" aria-hidden="true"></i>
+                </div>
+              </div>
+              <div class="stats-kpi-value" id="kpiTotalUniques">0</div>
+              <div class="stats-kpi-subtext" id="kpiPeriodLabelUniques">Visiteurs distincts estimés</div>
+            </div>
+
+            <div class="stats-kpi-card highlight-card">
+              <div class="stats-kpi-header">
+                <div class="stats-label-with-tip">
+                  <span class="stats-kpi-label">Scans QR Codes &amp; Terrain</span>
+                  <span class="stats-tip-badge" title="Arrivées directes sur smartphone sans référent web (signature typique des QR codes scannés sur vos kakemonos et flyers imprimés)"><i class="fas fa-info-circle"></i></span>
+                </div>
+                <div class="stats-kpi-icon-wrap icon-amber">
+                  <i class="fas fa-qrcode" aria-hidden="true"></i>
+                </div>
+              </div>
+              <div class="stats-kpi-value highlight-val" id="kpiDirectMobile">0</div>
+              <div class="stats-kpi-subtext">Visites directes smartphone (Flyers/Kakemonos)</div>
+            </div>
+
+            <div class="stats-kpi-card">
+              <div class="stats-kpi-header">
+                <span class="stats-kpi-label">Aujourd'hui</span>
+                <div class="stats-kpi-icon-wrap icon-purple">
+                  <i class="fas fa-calendar-day" aria-hidden="true"></i>
+                </div>
+              </div>
+              <div class="stats-kpi-value" id="kpiTodayViews">0</div>
+              <div class="stats-kpi-subtext" id="kpiTodayUniques">0 visiteur unique</div>
+            </div>
+          </div>
+
+          <!-- Main Chart Card -->
+          <div class="admin-card stats-chart-card">
+            <div class="admin-card-header">
+              <div>
+                <h3 class="admin-card-title">Évolution des visites par jour</h3>
+                <p class="stats-card-desc">Activité quotidienne et mesure d'impact de vos présences sur le terrain</p>
+              </div>
+              <div class="stats-chart-legend">
+                <span class="legend-item"><span class="legend-dot dot-views"></span> Visites globales</span>
+                <span class="legend-item"><span class="legend-dot dot-qr"></span> Scans QR / Mobiles directs</span>
+              </div>
+            </div>
+            <div id="statsChartWrapper" class="stats-chart-container">
+              <!-- Graphique interactif SVG généré dynamiquement -->
+            </div>
+          </div>
+
+          <!-- Detailed Breakdown Grid -->
+          <div class="stats-details-grid">
+            <!-- Top Rubriques -->
+            <div class="admin-card">
+              <div class="admin-card-header">
+                <h3 class="admin-card-title"><i class="fas fa-compass" style="color:var(--green-600);margin-right:8px"></i> Rubriques les plus consultées</h3>
+              </div>
+              <div id="statsPagesList" class="stats-progress-list">
+                <!-- Rendu dynamique -->
+              </div>
+            </div>
+
+            <!-- Sources de Trafic -->
+            <div class="admin-card">
+              <div class="admin-card-header">
+                <h3 class="admin-card-title"><i class="fas fa-route" style="color:var(--blue-600);margin-right:8px"></i> Provenance des visiteurs</h3>
+              </div>
+              <div id="statsSourcesList" class="stats-progress-list">
+                <!-- Rendu dynamique -->
+              </div>
+            </div>
+
+            <!-- Appareils & Conformité -->
+            <div class="admin-card">
+              <div class="admin-card-header">
+                <h3 class="admin-card-title"><i class="fas fa-mobile-alt" style="color:#8b5cf6;margin-right:8px"></i> Appareils &amp; Vie privée</h3>
+              </div>
+              <div class="stats-devices-box">
+                <div class="stats-device-gauge-labels">
+                  <span><i class="fas fa-mobile-alt"></i> Mobile <strong id="statsMobilePct">0%</strong></span>
+                  <span><i class="fas fa-desktop"></i> Ordinateur <strong id="statsDesktopPct">0%</strong></span>
+                </div>
+                <div class="stats-device-gauge-track">
+                  <div class="stats-device-gauge-bar" id="statsDeviceGaugeBar" style="width:50%"></div>
+                </div>
+              </div>
+              <div class="stats-privacy-notice">
+                <div class="privacy-badge"><i class="fas fa-shield-alt"></i> Zéro Cookie · 100% CNIL / RGPD</div>
+                <p>Aucune adresse IP personnelle n'est stockée sur disque. Les calculs d'uniques utilisent une empreinte éphémère chiffrée. Rotation automatique des 60 derniers jours pour préserver l'espace disque (<span id="statsStorageNote">~15 Ko</span>).</p>
+              </div>
             </div>
           </div>
         </section>

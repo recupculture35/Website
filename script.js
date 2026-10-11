@@ -1323,6 +1323,75 @@
     }
   }
 
+  // ─── Module de Statistiques de Visite (RGPD / Sans Cookies) ─
+  function initPageTracking() {
+    try {
+      // Respect du paramètre Do Not Track de l'utilisateur
+      if (navigator.doNotTrack === '1' || window.doNotTrack === '1') return;
+
+      const isMobile = window.innerWidth <= 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+      const referrer = document.referrer ? document.referrer.toLowerCase() : '';
+      const params = new URLSearchParams(window.location.search);
+      const customRef = (params.get('ref') || params.get('source') || params.get('utm_source') || '').toLowerCase();
+
+      let initialSource = 'direct';
+      if (customRef.includes('qr') || customRef.includes('flyer') || customRef.includes('kakemono')) {
+        initialSource = 'qr_direct';
+      } else if (!referrer) {
+        // Accès direct sans aucun référent web :
+        // Sur mobile, cela caractérise les scans de QR codes physiques (appareils photo / lecteurs)
+        initialSource = isMobile ? 'qr_direct' : 'direct';
+      } else if (referrer.includes('google.') || referrer.includes('bing.') || referrer.includes('ecosia.') || referrer.includes('duckduckgo.') || referrer.includes('qwant.')) {
+        initialSource = 'search';
+      } else if (referrer.includes('facebook.') || referrer.includes('instagram.') || referrer.includes('t.co') || referrer.includes('twitter.') || referrer.includes('linkedin.') || referrer.includes('whatsapp.')) {
+        initialSource = 'social';
+      } else {
+        initialSource = 'referral';
+      }
+
+      function sendTrack(pageName, src = initialSource) {
+        const payload = JSON.stringify({
+          page: pageName || 'home',
+          source: src,
+          isMobile
+        });
+
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/stats/track', new Blob([payload], { type: 'application/json' }));
+        } else {
+          fetch('/api/stats/track', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+            keepalive: true
+          }).catch(() => {});
+        }
+      }
+
+      // Enregistrement de la visite initiale (1 fois par session de navigation)
+      const sessionKey = 'rc_stat_session_' + (new Date().toISOString().split('T')[0]);
+      if (!sessionStorage.getItem(sessionKey)) {
+        sessionStorage.setItem(sessionKey, '1');
+        sendTrack('home', initialSource);
+      }
+
+      // Suivi des clics sur les rubriques principales
+      const trackedSections = new Set(['points', 'boutique', 'don', 'actualites', 'mission', 'esat', 'contact']);
+      const trackedHistory = new Set();
+
+      document.addEventListener('click', (e) => {
+        const anchor = e.target.closest('a[href^="#"]');
+        if (!anchor) return;
+        const targetId = (anchor.getAttribute('href') || '').replace('#', '').trim().toLowerCase();
+        if (trackedSections.has(targetId) && !trackedHistory.has(targetId)) {
+          trackedHistory.add(targetId);
+          setTimeout(() => trackedHistory.delete(targetId), 60000); // 1 track max par rubrique par minute
+          sendTrack(targetId, initialSource);
+        }
+      });
+    } catch (_) {}
+  }
+
   // ─── Écoute des mises à jour admin ─────────────────
   function listenForDataUpdates() {
     window.addEventListener('storage', e => {
@@ -1351,6 +1420,7 @@
     initModals();
     initContactForm();
     listenForDataUpdates();
+    initPageTracking();
   }
 
   if (document.readyState === 'loading') {

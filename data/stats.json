@@ -1,0 +1,22 @@
+{
+  "summary": {
+    "totalViews": 0,
+    "totalUniques": 0,
+    "totalDirectMobile": 0,
+    "firstRecorded": "2026-10-11",
+    "lastRecorded": "2026-10-11"
+  },
+  "days": {},
+  "totalPages": {},
+  "totalSources": {
+    "qr_direct": 0,
+    "direct": 0,
+    "search": 0,
+    "social": 0,
+    "referral": 0
+  },
+  "totalDevices": {
+    "mobile": 0,
+    "desktop": 0
+  }
+}

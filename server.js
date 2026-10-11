@@ -45,6 +45,7 @@ const UPLOADS_DIR = process.env.UPLOADS_DIR || path.join(DATA_DIR, 'uploads');
 const CONFIG_FILE = path.join(DATA_DIR, 'config.json');
 const CREDS_FILE = path.join(DATA_DIR, 'credentials.json');
 const MESSAGES_FILE = path.join(DATA_DIR, 'messages.json');
+const STATS_FILE = path.join(DATA_DIR, 'stats.json');
 
 const BUNDLED_DATA_DIR = path.join(__dirname, 'data');
 const BUNDLED_CONFIG = path.join(BUNDLED_DATA_DIR, 'config.json');
@@ -1022,6 +1023,213 @@ app.delete('/api/users/:id', requireAuth, (req, res) => {
   } else {
     res.status(500).json({ error: 'Erreur suppression utilisateur.' });
   }
+});
+
+// ─── MODULE STATISTIQUES (Ultra-léger, anonymisé & conforme RGPD) ───
+const STATS_RETENTION_DAYS = 60; // 60 jours d'historique journalier (~15 Ko max)
+const BOT_UA_REGEX = /bot|crawl|spider|slurp|facebookexternalhit|whatsapp|googlebot|bingbot|yandex|duckduckbot|baiduspider|twitterbot|headless|phantomjs|lighthouse|petalbot|curl|wget/i;
+const STATS_SALT = process.env.STATS_SALT || 'rc-salt-unique-visitor-2026';
+
+let statsCache = null;
+let statsSaveTimeout = null;
+let statsDirty = false;
+
+// Table en mémoire éphémère pour déduire les visiteurs uniques du jour sans jamais stocker d'adresses IP
+const dailyUniqueVisitors = new Set();
+let dailyUniqueVisitorsDate = new Date().toISOString().split('T')[0];
+
+function createEmptyStats() {
+  const today = new Date().toISOString().split('T')[0];
+  return {
+    summary: {
+      totalViews: 0,
+      totalUniques: 0,
+      totalDirectMobile: 0,
+      firstRecorded: today,
+      lastRecorded: today
+    },
+    days: {},
+    totalPages: {},
+    totalSources: {
+      qr_direct: 0,
+      direct: 0,
+      search: 0,
+      social: 0,
+      referral: 0
+    },
+    totalDevices: {
+      mobile: 0,
+      desktop: 0
+    }
+  };
+}
+
+function getStats() {
+  if (!statsCache) {
+    statsCache = readJson(STATS_FILE, null);
+    if (!statsCache || typeof statsCache !== 'object' || !statsCache.summary) {
+      statsCache = createEmptyStats();
+      writeJson(STATS_FILE, statsCache);
+    }
+  }
+  return statsCache;
+}
+
+function pruneOldDays(stats, retentionDays = STATS_RETENTION_DAYS) {
+  if (!stats || !stats.days || typeof stats.days !== 'object') return;
+  const cutoffDate = new Date();
+  cutoffDate.setDate(cutoffDate.getDate() - retentionDays);
+  const cutoffStr = cutoffDate.toISOString().split('T')[0];
+
+  for (const dayKey of Object.keys(stats.days)) {
+    if (dayKey < cutoffStr) {
+      delete stats.days[dayKey];
+    }
+  }
+}
+
+function scheduleSaveStats() {
+  statsDirty = true;
+  if (!statsSaveTimeout) {
+    statsSaveTimeout = setTimeout(() => {
+      saveStatsNow();
+    }, 2000); // Écritures groupées toutes les 2s
+  }
+}
+
+function saveStatsNow() {
+  if (statsSaveTimeout) {
+    clearTimeout(statsSaveTimeout);
+    statsSaveTimeout = null;
+  }
+  if (!statsDirty || !statsCache) return;
+  pruneOldDays(statsCache);
+  writeJson(STATS_FILE, statsCache);
+  statsDirty = false;
+}
+
+process.on('exit', () => { saveStatsNow(); });
+process.on('beforeExit', () => { saveStatsNow(); });
+process.on('SIGINT', () => { saveStatsNow(); });
+process.on('SIGTERM', () => { saveStatsNow(); });
+
+function isDailyUniqueVisitor(ip, userAgent, todayStr) {
+  if (todayStr !== dailyUniqueVisitorsDate) {
+    dailyUniqueVisitors.clear();
+    dailyUniqueVisitorsDate = todayStr;
+  }
+  if (dailyUniqueVisitors.size > 20000) {
+    dailyUniqueVisitors.clear(); // Sécurité mémoire
+  }
+  const hash = crypto.createHash('sha256').update(`${todayStr}:${ip}:${userAgent}:${STATS_SALT}`).digest('hex').substring(0, 16);
+  if (dailyUniqueVisitors.has(hash)) {
+    return false;
+  }
+  dailyUniqueVisitors.add(hash);
+  return true;
+}
+
+// Route publique de tracking discret
+app.post('/api/stats/track', (req, res) => {
+  try {
+    const userAgent = req.headers['user-agent'] || '';
+    if (BOT_UA_REGEX.test(userAgent) || req.headers['x-purpose'] === 'preview') {
+      return res.status(204).end();
+    }
+    if (req.headers['dnt'] === '1') {
+      return res.status(204).end();
+    }
+
+    const { page, source, isMobile } = req.body || {};
+    const cleanPage = (typeof page === 'string' && page.trim())
+      ? page.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 25)
+      : 'home';
+    const validSources = ['qr_direct', 'direct', 'search', 'social', 'referral'];
+    const cleanSource = validSources.includes(source) ? source : 'direct';
+    const isMob = Boolean(isMobile);
+
+    const stats = getStats();
+    const today = new Date().toISOString().split('T')[0];
+    const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket?.remoteAddress || '127.0.0.1';
+
+    if (!stats.days[today]) {
+      stats.days[today] = {
+        views: 0,
+        uniques: 0,
+        directMobile: 0,
+        devices: { mobile: 0, desktop: 0 },
+        sources: { qr_direct: 0, direct: 0, search: 0, social: 0, referral: 0 },
+        pages: {}
+      };
+    }
+
+    const dayObj = stats.days[today];
+    dayObj.views = (dayObj.views || 0) + 1;
+    stats.summary.totalViews = (stats.summary.totalViews || 0) + 1;
+    stats.summary.lastRecorded = today;
+
+    // Détection visiteur unique du jour
+    if (isDailyUniqueVisitor(clientIp, userAgent, today)) {
+      dayObj.uniques = (dayObj.uniques || 0) + 1;
+      stats.summary.totalUniques = (stats.summary.totalUniques || 0) + 1;
+    }
+
+    // Répartition appareil
+    const devKey = isMob ? 'mobile' : 'desktop';
+    if (!dayObj.devices) dayObj.devices = { mobile: 0, desktop: 0 };
+    dayObj.devices[devKey] = (dayObj.devices[devKey] || 0) + 1;
+    if (!stats.totalDevices) stats.totalDevices = { mobile: 0, desktop: 0 };
+    stats.totalDevices[devKey] = (stats.totalDevices[devKey] || 0) + 1;
+
+    // Source d'accès
+    if (!dayObj.sources) dayObj.sources = { qr_direct: 0, direct: 0, search: 0, social: 0, referral: 0 };
+    dayObj.sources[cleanSource] = (dayObj.sources[cleanSource] || 0) + 1;
+    if (!stats.totalSources) stats.totalSources = { qr_direct: 0, direct: 0, search: 0, social: 0, referral: 0 };
+    stats.totalSources[cleanSource] = (stats.totalSources[cleanSource] || 0) + 1;
+
+    // Scan de QR code / Mobile direct (signature flyer/kakemono)
+    if (cleanSource === 'qr_direct') {
+      dayObj.directMobile = (dayObj.directMobile || 0) + 1;
+      stats.summary.totalDirectMobile = (stats.summary.totalDirectMobile || 0) + 1;
+    }
+
+    // Page / Rubrique
+    if (!dayObj.pages) dayObj.pages = {};
+    dayObj.pages[cleanPage] = (dayObj.pages[cleanPage] || 0) + 1;
+    if (!stats.totalPages) stats.totalPages = {};
+    stats.totalPages[cleanPage] = (stats.totalPages[cleanPage] || 0) + 1;
+
+    scheduleSaveStats();
+    return res.json({ ok: true });
+  } catch (_) {
+    return res.status(200).json({ ok: false });
+  }
+});
+
+// Route admin de consultation des statistiques
+app.get('/api/stats', requireAuth, (req, res) => {
+  saveStatsNow();
+  const stats = getStats();
+  let fileSizeKb = 0;
+  try {
+    if (fs.existsSync(STATS_FILE)) {
+      fileSizeKb = Math.round((fs.statSync(STATS_FILE).size / 1024) * 10) / 10;
+    }
+  } catch (_) {}
+
+  res.json({
+    stats,
+    fileSizeKb,
+    retentionDays: STATS_RETENTION_DAYS
+  });
+});
+
+// Route admin de réinitialisation des statistiques
+app.post('/api/stats/reset', requireAuth, (req, res) => {
+  statsCache = createEmptyStats();
+  writeJson(STATS_FILE, statsCache);
+  dailyUniqueVisitors.clear();
+  res.json({ success: true, stats: statsCache });
 });
 
 // ─── Fichiers Statiques (Site Web & Admin) ────────────

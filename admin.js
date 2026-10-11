@@ -542,6 +542,9 @@
         switchCmsTab(targetTab);
       }
     }
+    if (name === 'stats') {
+      loadAdminStats();
+    }
   }
 
   function switchCmsTab(tabName) {
@@ -2500,6 +2503,383 @@ ${escapeHtml(m.message || '')}
     }
   }
 
+  // ─── STATISTIQUES D'AUDIENCE ─────────────────────────
+  let statsData = null;
+  let statsPeriod = '7';
+
+  function initStatsSection() {
+    // Sélecteur de période (7j, 30j, Tout)
+    $$('.btn-period-filter').forEach(btn => {
+      btn.addEventListener('click', () => {
+        $$('.btn-period-filter').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        statsPeriod = btn.dataset.period || '7';
+        renderStatsDashboard();
+      });
+    });
+
+    // Bouton d'actualisation
+    const btnRefresh = $('#btnRefreshStats');
+    if (btnRefresh) {
+      btnRefresh.addEventListener('click', () => {
+        const icon = btnRefresh.querySelector('i');
+        if (icon) icon.classList.add('fa-spin');
+        loadAdminStats(true).finally(() => {
+          if (icon) icon.classList.remove('fa-spin');
+        });
+      });
+    }
+
+    // Bouton de réinitialisation
+    const btnReset = $('#btnResetStats');
+    if (btnReset) {
+      btnReset.addEventListener('click', async () => {
+        if (!confirm('Êtes-vous sûr de vouloir réinitialiser les statistiques de visite ? Cette action remettra les compteurs à zéro.')) {
+          return;
+        }
+        try {
+          const res = await fetch('/api/stats/reset', {
+            method: 'POST',
+            headers: getAuthHeaders()
+          });
+          const data = await res.json();
+          if (data && data.success) {
+            toast('Statistiques réinitialisées avec succès.');
+            statsData = { stats: data.stats, fileSizeKb: 0.1, retentionDays: 60 };
+            renderStatsDashboard();
+          } else {
+            toast('Erreur lors de la réinitialisation.', true);
+          }
+        } catch (_) {
+          toast('Erreur réseau lors de la réinitialisation.', true);
+        }
+      });
+    }
+  }
+
+  async function loadAdminStats(forceToast = false) {
+    try {
+      const res = await fetch('/api/stats', { headers: getAuthHeaders() });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      statsData = await res.json();
+      renderStatsDashboard();
+      if (forceToast) toast('Statistiques actualisées.');
+    } catch (err) {
+      console.warn('Impossible de charger les statistiques:', err);
+      if (forceToast) toast('Erreur chargement statistiques.', true);
+    }
+  }
+
+  function getDaysRange(count) {
+    const dates = [];
+    for (let i = count - 1; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      dates.push(d.toISOString().split('T')[0]);
+    }
+    return dates;
+  }
+
+  function renderStatsDashboard() {
+    if (!statsData || !statsData.stats) return;
+
+    const { stats, fileSizeKb = 0 } = statsData;
+    const daysMap = stats.days || {};
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    // Détermination de la plage de dates
+    let targetDates = [];
+    if (statsPeriod === '7') {
+      targetDates = getDaysRange(7);
+      const lViews = $('#kpiPeriodLabelViews'); if (lViews) lViews.textContent = 'Sur les 7 derniers jours';
+      const lUniq = $('#kpiPeriodLabelUniques'); if (lUniq) lUniq.textContent = 'Visiteurs distincts (7 jours)';
+    } else if (statsPeriod === '30') {
+      targetDates = getDaysRange(30);
+      const lViews = $('#kpiPeriodLabelViews'); if (lViews) lViews.textContent = 'Sur les 30 derniers jours';
+      const lUniq = $('#kpiPeriodLabelUniques'); if (lUniq) lUniq.textContent = 'Visiteurs distincts (30 jours)';
+    } else {
+      targetDates = Object.keys(daysMap).sort();
+      if (targetDates.length === 0) targetDates = [todayStr];
+      const lViews = $('#kpiPeriodLabelViews'); if (lViews) lViews.textContent = 'Depuis le début';
+      const lUniq = $('#kpiPeriodLabelUniques'); if (lUniq) lUniq.textContent = 'Total visiteurs uniques';
+    }
+
+    let periodViews = 0;
+    let periodUniques = 0;
+    let periodDirectMobile = 0;
+    const periodPages = {};
+    const periodSources = { qr_direct: 0, direct: 0, search: 0, social: 0, referral: 0 };
+    const periodDevices = { mobile: 0, desktop: 0 };
+
+    if (statsPeriod === 'all') {
+      periodViews = stats.summary?.totalViews || 0;
+      periodUniques = stats.summary?.totalUniques || 0;
+      periodDirectMobile = stats.summary?.totalDirectMobile || 0;
+      Object.assign(periodPages, stats.totalPages || {});
+      Object.assign(periodSources, stats.totalSources || {});
+      Object.assign(periodDevices, stats.totalDevices || {});
+    } else {
+      targetDates.forEach(d => {
+        const day = daysMap[d];
+        if (day) {
+          periodViews += day.views || 0;
+          periodUniques += day.uniques || 0;
+          periodDirectMobile += day.directMobile || 0;
+
+          if (day.pages) {
+            Object.entries(day.pages).forEach(([p, count]) => {
+              periodPages[p] = (periodPages[p] || 0) + count;
+            });
+          }
+          if (day.sources) {
+            Object.entries(day.sources).forEach(([s, count]) => {
+              periodSources[s] = (periodSources[s] || 0) + count;
+            });
+          }
+          if (day.devices) {
+            periodDevices.mobile += day.devices.mobile || 0;
+            periodDevices.desktop += day.devices.desktop || 0;
+          }
+        }
+      });
+    }
+
+    // Statistiques aujourd'hui
+    const todayObj = daysMap[todayStr] || { views: 0, uniques: 0 };
+    const todayViews = todayObj.views || 0;
+    const todayUniques = todayObj.uniques || 0;
+
+    // Mise à jour des cartes KPI
+    if ($('#kpiTotalViews')) $('#kpiTotalViews').textContent = periodViews.toLocaleString('fr-FR');
+    if ($('#kpiTotalUniques')) $('#kpiTotalUniques').textContent = periodUniques.toLocaleString('fr-FR');
+    if ($('#kpiDirectMobile')) $('#kpiDirectMobile').textContent = periodDirectMobile.toLocaleString('fr-FR');
+    if ($('#kpiTodayViews')) $('#kpiTodayViews').textContent = todayViews.toLocaleString('fr-FR');
+    if ($('#kpiTodayUniques')) $('#kpiTodayUniques').textContent = `${todayUniques} visiteur${todayUniques > 1 ? 's' : ''} unique${todayUniques > 1 ? 's' : ''}`;
+
+    const sizeText = fileSizeKb > 0 ? `${fileSizeKb} Ko` : '< 15 Ko';
+    if ($('#statsStorageSize')) $('#statsStorageSize').textContent = sizeText;
+    if ($('#statsStorageNote')) $('#statsStorageNote').textContent = sizeText;
+
+    // Graphique SVG
+    renderStatsSvgChart(targetDates, daysMap);
+
+    // Tops Rubriques
+    renderStatsPages(periodPages, periodViews);
+
+    // Sources de trafic
+    renderStatsSources(periodSources, periodViews);
+
+    // Jauge Mobile / Ordinateur
+    renderStatsDevices(periodDevices);
+  }
+
+  function renderStatsSvgChart(dates, daysMap) {
+    const container = $('#statsChartWrapper');
+    if (!container) return;
+
+    if (!dates || dates.length === 0) {
+      container.innerHTML = '<div class="table-empty"><i class="fas fa-chart-bar"></i><p>Aucune donnée disponible.</p></div>';
+      return;
+    }
+
+    const maxViews = Math.max(5, ...dates.map(d => daysMap[d]?.views || 0));
+    const svgWidth = 680;
+    const svgHeight = 210;
+    const marginLeft = 38;
+    const marginRight = 16;
+    const marginTop = 20;
+    const marginBottom = 34;
+    const plotWidth = svgWidth - marginLeft - marginRight;
+    const plotHeight = svgHeight - marginTop - marginBottom;
+
+    const colWidth = plotWidth / dates.length;
+    const barWidth = Math.max(6, Math.min(24, colWidth * 0.65));
+
+    // Lignes de quadrillage
+    const midVal = Math.round(maxViews / 2);
+    const yTop = marginTop;
+    const yMid = marginTop + plotHeight / 2;
+    const yBottom = marginTop + plotHeight;
+
+    let barsHtml = '';
+    const labelStep = dates.length > 20 ? 3 : (dates.length > 12 ? 2 : 1);
+
+    dates.forEach((d, i) => {
+      const day = daysMap[d] || { views: 0, uniques: 0, directMobile: 0 };
+      const views = day.views || 0;
+      const directMob = day.directMobile || 0;
+
+      const x = marginLeft + i * colWidth + (colWidth - barWidth) / 2;
+      const vHeight = Math.max(views > 0 ? 3 : 0, (views / maxViews) * plotHeight);
+      const vY = yBottom - vHeight;
+
+      const qrHeight = Math.max(directMob > 0 ? 3 : 0, (directMob / maxViews) * plotHeight);
+      const qrY = yBottom - qrHeight;
+
+      // Slot d'arrière-plan interactif
+      barsHtml += `
+        <g class="stats-svg-col-group">
+          <rect x="${marginLeft + i * colWidth}" y="${marginTop}" width="${colWidth}" height="${plotHeight}" fill="transparent" class="stats-col-hover-area">
+            <title>${d} : ${views} visite(s), ${day.uniques || 0} unique(s), ${directMob} scan(s) QR / terrain</title>
+          </rect>
+          ${views > 0 ? `
+            <rect class="stats-svg-bar" fill="url(#gradViews)" x="${x}" y="${vY}" width="${barWidth}" height="${vHeight}" rx="3" ry="3">
+              <title>${d} : ${views} visite(s) au total (${day.uniques || 0} unique(s))</title>
+            </rect>
+          ` : `
+            <rect x="${x}" y="${yBottom - 2}" width="${barWidth}" height="2" fill="var(--gray-200)" rx="1">
+              <title>${d} : 0 visite</title>
+            </rect>
+          `}
+          ${directMob > 0 ? `
+            <rect class="stats-svg-bar" fill="url(#gradQr)" x="${x}" y="${qrY}" width="${barWidth}" height="${qrHeight}" rx="3" ry="3">
+              <title>${d} : ${directMob} scan(s) QR / visites directes mobile</title>
+            </rect>
+          ` : ''}
+        </g>
+      `;
+
+      // Label de date sous la colonne
+      if (i % labelStep === 0 || i === dates.length - 1) {
+        const shortDate = d.slice(5).replace('-', '/');
+        const textX = marginLeft + i * colWidth + colWidth / 2;
+        barsHtml += `<text x="${textX}" y="${yBottom + 18}" class="stats-svg-label">${shortDate}</text>`;
+      }
+    });
+
+    container.innerHTML = `
+      <svg viewBox="0 0 ${svgWidth} ${svgHeight}" class="stats-svg-chart" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="gradViews" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#38bdf8" />
+            <stop offset="100%" stop-color="#0284c7" />
+          </linearGradient>
+          <linearGradient id="gradQr" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#fcd34d" />
+            <stop offset="100%" stop-color="#d97706" />
+          </linearGradient>
+        </defs>
+
+        <!-- Lignes horizontales de repère -->
+        <line x1="${marginLeft}" y1="${yTop}" x2="${svgWidth - marginRight}" y2="${yTop}" class="stats-svg-grid-line" />
+        <text x="${marginLeft - 6}" y="${yTop + 4}" class="stats-svg-label" text-anchor="end">${maxViews}</text>
+
+        <line x1="${marginLeft}" y1="${yMid}" x2="${svgWidth - marginRight}" y2="${yMid}" class="stats-svg-grid-line" />
+        <text x="${marginLeft - 6}" y="${yMid + 4}" class="stats-svg-label" text-anchor="end">${midVal}</text>
+
+        <line x1="${marginLeft}" y1="${yBottom}" x2="${svgWidth - marginRight}" y2="${yBottom}" stroke="var(--gray-300)" stroke-width="1.5" />
+        <text x="${marginLeft - 6}" y="${yBottom + 4}" class="stats-svg-label" text-anchor="end">0</text>
+
+        ${barsHtml}
+      </svg>
+    `;
+  }
+
+  function renderStatsPages(pagesObj, totalViews) {
+    const list = $('#statsPagesList');
+    if (!list) return;
+
+    const PAGE_MAP = {
+      home: { label: "Page d'accueil", icon: 'fa-home', color: 'bar-green' },
+      points: { label: 'Points de collecte', icon: 'fa-map-marker-alt', color: 'bar-blue' },
+      boutique: { label: 'Boutique solidaire', icon: 'fa-store', color: 'bar-amber' },
+      don: { label: 'Faire un don / Nous aider', icon: 'fa-hand-holding-heart', color: 'bar-purple' },
+      actualites: { label: 'Actualités & Agenda', icon: 'fa-newspaper', color: 'bar-blue' },
+      mission: { label: 'Notre Mission', icon: 'fa-bullseye', color: 'bar-green' },
+      esat: { label: 'Partenariat ESAT', icon: 'fa-hands-helping', color: 'bar-amber' },
+      contact: { label: 'Formulaire de contact', icon: 'fa-envelope', color: 'bar-purple' }
+    };
+
+    const entries = Object.entries(pagesObj || {}).filter(([_, c]) => c > 0);
+    if (entries.length === 0) {
+      list.innerHTML = '<p class="stats-subtext" style="text-align:center;color:var(--gray-500);padding:16px">Aucune page consultée pour le moment.</p>';
+      return;
+    }
+
+    entries.sort((a, b) => b[1] - a[1]);
+    const maxVal = entries[0][1] || 1;
+
+    let html = '';
+    entries.slice(0, 6).forEach(([key, count]) => {
+      const info = PAGE_MAP[key] || { label: key.charAt(0).toUpperCase() + key.slice(1), icon: 'fa-file', color: 'bar-blue' };
+      const pct = totalViews > 0 ? Math.round((count / totalViews) * 100) : 0;
+      const barWidth = Math.max(5, Math.round((count / maxVal) * 100));
+
+      html += `
+        <div class="stats-progress-item">
+          <div class="stats-progress-header">
+            <span class="stats-progress-title"><i class="fas ${info.icon}"></i> ${info.label}</span>
+            <span class="stats-progress-stats"><strong>${count.toLocaleString('fr-FR')}</strong> (${pct}%)</span>
+          </div>
+          <div class="stats-bar-track">
+            <div class="stats-bar-fill ${info.color}" style="width:${barWidth}%"></div>
+          </div>
+        </div>
+      `;
+    });
+
+    list.innerHTML = html;
+  }
+
+  function renderStatsSources(sourcesObj, totalViews) {
+    const list = $('#statsSourcesList');
+    if (!list) return;
+
+    const SOURCE_MAP = [
+      { key: 'qr_direct', label: 'Scans QR codes & Terrain', icon: 'fa-qrcode', color: 'bar-amber', hint: 'Flyers & Kakemonos' },
+      { key: 'direct', label: 'Accès directs (Ordinateur)', icon: 'fa-compass', color: 'bar-blue', hint: 'URL directe' },
+      { key: 'search', label: 'Moteurs de recherche', icon: 'fa-search', color: 'bar-green', hint: 'Google, Bing...' },
+      { key: 'social', label: 'Réseaux sociaux', icon: 'fa-share-alt', color: 'bar-purple', hint: 'Facebook, Instagram...' },
+      { key: 'referral', label: 'Sites partenaires / Liens', icon: 'fa-link', color: 'bar-blue', hint: 'Sites externes' }
+    ];
+
+    const totalSourcesCount = Object.values(sourcesObj || {}).reduce((sum, n) => sum + (n || 0), 0);
+    const maxVal = Math.max(1, ...Object.values(sourcesObj || {}));
+
+    let html = '';
+    SOURCE_MAP.forEach(item => {
+      const count = sourcesObj[item.key] || 0;
+      const pct = totalSourcesCount > 0 ? Math.round((count / totalSourcesCount) * 100) : 0;
+      const barWidth = count > 0 ? Math.max(5, Math.round((count / maxVal) * 100)) : 0;
+
+      html += `
+        <div class="stats-progress-item">
+          <div class="stats-progress-header">
+            <span class="stats-progress-title"><i class="fas ${item.icon}"></i> ${item.label}</span>
+            <span class="stats-progress-stats"><strong>${count.toLocaleString('fr-FR')}</strong> (${pct}%)</span>
+          </div>
+          <div class="stats-bar-track">
+            <div class="stats-bar-fill ${item.color}" style="width:${barWidth}%"></div>
+          </div>
+        </div>
+      `;
+    });
+
+    list.innerHTML = html;
+  }
+
+  function renderStatsDevices(devicesObj) {
+    const mobileCount = devicesObj.mobile || 0;
+    const desktopCount = devicesObj.desktop || 0;
+    const total = mobileCount + desktopCount;
+
+    let mobilePct = 50;
+    let desktopPct = 50;
+
+    if (total > 0) {
+      mobilePct = Math.round((mobileCount / total) * 100);
+      desktopPct = 100 - mobilePct;
+    }
+
+    if ($('#statsMobilePct')) $('#statsMobilePct').textContent = `${mobilePct}% (${mobileCount.toLocaleString('fr-FR')})`;
+    if ($('#statsDesktopPct')) $('#statsDesktopPct').textContent = `${desktopPct}% (${desktopCount.toLocaleString('fr-FR')})`;
+
+    const bar = $('#statsDeviceGaugeBar');
+    if (bar) {
+      bar.style.width = `${mobilePct}%`;
+    }
+  }
+
   // ─── INIT ADMIN ──────────────────────────────────────
   let adminInitialized = false;
 
@@ -2514,12 +2894,14 @@ ${escapeHtml(m.message || '')}
     initMessagesSection();
     initUsersSection();
     initIOSection();
+    initStatsSection();
 
     // Rendre les données initiales
     renderNewsTable();
     renderUsersTable();
     renderPointsTable();
     loadMessages();
+    loadAdminStats();
   }
 
   // ─── BOOT ────────────────────────────────────────────

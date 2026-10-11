@@ -1060,3 +1060,316 @@ input[type="file"] { display: none; }
   border: 1px solid rgba(230, 81, 0, 0.3);
 }
 
+/* ====================================================
+   STATISTIQUES D'AUDIENCE (ADMIN)
+   ==================================================== */
+.stats-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stats-period-group {
+  display: inline-flex;
+  background: var(--gray-100);
+  padding: 3px;
+  border-radius: var(--radius);
+  border: 1px solid var(--gray-200);
+}
+
+.btn-period-filter {
+  background: transparent;
+  border: none;
+  padding: 6px 14px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  border-radius: calc(var(--radius) - 2px);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-period-filter:hover {
+  color: var(--dark);
+}
+
+.btn-period-filter.active {
+  background: var(--white);
+  color: var(--green-700);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+}
+
+/* KPI Cards Grid */
+.stats-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stats-kpi-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+}
+
+.stats-kpi-card.highlight-card {
+  border-color: rgba(245, 158, 11, 0.4);
+  background: linear-gradient(135deg, var(--white) 0%, rgba(254, 243, 199, 0.25) 100%);
+}
+
+.stats-kpi-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.stats-kpi-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray-500);
+}
+
+.stats-label-with-tip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stats-tip-badge {
+  color: #f59e0b;
+  cursor: help;
+  font-size: 0.9rem;
+}
+
+.stats-kpi-icon-wrap {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.stats-kpi-icon-wrap.icon-blue { background: rgba(56, 189, 248, 0.15); color: #0284c7; }
+.stats-kpi-icon-wrap.icon-green { background: rgba(140, 228, 76, 0.2); color: #2e7d32; }
+.stats-kpi-icon-wrap.icon-amber { background: rgba(245, 158, 11, 0.18); color: #d97706; }
+.stats-kpi-icon-wrap.icon-purple { background: rgba(139, 92, 246, 0.15); color: #7c3aed; }
+
+.stats-kpi-value {
+  font-size: 2rem;
+  font-weight: 800;
+  font-family: var(--font-h);
+  color: var(--dark);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+
+.stats-kpi-value.highlight-val {
+  color: #b45309;
+}
+
+.stats-kpi-subtext {
+  font-size: 0.78rem;
+  color: var(--gray-500);
+}
+
+/* Main Chart Card */
+.stats-chart-card {
+  margin-bottom: 24px;
+}
+
+.stats-card-desc {
+  font-size: 0.82rem;
+  color: var(--gray-500);
+  margin-top: 2px;
+}
+
+.stats-chart-legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.legend-dot.dot-views { background: #0284c7; }
+.legend-dot.dot-qr { background: #f59e0b; }
+
+.stats-chart-container {
+  width: 100%;
+  min-height: 220px;
+  padding: 16px 8px 8px;
+  position: relative;
+}
+
+/* SVG Chart Elements */
+.stats-svg-chart {
+  width: 100%;
+  height: 220px;
+  overflow: visible;
+}
+
+.stats-svg-bar {
+  transition: height 0.3s ease, y 0.3s ease, opacity 0.2s ease;
+  cursor: pointer;
+}
+
+.stats-svg-bar:hover {
+  opacity: 0.85;
+}
+
+.stats-svg-grid-line {
+  stroke: var(--gray-200);
+  stroke-dasharray: 4 4;
+}
+
+.stats-svg-label {
+  fill: var(--gray-500);
+  font-size: 11px;
+  font-family: var(--font-b);
+  text-anchor: middle;
+}
+
+/* Detailed Breakdown Grid */
+.stats-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.stats-progress-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.stats-progress-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stats-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.stats-progress-title {
+  font-weight: 600;
+  color: var(--dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stats-progress-stats {
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  font-weight: 600;
+}
+
+.stats-bar-track {
+  width: 100%;
+  height: 8px;
+  background: var(--gray-100);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.stats-bar-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
+
+.stats-bar-fill.bar-green { background: linear-gradient(90deg, #8ce44c, #4caf50); }
+.stats-bar-fill.bar-blue  { background: linear-gradient(90deg, #38bdf8, #0284c7); }
+.stats-bar-fill.bar-amber { background: linear-gradient(90deg, #fcd34d, #f59e0b); }
+.stats-bar-fill.bar-purple{ background: linear-gradient(90deg, #c084fc, #7c3aed); }
+
+/* Devices Gauge */
+.stats-devices-box {
+  margin-bottom: 20px;
+}
+
+.stats-device-gauge-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: 8px;
+}
+
+.stats-device-gauge-track {
+  width: 100%;
+  height: 14px;
+  background: #0284c7;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+}
+
+.stats-device-gauge-bar {
+  height: 100%;
+  background: #f59e0b;
+  border-radius: 20px 0 0 20px;
+  transition: width 0.5s ease;
+}
+
+/* Privacy Notice */
+.stats-privacy-notice {
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 14px;
+}
+
+.stats-privacy-notice .privacy-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #2e7d32;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stats-privacy-notice p {
+  font-size: 0.78rem;
+  color: var(--gray-600);
+  line-height: 1.5;
+  margin: 0;
+}
+
